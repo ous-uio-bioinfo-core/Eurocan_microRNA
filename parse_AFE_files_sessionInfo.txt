@@ -1,0 +1,39 @@
+R version 3.1.1 (2014-07-10)
+Platform: x86_64-apple-darwin10.8.0 (64-bit)
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] parallel  stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0          RSQLite_1.0.0         DBI_0.3.1            
+ [6] AnnotationDbi_1.26.1  GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3           limma_3.20.9         
+[11] Biobase_2.24.0        BiocGenerics_0.10.0  
+
+loaded via a namespace (and not attached):
+ [1] acepack_1.3-3.3           affyio_1.32.0             annaffy_1.36.0            annotate_1.42.1          
+ [5] AnnotationForge_1.6.1     base64enc_0.1-2           BatchJobs_1.4             BBmisc_1.7               
+ [9] BiocInstaller_1.14.3      BiocParallel_0.6.1        biomaRt_2.20.0            Biostrings_2.32.1        
+[13] biovizBase_1.12.3         bit_1.1-12                bitops_1.0-6              brew_1.0-6               
+[17] BSgenome_1.32.0           Category_2.30.0           caTools_1.17.1            checkmate_1.5.0          
+[21] cluster_1.15.3            codetools_0.2-9           colorspace_1.2-4          DESeq2_1.4.5             
+[25] dichromat_2.0-0           digest_0.6.4              edgeR_3.6.8               evaluate_0.5.5           
+[29] fail_1.2                  ff_2.2-13                 foreach_1.4.2             foreign_0.8-61           
+[33] formatR_1.0               Formula_1.1-2             gcrma_2.36.0              gdata_2.13.3             
+[37] genefilter_1.46.1         geneplotter_1.42.0        GenomicAlignments_1.0.6   GenomicFeatures_1.16.3   
+[41] GenomicRanges_1.16.4      ggbio_1.12.10             ggplot2_1.0.0             GOstats_2.30.0           
+[45] gplots_2.14.2             graph_1.42.0              grid_3.1.1                gridExtra_0.9.1          
+[49] GSEABase_1.26.0           gtable_0.1.2              gtools_3.4.1              Hmisc_3.14-5             
+[53] hwriter_1.3.2             IRanges_1.22.10           iterators_1.0.7           KernSmooth_2.23-13       
+[57] knitr_1.8                 lattice_0.20-29           latticeExtra_0.6-26       locfit_1.5-9.1           
+[61] MASS_7.3-35               Matrix_1.1-4              munsell_0.4.2             nnet_7.3-8               
+[65] oligoClasses_1.26.0       PFAM.db_2.14.0            plyr_1.8.1                proto_0.3-10             
+[69] R.methodsS3_1.6.1         R.oo_1.18.0               R.utils_1.34.0            R2HTML_2.3.1             
+[73] RBGL_1.40.1               RColorBrewer_1.0-5        Rcpp_0.11.3               RcppArmadillo_0.4.450.1.0
+[77] RCurl_1.95-4.3            ReportingTools_2.4.0      reshape2_1.4              rpart_4.1-8              
+[81] Rsamtools_1.16.1          rtracklayer_1.24.2        scales_0.2.4              sendmailR_1.2-1          
+[85] splines_3.1.1             stats4_3.1.1              stringr_0.6.2             survival_2.37-7          
+[89] tools_3.1.1               VariantAnnotation_1.10.5  XML_3.98-1.1              xtable_1.7-4             
+[93] XVector_0.4.0             zlibbioc_1.10.0          

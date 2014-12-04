@@ -1,0 +1,227 @@
+Quality control plots of AHUS and UCAM microRNA data used in Volinia check
+========================================================
+
+```{r time, echo=FALSE}
+starttime = Sys.time()
+# rename old version.
+oldfn = "quality_control.html"
+if(file.exists(oldfn))
+{
+  datestr = strsplit( as.character(file.info(oldfn)$ctime), " ")[[1]][1]
+  backupname = sub(".html", paste("_",datestr, ".html", sep=""), oldfn)
+  backupname = paste("not_in_github/", backupname, sep="")
+  x = file.copy(oldfn,backupname, overwrite=TRUE )
+}
+
+```
+
+`r as.character(starttime)`  
+made by Vegard Nygaard,   
+Department of Tumor Biology  
+Oslo University Hospital.  
+
+<br/>
+<br/>
+
+<br/>
+<br/>
+
+## Input data
+
+Setting some dependencies
+```{r dependencies, message=FALSE}
+library(RColorBrewer)
+library(xtable)
+library(sva)
+set.seed(100)
+
+source("./helper_functions.r")
+source("read_input.r")
+```
+
+The data matrix has `r ncol(common_matrix)` samples and `r nrow(common_matrix)` microRNAs.
+
+
+```{r results='asis'}
+print(xtable(table(sampleannotation[, c("provider", "tissue_type")]), 
+             caption="", digits=3), 
+      comment = TRUE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
+```
+
+The tissue is not evenly distributed among the providers. "benign" is not part of Volinia et al.s results, but it is kept for now since it is useful for assessing batch differences. 
+
+<br/>
+<br/>
+
+## Combining data sets
+
+The data is already combined using the common microRNAs, but QC plots will reveal that batch effects exists.
+
+```{r fig.width=12, fig.height=8}
+
+colorpal = c(brewer.pal(9,"Set1"), brewer.pal(8,"Set2"))
+somesamples=vector()
+for(p in unique(sampleannotation$provider))
+{
+  for(t in unique(sampleannotation$tissue_type))
+  {
+    a = sampleannotation$tissue_type==t & sampleannotation$provider==p
+    s = sum(a)
+    if(s>=10)
+      s=10
+    somesamples = c(somesamples,sample(sampleannotation$sample_id[a], s) )  
+  }  
+}
+boxplot(log2(common_matrix[,somesamples ]), names=NA, 
+        col=colorpal[as.factor(sampleannotation[somesamples, "tissue_type"])])
+legend("topleft", legend=unique(sampleannotation[somesamples, "tissue_type"]),
+       text.col=colorpal[ as.factor(unique(sampleannotation[somesamples, "tissue_type"]))])
+```
+
+The box-plot of a few random samples shows a difference in signal distribution between AHUS and UCAM, but the tissue types seems to have a similar distribution within each provider.
+<br/>
+<br/>
+
+```{r fig.width=12, fig.height=8}
+hist( log2(common_matrix[,sampleannotation$provider=="AHUS"]),
+      breaks=100, freq=FALSE, border="red",
+      main="Raw intesity distributions", xlab="log2 signal" )
+hist( log2(common_matrix[,sampleannotation$provider=="UCAM"]), breaks=100, freq=FALSE, border="blue", add=T )
+legend("topright", legend=c("AHUS", "UCAM"), text.col=c("red", "blue"))
+```
+
+The density plot also reveals the difference and the data from the different providers seems to have been processed differently. 
+
+
+```{r qnorm}
+#common_matrix_qnorm = normalizeBetweenArrays(common_matrix, method="quantile")
+#common_matrix_qnorm = common_matrix
+
+
+# x = rowMeans(common_matrix[, sampleannotation$provider=="AHUS"])
+# y = unlist(apply(common_matrix[, sampleannotation$provider=="AHUS"], MARGIN=1, FUN=sd))
+# plot( smooth(y[order(x)]), col="red", type="l")
+# 
+# x = rowMeans(common_matrix[, sampleannotation$provider=="UCAM"])
+# y = unlist(apply(common_matrix[, sampleannotation$provider=="UCAM"], MARGIN=1, FUN=sd))
+# lines( smooth(y[order(x)]), col="blue")
+# 
+# 
+# for (i in 3:48)
+# {
+#   qqnorm (data[,i]); qqline(data[,i], col = 2)
+# }
+# qqnorm (common_matrix[,3]); common_matrix(data[,3], col = 2)
+# hist(data[,13])
+# 
+# index = index+1
+# a = sampleannotation$provider=="AHUS" & sampleannotation$tissue_type=="invasive"
+# qqnorm (common_matrix[index, a])
+# qqline(common_matrix[index, a], col = 2)
+
+
+```
+
+
+Next we will see how the samples cluster.
+```{r fig.width=12, fig.height=12}
+plotmanypca(list( filtered=common_matrix),sampleannotation, "" ,  views=c("tissue_provider"))
+```
+
+The PCA plot shows that the samples are segregated on provider rather than tissue. Event thought both data sets use Agilent arrays with a lot of the same probes, a clear batch effect is observed. Our tissues and other groupings are not evenly balanced across the data sets, thus ignoring the batch effect would probably lead to false results. Accounting for the batch effect is best done by including the batch information in the statistical tests. This is possible in Limma where batch can be used as a blocking factor much the same way as a two-way ANOVA. Another approach is to analyse the data sets separately and combine the results with a meta-analysis tool. 
+<br/>
+However, in an attempt to plot and assess the grouping of the samples, the batch effect can partially be adjusted for using the "ComBat" method from the sva-package. This adjusted matrix will only be useful for plotting, since the confidence for the group differences will be overrated.
+```{r combat}
+mod = as.factor(sampleannotation$tissue_type)
+common_matrix_batchnorm = ComBat(dat=normalizeBetweenArrays(common_matrix, method="quantile"),
+                                                batch=as.factor(sampleannotation$provider),
+                                                mod=mod,  par.prior=TRUE, prior.plots=FALSE)
+```
+
+
+After batch adjustment in ComBat the PCA-plot looks like this;
+```{r fig.width=12, fig.height=12}
+plotmanypca(list(batchnorm=common_matrix_batchnorm),sampleannotation, "" ,  views=c("tissue_type"))
+```
+
+But be aware that we instructed the batch adjustment to preserve what looks like group differences (but might not be). So the group similarities are unreliable. These plots are useful for checking the groupings of other sample annotations like IHC and pam50 classification.
+
+
+## Stratification based on pam50 classification.
+
+Pam50 classification has been done on the mRNA samples. Many of the microRNA samples also have a mRNA sample and thus a pam50 classification. 
+We have too few samples for looking at the DCIS to invasive change for each of the pam50 classes. Therefore we will treat all DCIS as "DCIS".
+
+```{r}
+sampleannotation$pam50_est[sampleannotation$tissue_type=="DCIS"]="DCIS"
+table(sampleannotation[,c("pam50_est", "tissue_type")], useNA="ifany")
+```
+
+PCA-plot with the pam50 labels. DCIS and invasive samples only.
+
+```{r fig.width=12, fig.height=12}
+plotmanypca(list( stratified=common_matrix_batchnorm[,sampleannotation$tissue_type %in% c("DCIS", "invasive")]),
+						sampleannotation[sampleannotation$tissue_type %in% c("DCIS", "invasive"),], "" ,  views=c("pam50_est"))
+```
+
+This looks like a separation.
+
+## Stratification based on clinical diagnostics from Immunohistochemistry.
+
+Many of the samples are also diagnosed based on immunohistochemistry of HER2, PGR and ER proteins. Four diagnoses are used, 
+"HER2neg/ERneg/PGRneg", "HER2neg/ERpos", "HER2pos/ERneg", "HER2pos/ERpos". 
+We would like too look for microRNA that separates samples based on that grouping as well.
+
+```{r}
+sampleannotation$IHC[sampleannotation$IHC==""] = "Unknown"
+table(sampleannotation[,c("tissue_type", "IHC")], useNA="ifany")
+```
+
+
+PCA-plot with the IHC labels. DCIS and invasive samples only.
+
+```{r fig.width=12, fig.height=12}
+plotmanypca(list( stratified=common_matrix_batchnorm[,sampleannotation$tissue_type %in% c("DCIS", "invasive")]),
+						sampleannotation[sampleannotation$tissue_type %in% c("DCIS", "invasive"),], "" ,  views=c("IHC")  )
+```
+
+The IHC labels do not seem to cluster.
+
+
+
+<br/>
+<br/>
+<br/>
+
+## References
+
+Breast cancer signatures for invasiveness and prognosis defined by deep sequencing of microRNA.  
+Volinia S, Galasso M, Sana ME, Wise TF, Palatini J, Huebner K, Croce CM.  
+Proc Natl Acad Sci U S A. 2012 Feb 21;109(8):3024-9. doi: 10.1073/pnas.1200010109. Epub 2012 Feb 6.
+
+The shaping and functional consequences of the microRNA landscape in breast cancer.
+Dvinge H, Git A, Gräf S, Salmon-Divon M, Curtis C, Sottoriva A, Zhao Y, Hirst M, Armisen J, Miska EA, Chin SF, Provenzano E, Turashvili G, Green A, Ellis I, Aparicio S, Caldas C.
+Nature. 2013 May 16;497(7449):378-82. doi: 10.1038/nature12108. Epub 2013 May 5.
+
+  
+  R Core Team (2013). R: A language and environment for statistical computing. R Foundation for Statistical Computing,
+  Vienna, Austria. URL http://www.R-project.org/
+
+  Yihui Xie (2013). knitr: A general-purpose package for dynamic report generation in R. R package version 1.5.
+
+  Yihui Xie (2013) Dynamic Documents with R and knitr. Chapman and Hall/CRC. ISBN 978-1482203530
+
+  Yihui Xie (2013) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and
+  Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
+  
+  RStudio Team (2012). RStudio: Integrated Development for R. RStudio, Inc., Boston, MA URL http://www.rstudio.com/.
+
+
+```{r sessionInfo, comment=""}
+sessionInfo()
+```
+
+generation ended `r as.character(Sys.time())`. Time spent `r  as.integer(round(difftime(Sys.time(),starttime, units="mins")))` minutes .
