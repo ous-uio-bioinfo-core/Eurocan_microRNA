@@ -1,0 +1,195 @@
+Overlap between data sets and Volinia.
+========================================================
+
+
+```{r time, echo=FALSE}
+library(xtable)
+source("read_input.r")
+starttime = Sys.time()
+oldfn = "end_results.html"
+postfix = ".txt"
+if(file.exists(oldfn))
+  {
+    datestr = strsplit( as.character(file.info(oldfn)$ctime), " ")[[1]][1]
+    backupname = sub(".html", paste("_",datestr, ".html", sep=""), oldfn)
+    backupname = paste("not_in_github/", backupname, sep="")
+    x=file.copy(oldfn,backupname, overwrite=TRUE )   
+  }
+```
+
+`r as.character(Sys.time())`
+<br/>
+<br/>
+
+Agreement between our two approaches called **merged** and **meta**.
+Agreement between our results and Volinia.
+Checking all results toward a list of verified microRNAs.
+
+<BR/>
+<BR/>
+## Meta vs Merged results.
+
+Our data sets came from two providers, "AHUS" and "UCAM", using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor ("merged" approach), and analyzing the two sets inependetly with Limma and combine the p-values ("meta" approach).
+
+Here we will list the agreemet between the two apporaches.
+
+
+```{r}
+
+metafilefolder = "not_in_github/t-test"
+mergedfilefolder = "output-analysis"
+#metaresultfiles = list.files("lilianas/1000_permutations")
+#mergedresultfiles = list.files("output-analysis-2014-08-05", pattern="difflist")
+
+comparisons = c("DCIS-normal", "invasive-DCIS", "Normallike-DCIS", "LumA-DCIS", "LumB-DCIS", "Her2-DCIS", "Basallike-DCIS")
+
+meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), stringsAsFactors=FALSE)
+meta2merged["DCIS-normal",] = list("DCIS_to_normal_test", "difflist-DCIS-vs-normal.txt",-1)
+meta2merged["invasive-DCIS",] = list("DCIS_to_invasive_test", "difflist-invasive-vs-DCIS.txt",1)
+meta2merged["Normallike-DCIS",] = list("DCIS_to_normal(invasive)_test", "difflist-pam50-Normallike-vs-DCIS.txt",1)
+meta2merged["LumA-DCIS",] = list("DCIS_to_lumA_test", "difflist-pam50-LumA-vs-DCIS.txt",1)
+meta2merged["LumB-DCIS",] = list("DCIS_to_lumB_test", "difflist-pam50-LumB-vs-DCIS.txt",1)
+meta2merged["Her2-DCIS",] = list("DCIS_to_Her2_test", "difflist-pam50-Her2-vs-DCIS.txt",1)
+meta2merged["Basallike-DCIS",] = list("basal_to_DCIS_test", "difflist-pam50-Basallike-vs-DCIS.txt",-1)
+
+metatables = list()
+mergedtables = list()
+summarytab = data.frame( found_meta=integer(0),  found_merged=integer(0), 
+                       found_both=integer(0),  stringsAsFactors=FALSE)
+
+for(i in 1:nrow(meta2merged))
+{   
+    thiscomp = rownames(meta2merged)[i]
+    fn = paste(metafilefolder, "/", meta2merged[thiscomp, "metafn"], sep="")
+    thismetatab = read.table(fn, sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
+                                     strip.white=TRUE, comment.char ="")
+    fn = paste(mergedfilefolder, "/", meta2merged[thiscomp, "mergedfn"], sep="")
+    thismergedtab = read.table(fn, sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
+                                     strip.white=TRUE, comment.char ="", row.names=1)
+    
+    #harmonizing
+    colnames(thismetatab)[colnames(thismetatab)=="FC"] = "logFC"
+    rownames(thismetatab) = thismetatab$MIMAT
+    thismetatab$logFC = thismetatab$logFC * meta2merged[thiscomp, "direction"]
+  #summarytab[thiscomp, "metafile"] = rownames(thisrows)[1]
+  #summarytab[thiscomp, "mergedfile"] = thisrows[1, "mergedfn"]
+
+  summarytab[thiscomp, "found_meta"] = nrow(thismetatab)
+  b = thismergedtab$adj.P.Val <= 0.05
+  summarytab[thiscomp, "found_merged"] = sum(b)
+  
+  commonMIMATID = intersect( rownames(thismetatab),  rownames(thismergedtab)[b])
+  summarytab[thiscomp, "found_both"] = sum( thismetatab[commonMIMATID, "logFC"] * thismergedtab[commonMIMATID, "logFC"] > 0) 
+  rm(commonMIMATID)
+  metatables[[thiscomp]] = thismetatab
+  mergedtables[[thiscomp]] = thismergedtab
+}
+
+```
+<br/>
+<br/>
+<br/>
+The number of microRNAs found differentially expressed between states, according to the two approaches. The direction of foldchange is taken into acount. 
+```{r}
+print(summarytab[,1:3])
+```
+For several of the comparisons, the shorter list seems to be mostly included in the longer.
+<br/>
+<br/>
+
+
+## Our results vs. Volinia et al.´s results
+
+```{r}
+volinia_DCIS_vs_normal_file = "volinia-DCIS-vs-normal.txt"
+volinia_invasive_vs_DCIS_file = "volinia-invasive-vs-DCIS.txt"
+```
+
+`r volinia_DCIS_vs_normal_file` and  `r volinia_invasive_vs_DCIS_file` are copy-pasted from Volinia et al.s [supplementary tables S1 and S2](http://www.pnas.org/content/suppl/2012/02/02/1200010109.DCSupplemental/pnas.201200010SI.pdf). The tables were reformatted from the pdf file into a more practical tabular text format. This is the results we aim to validate with the AHUS and UCAM data sets.
+
+```{r}
+
+voliniatab = list()
+voliniatab[["invasive_vs_DCIS"]] = read.table(file=paste(annotdir, "/", volinia_invasive_vs_DCIS_file, sep=""),
+                                      sep="\t", check.names=TRUE, 
+                                      stringsAsFactors=FALSE, header=TRUE)
+voliniatab[["DCIS_vs_normal"]]  = read.table(file=paste(annotdir, "/", volinia_DCIS_vs_normal_file, sep=""),
+                                    sep="\t", check.names=TRUE, 
+                                    stringsAsFactors=FALSE, header=TRUE)
+
+for(n in names(voliniatab))
+{
+	# add a MIMATID 
+	voliniatab[[n]] = as.data.frame(append(voliniatab[[n]], 
+                  list(MIMATID=mimatmapping[paste("hsa-", voliniatab[[n]]$miRNA, sep="")]), 
+                  after=1))
+	# use log2 for foldchange in this document.
+	volinia_invasive_vs_DCIS$fc=log2(volinia_invasive_vs_DCIS$fc)
+	names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)=="fc"] = "log2FC"
+	names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)=="pval"] = "FDR" # this was described as FDR in their paper.
+}
+# add a MIMATID 
+volinia_invasive_vs_DCIS = as.data.frame(append(volinia_invasive_vs_DCIS, 
+                  list(MIMATID=mimatmapping[paste("hsa-", volinia_invasive_vs_DCIS$miRNA, sep="")]), 
+                  after=1))
+
+volinia_DCIS_vs_normal = as.data.frame(append(volinia_DCIS_vs_normal, 
+                  list(MIMATID=mimatmapping[paste("hsa-", volinia_DCIS_vs_normal$miRNA, sep="")]), 
+                  after=1))
+
+# use log2 for foldchange in this document.
+volinia_invasive_vs_DCIS$fc=log2(volinia_invasive_vs_DCIS$fc)
+volinia_DCIS_vs_normal$fc=log2(volinia_DCIS_vs_normal$fc)
+names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)=="fc"] = "log2FC"
+names(volinia_DCIS_vs_normal)[names(volinia_DCIS_vs_normal)=="fc"] = "log2FC"
+names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)=="pval"] = "FDR" # this was described as FDR in their paper.
+names(volinia_DCIS_vs_normal)[names(volinia_DCIS_vs_normal)=="pval"] = "FDR"
+```
+
+```{r results='asis'}
+print( xtable(head(volinia_DCIS_vs_normal), caption="Start of table S2 copied from Volinia et al.", digits=3), 
+      comment = FALSE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = FALSE)
+```
+
+
+Compared to the original tables from Volinia, the fold change is here log2 transformed and "IDC" is renamed to "invasive". 
+
+
+```{r results='asis'}
+
+volinia_overlap = volinia_invasive_vs_DCIS
+volinia_overlap = volinia_overlap[!is.na(volinia_overlap$MIMATID),]
+rownames(volinia_overlap) = volinia_overlap$MIMATID
+volinia_overlap$Direction = ifelse(volinia_overlap$log2FC > 0, "UP", "DOWN")
+volinia_overlap = volinia_overlap[, c("Direction","FDR")]
+
+names(volinia_overlap) = paste(names(volinia_overlap), "_vol", sep="")
+
+volinia_overlap = list()
+
+for(contrast %in% )
+contrast = "invasive-DCIS"
+tab = mergedtables[[contrast]]
+a = intersect(  rownames(tab), rownames(volinia_overlap) )
+volinia_overlap$Direction_merged = NA
+volinia_overlap[a, "Direction_merged"] = ifelse(tab[a, "logFC"] > 0,  "UP", "DOWN")
+volinia_overlap$FDR_merged = NA
+volinia_overlap[a, "FDR_merged"] = tab[a, "adj.P.Val"]
+
+tab = metatables[[contrast]]
+a = intersect(  rownames(tab), rownames(volinia_overlap) )
+volinia_overlap$Direction_meta = NA
+volinia_overlap[a, "Direction_meta"] = ifelse(tab[a, "logFC"] > 0,  "UP", "DOWN")
+volinia_overlap$FDR_meta = NA
+volinia_overlap[a, "FDR_merged"] = 0.05
+
+
+
+
+
+
+
+```
