@@ -124,7 +124,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 ##  FEATURES AFTER IsGeneDetected FILTERING:  288 
 ##  NON Gene Detected : 651 
 ## ------------------------------------------------------</code></pre>
-<p>2014-12-05 14:57:06 <br /> <br /></p>
+<p>2014-12-08 17:11:25 <br /> <br /></p>
 <p>Agreement between our two approaches called <strong>merged</strong> and <strong>meta</strong>. Agreement between our results and Volinia. Checking all results toward a list of verified microRNAs.</p>
 <p><BR /> <BR /> ## Meta vs Merged results.</p>
 <p>Our data sets came from two providers, “AHUS” and “UCAM”, using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor (“merged” approach), and analyzing the two sets inependetly with Limma and combine the p-values (“meta” approach).</p>
@@ -193,30 +193,26 @@ for(i in 1:nrow(meta2merged))
 <pre class="r"><code>volinia_DCIS_vs_normal_file = &quot;volinia-DCIS-vs-normal.txt&quot;
 volinia_invasive_vs_DCIS_file = &quot;volinia-invasive-vs-DCIS.txt&quot;</code></pre>
 <p>volinia-DCIS-vs-normal.txt and volinia-invasive-vs-DCIS.txt are copy-pasted from Volinia et al.s <a href="http://www.pnas.org/content/suppl/2012/02/02/1200010109.DCSupplemental/pnas.201200010SI.pdf">supplementary tables S1 and S2</a>. The tables were reformatted from the pdf file into a more practical tabular text format. This is the results we aim to validate with the AHUS and UCAM data sets.</p>
-<pre class="r"><code>volinia_invasive_vs_DCIS = read.table(file=paste(annotdir, &quot;/&quot;, volinia_invasive_vs_DCIS_file, sep=&quot;&quot;),
+<pre class="r"><code>voliniatab = list()
+voliniatab[[&quot;invasive-DCIS&quot;]] = read.table(file=paste(annotdir, &quot;/&quot;, volinia_invasive_vs_DCIS_file, sep=&quot;&quot;),
                                       sep=&quot;\t&quot;, check.names=TRUE, 
                                       stringsAsFactors=FALSE, header=TRUE)
-volinia_DCIS_vs_normal = read.table(file=paste(annotdir, &quot;/&quot;, volinia_DCIS_vs_normal_file, sep=&quot;&quot;),
+voliniatab[[&quot;DCIS-normal&quot;]]  = read.table(file=paste(annotdir, &quot;/&quot;, volinia_DCIS_vs_normal_file, sep=&quot;&quot;),
                                     sep=&quot;\t&quot;, check.names=TRUE, 
                                     stringsAsFactors=FALSE, header=TRUE)
 
-# add a MIMATID 
-volinia_invasive_vs_DCIS = as.data.frame(append(volinia_invasive_vs_DCIS, 
-                  list(MIMATID=mimatmapping[paste(&quot;hsa-&quot;, volinia_invasive_vs_DCIS$miRNA, sep=&quot;&quot;)]), 
+for(n in names(voliniatab))
+{
+    # add a MIMATID 
+    voliniatab[[n]] = as.data.frame(append(voliniatab[[n]], 
+                  list(MIMATID=mimatmapping[paste(&quot;hsa-&quot;, voliniatab[[n]]$miRNA, sep=&quot;&quot;)]), 
                   after=1))
-
-volinia_DCIS_vs_normal = as.data.frame(append(volinia_DCIS_vs_normal, 
-                  list(MIMATID=mimatmapping[paste(&quot;hsa-&quot;, volinia_DCIS_vs_normal$miRNA, sep=&quot;&quot;)]), 
-                  after=1))
-
-# use log2 for foldchange in this document.
-volinia_invasive_vs_DCIS$fc=log2(volinia_invasive_vs_DCIS$fc)
-volinia_DCIS_vs_normal$fc=log2(volinia_DCIS_vs_normal$fc)
-names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)==&quot;fc&quot;] = &quot;log2FC&quot;
-names(volinia_DCIS_vs_normal)[names(volinia_DCIS_vs_normal)==&quot;fc&quot;] = &quot;log2FC&quot;
-names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)==&quot;pval&quot;] = &quot;FDR&quot; # this was described as FDR in their paper.
-names(volinia_DCIS_vs_normal)[names(volinia_DCIS_vs_normal)==&quot;pval&quot;] = &quot;FDR&quot;</code></pre>
-<pre class="r"><code>print( xtable(head(volinia_DCIS_vs_normal), caption=&quot;Start of table S2 copied from Volinia et al.&quot;, digits=3), 
+    # use log2 for foldchange in this document.
+    voliniatab[[n]]$fc=log2(voliniatab[[n]]$fc)
+    names(voliniatab[[n]])[names(voliniatab[[n]])==&quot;fc&quot;] = &quot;log2FC&quot;
+    names(voliniatab[[n]])[names(voliniatab[[n]])==&quot;pval&quot;] = &quot;FDR&quot; # this was described as FDR in their paper.
+}</code></pre>
+<pre class="r"><code>print( xtable(head(voliniatab[[1]]), caption=&quot;Start of table S2 copied from Volinia et al.&quot;, digits=3), 
       comment = FALSE,
       type = &quot;html&quot;,
       html.table.attributes=&quot;CELLPADDING=5&quot;,
@@ -235,60 +231,1622 @@ log2FC
 FDR
 </th>  </tr>
   <tr> <td> 
-miR-361-5p
+miR-10b
 </td> <td> 
-MIMAT0000703
+MIMAT0000254
 </td> <td align="right"> 
-1.907
+-1.286
 </td> <td align="right"> 
 0.000
 </td> </tr>
   <tr> <td> 
-let-7b
+miR-143
 </td> <td> 
-MI0000063_MIMAT0000063
+MIMAT0000435
 </td> <td align="right"> 
--2.943
+-1.358
 </td> <td align="right"> 
 0.000
 </td> </tr>
   <tr> <td> 
-miR-21
+let-7d
 </td> <td> 
-MIMAT0000076
+MI0000065_MIMAT0000065
 </td> <td align="right"> 
-4.385
+1.333
 </td> <td align="right"> 
 0.000
 </td> </tr>
   <tr> <td> 
-miR-127-3p
-</td> <td> 
-MIMAT0000446
-</td> <td align="right"> 
--2.943
+miR-218(2)
+</td> <td>  </td> <td align="right"> 
+-0.690
 </td> <td align="right"> 
 0.000
 </td> </tr>
   <tr> <td> 
-miR-374a
+miR-335-5p
 </td> <td> 
-MIMAT0000727
+MIMAT0000765
 </td> <td align="right"> 
-2.592
+-1.184
 </td> <td align="right"> 
 0.000
 </td> </tr>
   <tr> <td> 
-let-7c
+miR-126
 </td> <td> 
-MI0000064_MIMAT0000064
+MIMAT0000445
 </td> <td align="right"> 
--1.943
+-1.120
 </td> <td align="right"> 
 0.000
 </td> </tr>
    </table>
+
+
+<p>Compared to the original tables from Volinia, the fold change is here log2 transformed and “IDC” is renamed to “invasive”.</p>
+<pre class="r"><code>volinia_overlap = list()
+
+for(contrast in names(voliniatab))
+{
+    #contrast = &quot;invasive_vs_DCIS&quot;
+    overlaptab = voliniatab[[contrast]]
+    overlaptab = overlaptab[!is.na(overlaptab$MIMATID),]
+    rownames(overlaptab) = overlaptab$MIMATID
+    overlaptab$Direction = ifelse(overlaptab$log2FC &gt; 0, &quot;UP&quot;, &quot;DOWN&quot;)
+    overlaptab = overlaptab[, c(&quot;Direction&quot;,&quot;FDR&quot;)]
+    names(overlaptab) = paste(names(overlaptab), &quot;_vol&quot;, sep=&quot;&quot;)
+        
+    tab = mergedtables[[contrast]]
+    a = intersect(  rownames(tab), rownames(overlaptab) )
+    overlaptab$Direction_merged = NA
+    overlaptab[a, &quot;Direction_merged&quot;] = ifelse(tab[a, &quot;logFC&quot;] &gt; 0,  &quot;UP&quot;, &quot;DOWN&quot;)
+    overlaptab$FDR_merged = NA
+    overlaptab[a, &quot;FDR_merged&quot;] = tab[a, &quot;adj.P.Val&quot;]
+
+    tab = metatables[[contrast]]
+    a = intersect(  rownames(tab), rownames(overlaptab) )
+    overlaptab$Direction_meta = NA
+    overlaptab[a, &quot;Direction_meta&quot;] = ifelse(tab[a, &quot;logFC&quot;] &gt; 0,  &quot;UP&quot;, &quot;DOWN&quot;)
+    overlaptab$FDR_meta = NA
+    overlaptab[a, &quot;FDR_meta&quot;] = 0.05
+    
+    x = rowSums (overlaptab[,grepl(&quot;Direction&quot;, colnames(overlaptab))] == &quot;UP&quot;)
+    overlaptab$validated = NA
+    overlaptab$validated[x %in% c(0,3)] = TRUE
+    overlaptab$validated[x %in% c(1,2)] = FALSE
+    
+    
+#   a = overlaptab$Direction_vol &gt; 0 &amp; overlaptab$Direction_merged &gt; 0 &amp; overlaptab$Direction_meta &gt; 0
+#   b = overlaptab$Direction_vol &lt; 0 &amp; overlaptab$Direction_merged &lt; 0 &amp; overlaptab$Direction_meta &lt; 0
+#   c = overlaptab$FDR_merged &lt; 0.05 &amp; overlaptab$FDR_meta &lt; 0.05
+#   overlaptab$validated = (a|b) &amp; c        
+    
+    volinia_overlap[[contrast]] = overlaptab
+}</code></pre>
+<pre class="r"><code>x = order(volinia_overlap[[&quot;DCIS-normal&quot;]]$FDR_merged)
+print( xtable( volinia_overlap[[&quot;DCIS-normal&quot;]][x,] , caption=&quot;microRNA found in Volinia compared to validation data&quot;, digits=3), 
+      comment = FALSE,
+      type = &quot;html&quot;,
+      html.table.attributes=&quot;CELLPADDING=5&quot;,
+      include.rownames = FALSE)</code></pre>
+<table CELLPADDING="5">
+<caption align="bottom"> 
+microRNA found in Volinia compared to validation data
+</caption>
+<tr> <th> 
+Direction_vol
+</th> <th> 
+FDR_vol
+</th> <th> 
+Direction_merged
+</th> <th> 
+FDR_merged
+</th> <th> 
+Direction_meta
+</th> <th> 
+FDR_meta
+</th> <th> 
+validated
+</th>  </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.002
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.012
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.004
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.003
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.004
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.006
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.008
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.009
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.022
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.024
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.041
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.051
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.008
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.073
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.088
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.112
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.114
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.003
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.116
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.003
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.124
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.130
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.195
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.200
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.002
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.377
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.378
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.007
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.446
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.468
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.782
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.002
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.852
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.887
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.945
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.951
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.013
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.972
+</td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.002
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.002
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.004
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.015
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+   </table>
+
+
+</div>
+<div id="checking-results-towards-a-curated-list-of-micrornas" class="section level2">
+<h2>Checking results towards a curated list of microRNA´s</h2>
+<pre class="r"><code>    curatedfn = &quot;curated_microRNA.csv&quot;
+  curatedtab  = read.table(paste(annotdir, &quot;/&quot;, curatedfn, sep=&quot;&quot;), sep=&quot;\t&quot;, 
+                                                 header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
+                                     strip.white=TRUE, comment.char =&quot;&quot;)
+    curatedtab$miRNA = paste(&quot;hsa-&quot;, curatedtab$miRNA, sep=&quot;&quot;)
+  # ad hoc fix
+    curatedtab$miRNA = gsub(&quot;-mir-&quot;, &quot;-miR-&quot;, curatedtab$miRNA)
+
+    curatedtab$MIMAT = mimatmapping[curatedtab$miRNA]
+    table(curatedtab$status)</code></pre>
+<pre><code>## 
+##   purple rejected    white   yellow 
+##      302      969      484        4</code></pre>
+<pre class="r"><code>    curatedtab = curatedtab[!is.na(curatedtab$MIMAT),]
+    table(curatedtab$status)</code></pre>
+<pre><code>## 
+##   purple rejected    white   yellow 
+##      244      515      347        4</code></pre>
+<p>Adding the curated status to the results</p>
+<pre class="r"><code>for(n in names(volinia_overlap))
+{
+    volinia_overlap[[n]]$curated = curatedtab[ match( rownames(volinia_overlap[[n]]), curatedtab$MIMAT ), &quot;status&quot;]
+    voliniatab[[n]]$curated = curatedtab[ match( as.character(voliniatab[[n]]$MIMATID), curatedtab$MIMAT ), &quot;status&quot;]
+}
+x = order(volinia_overlap[[&quot;DCIS-normal&quot;]]$FDR_merged)
+print( xtable( volinia_overlap[[&quot;DCIS-normal&quot;]][x,] , caption=&quot;With curated status&quot;, digits=3), 
+      comment = FALSE,
+      type = &quot;html&quot;,
+      html.table.attributes=&quot;CELLPADDING=5&quot;,
+      include.rownames = FALSE)</code></pre>
+<table CELLPADDING="5">
+<caption align="bottom"> 
+With curated status
+</caption>
+<tr> <th> 
+Direction_vol
+</th> <th> 
+FDR_vol
+</th> <th> 
+Direction_merged
+</th> <th> 
+FDR_merged
+</th> <th> 
+Direction_meta
+</th> <th> 
+FDR_meta
+</th> <th> 
+validated
+</th> <th> 
+curated
+</th>  </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.002
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.012
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.004
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.003
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.004
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.006
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.008
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.009
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.022
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+FALSE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.024
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.041
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.051
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.008
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.073
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.088
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.112
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.114
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.003
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.116
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.003
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.124
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.130
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.195
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+TRUE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.200
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.002
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.377
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.378
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.007
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.446
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.468
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.782
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.050
+</td> <td> 
+FALSE
+</td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.002
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.852
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td>  </td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.887
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.945
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.951
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.013
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.972
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.002
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.002
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.004
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td>  </td> </tr>
+  <tr> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
+white
+</td> </tr>
+  <tr> <td> 
+DOWN
+</td> <td align="right"> 
+0.015
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td>  </td> </tr>
+   </table>
+
+
+
+<pre class="r"><code>#   table(curatedtab$status[  curatedtab$MIMAT %in% rownames(mergedtables[[1]]) ])
+
+expressed = table(curatedtab$status[curatedtab$MIMAT %in% filteredAHUSMIMAT])
+nonexpressed=   table(curatedtab$status[curatedtab$MIMAT %in% unfilteredAHUSMIMAT[!unfilteredAHUSMIMAT %in% filteredAHUSMIMAT]])
+
+
+
+print( xtable( rbind(expressed,nonexpressed), caption=&quot;&quot;, digits=3), 
+      comment = FALSE,
+      type = &quot;html&quot;,
+      html.table.attributes=&quot;CELLPADDING=5&quot;,
+      include.rownames = TRUE)</code></pre>
+<table CELLPADDING="5">
+<caption align="bottom">  </caption>
+<tr> <th>  </th> <th> 
+purple
+</th> <th> 
+rejected
+</th> <th> 
+white
+</th> <th> 
+yellow
+</th>  </tr>
+  <tr> <td align="right"> 
+expressed
+</td> <td align="right">    
+3
+</td> <td align="right">   
+24
+</td> <td align="right">  
+145
+</td> <td align="right">    
+1
+</td> </tr>
+  <tr> <td align="right"> 
+nonexpressed
+</td> <td align="right">   
+64
+</td> <td align="right">   
+94
+</td> <td align="right">  
+159
+</td> <td align="right">    
+2
+</td> </tr>
+   </table>
+
+
+
+
 
 
 </div>

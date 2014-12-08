@@ -72,12 +72,11 @@ colnames(ucam_matrix) = paste("UCAM_", colnames(ucam_matrix), sep="") # another 
 # A few of the samples are without sample annotation, probably some kind of control samples. I filter them out.
 ucam_matrix = ucam_matrix[, colnames(ucam_matrix) %in% sampleannotation$sample_id]
 
-
-
-# Make a vecor of all common MIMAT before filtering. 
-unfilteredcommonMIMAT = mimatmapping[ahus_uRNAList$genes$GeneName]
-unfilteredcommonMIMAT = unfilteredcommonMIMAT[!is.na(unfilteredcommonMIMAT)]
-unfilteredcommonMIMAT = unfilteredcommonMIMAT[unfilteredcommonMIMAT %in% rownames(ucam_matrix)]
+# Make a vecor of all common MIMAT before filtering.
+filteredAHUSMIMAT =  rownames(ahus_matrix)
+unfilteredAHUSMIMAT =  mimatmapping[ahus_uRNAList$genes$GeneName]
+unfilteredAHUSMIMAT = unfilteredAHUSMIMAT[!is.na(unfilteredAHUSMIMAT)]
+unfilteredcommonMIMAT = intersect(unfilteredAHUSMIMAT, rownames(ucam_matrix))
 
 # filter data based on common MIMATS,
 commonMIMAT = intersect(rownames(ucam_matrix), rownames(ahus_matrix))

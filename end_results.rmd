@@ -110,10 +110,10 @@ volinia_invasive_vs_DCIS_file = "volinia-invasive-vs-DCIS.txt"
 ```{r}
 
 voliniatab = list()
-voliniatab[["invasive_vs_DCIS"]] = read.table(file=paste(annotdir, "/", volinia_invasive_vs_DCIS_file, sep=""),
+voliniatab[["invasive-DCIS"]] = read.table(file=paste(annotdir, "/", volinia_invasive_vs_DCIS_file, sep=""),
                                       sep="\t", check.names=TRUE, 
                                       stringsAsFactors=FALSE, header=TRUE)
-voliniatab[["DCIS_vs_normal"]]  = read.table(file=paste(annotdir, "/", volinia_DCIS_vs_normal_file, sep=""),
+voliniatab[["DCIS-normal"]]  = read.table(file=paste(annotdir, "/", volinia_DCIS_vs_normal_file, sep=""),
                                     sep="\t", check.names=TRUE, 
                                     stringsAsFactors=FALSE, header=TRUE)
 
@@ -124,30 +124,15 @@ for(n in names(voliniatab))
                   list(MIMATID=mimatmapping[paste("hsa-", voliniatab[[n]]$miRNA, sep="")]), 
                   after=1))
 	# use log2 for foldchange in this document.
-	volinia_invasive_vs_DCIS$fc=log2(volinia_invasive_vs_DCIS$fc)
-	names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)=="fc"] = "log2FC"
-	names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)=="pval"] = "FDR" # this was described as FDR in their paper.
+	voliniatab[[n]]$fc=log2(voliniatab[[n]]$fc)
+	names(voliniatab[[n]])[names(voliniatab[[n]])=="fc"] = "log2FC"
+	names(voliniatab[[n]])[names(voliniatab[[n]])=="pval"] = "FDR" # this was described as FDR in their paper.
 }
-# add a MIMATID 
-volinia_invasive_vs_DCIS = as.data.frame(append(volinia_invasive_vs_DCIS, 
-                  list(MIMATID=mimatmapping[paste("hsa-", volinia_invasive_vs_DCIS$miRNA, sep="")]), 
-                  after=1))
 
-volinia_DCIS_vs_normal = as.data.frame(append(volinia_DCIS_vs_normal, 
-                  list(MIMATID=mimatmapping[paste("hsa-", volinia_DCIS_vs_normal$miRNA, sep="")]), 
-                  after=1))
-
-# use log2 for foldchange in this document.
-volinia_invasive_vs_DCIS$fc=log2(volinia_invasive_vs_DCIS$fc)
-volinia_DCIS_vs_normal$fc=log2(volinia_DCIS_vs_normal$fc)
-names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)=="fc"] = "log2FC"
-names(volinia_DCIS_vs_normal)[names(volinia_DCIS_vs_normal)=="fc"] = "log2FC"
-names(volinia_invasive_vs_DCIS)[names(volinia_invasive_vs_DCIS)=="pval"] = "FDR" # this was described as FDR in their paper.
-names(volinia_DCIS_vs_normal)[names(volinia_DCIS_vs_normal)=="pval"] = "FDR"
 ```
 
 ```{r results='asis'}
-print( xtable(head(volinia_DCIS_vs_normal), caption="Start of table S2 copied from Volinia et al.", digits=3), 
+print( xtable(head(voliniatab[[1]]), caption="Start of table S2 copied from Volinia et al.", digits=3), 
       comment = FALSE,
       type = "html",
       html.table.attributes="CELLPADDING=5",
@@ -160,36 +145,114 @@ Compared to the original tables from Volinia, the fold change is here log2 trans
 
 ```{r results='asis'}
 
-volinia_overlap = volinia_invasive_vs_DCIS
-volinia_overlap = volinia_overlap[!is.na(volinia_overlap$MIMATID),]
-rownames(volinia_overlap) = volinia_overlap$MIMATID
-volinia_overlap$Direction = ifelse(volinia_overlap$log2FC > 0, "UP", "DOWN")
-volinia_overlap = volinia_overlap[, c("Direction","FDR")]
-
-names(volinia_overlap) = paste(names(volinia_overlap), "_vol", sep="")
-
 volinia_overlap = list()
 
-for(contrast %in% )
-contrast = "invasive-DCIS"
-tab = mergedtables[[contrast]]
-a = intersect(  rownames(tab), rownames(volinia_overlap) )
-volinia_overlap$Direction_merged = NA
-volinia_overlap[a, "Direction_merged"] = ifelse(tab[a, "logFC"] > 0,  "UP", "DOWN")
-volinia_overlap$FDR_merged = NA
-volinia_overlap[a, "FDR_merged"] = tab[a, "adj.P.Val"]
+for(contrast in names(voliniatab))
+{
+	#contrast = "invasive_vs_DCIS"
+	overlaptab = voliniatab[[contrast]]
+	overlaptab = overlaptab[!is.na(overlaptab$MIMATID),]
+	rownames(overlaptab) = overlaptab$MIMATID
+	overlaptab$Direction = ifelse(overlaptab$log2FC > 0, "UP", "DOWN")
+	overlaptab = overlaptab[, c("Direction","FDR")]
+	names(overlaptab) = paste(names(overlaptab), "_vol", sep="")
+		
+	tab = mergedtables[[contrast]]
+	a = intersect(  rownames(tab), rownames(overlaptab) )
+	overlaptab$Direction_merged = NA
+	overlaptab[a, "Direction_merged"] = ifelse(tab[a, "logFC"] > 0,  "UP", "DOWN")
+	overlaptab$FDR_merged = NA
+	overlaptab[a, "FDR_merged"] = tab[a, "adj.P.Val"]
 
-tab = metatables[[contrast]]
-a = intersect(  rownames(tab), rownames(volinia_overlap) )
-volinia_overlap$Direction_meta = NA
-volinia_overlap[a, "Direction_meta"] = ifelse(tab[a, "logFC"] > 0,  "UP", "DOWN")
-volinia_overlap$FDR_meta = NA
-volinia_overlap[a, "FDR_merged"] = 0.05
+	tab = metatables[[contrast]]
+	a = intersect(  rownames(tab), rownames(overlaptab) )
+	overlaptab$Direction_meta = NA
+	overlaptab[a, "Direction_meta"] = ifelse(tab[a, "logFC"] > 0,  "UP", "DOWN")
+	overlaptab$FDR_meta = NA
+	overlaptab[a, "FDR_meta"] = 0.05
+	
+	x = rowSums (overlaptab[,grepl("Direction", colnames(overlaptab))] == "UP")
+	overlaptab$validated = NA
+	overlaptab$validated[x %in% c(0,3)] = TRUE
+	overlaptab$validated[x %in% c(1,2)] = FALSE
+	
+	
+# 	a = overlaptab$Direction_vol > 0 & overlaptab$Direction_merged > 0 & overlaptab$Direction_meta > 0
+# 	b = overlaptab$Direction_vol < 0 & overlaptab$Direction_merged < 0 & overlaptab$Direction_meta < 0
+# 	c = overlaptab$FDR_merged < 0.05 & overlaptab$FDR_meta < 0.05
+# 	overlaptab$validated = (a|b) & c 		
+	
+	volinia_overlap[[contrast]] = overlaptab
+}
+
+```
 
 
+```{r results='asis'}
+x = order(volinia_overlap[["DCIS-normal"]]$FDR_merged)
+print( xtable( volinia_overlap[["DCIS-normal"]][x,] , caption="microRNA found in Volinia compared to validation data", digits=3), 
+      comment = FALSE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = FALSE)
+```
 
 
+## Checking results towards a curated list of microRNA´s
+```{r}
+	curatedfn = "curated_microRNA.csv"
+  curatedtab  = read.table(paste(annotdir, "/", curatedfn, sep=""), sep="\t", 
+  												 header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
+                                     strip.white=TRUE, comment.char ="")
+	curatedtab$miRNA = paste("hsa-", curatedtab$miRNA, sep="")
+  # ad hoc fix
+	curatedtab$miRNA = gsub("-mir-", "-miR-", curatedtab$miRNA)
 
+	curatedtab$MIMAT = mimatmapping[curatedtab$miRNA]
+	table(curatedtab$status)
+	curatedtab = curatedtab[!is.na(curatedtab$MIMAT),]
+	table(curatedtab$status)
 
 
 ```
+
+
+Adding the curated status to the results
+
+```{r results='asis'}
+
+for(n in names(volinia_overlap))
+{
+	volinia_overlap[[n]]$curated = curatedtab[ match( rownames(volinia_overlap[[n]]), curatedtab$MIMAT ), "status"]
+	voliniatab[[n]]$curated = curatedtab[ match( as.character(voliniatab[[n]]$MIMATID), curatedtab$MIMAT ), "status"]
+}
+x = order(volinia_overlap[["DCIS-normal"]]$FDR_merged)
+print( xtable( volinia_overlap[["DCIS-normal"]][x,] , caption="With curated status", digits=3), 
+      comment = FALSE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = FALSE)
+```
+
+
+```{r results='asis'}
+
+#	table(curatedtab$status[  curatedtab$MIMAT %in% rownames(mergedtables[[1]]) ])
+
+expressed =	table(curatedtab$status[curatedtab$MIMAT %in% filteredAHUSMIMAT])
+nonexpressed=	table(curatedtab$status[curatedtab$MIMAT %in% unfilteredAHUSMIMAT[!unfilteredAHUSMIMAT %in% filteredAHUSMIMAT]])
+
+
+
+print( xtable( rbind(expressed,nonexpressed), caption="", digits=3), 
+      comment = FALSE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
+
+
+```
+
+
+
+

@@ -11,16 +11,6 @@ if(file.exists(oldfn))
     backupname = paste("not_in_github/", backupname, sep="")
     x=file.copy(oldfn,backupname, overwrite=TRUE )   
   }
-
-oldfn = "differential_analysis.html"
-if(file.exists(oldfn))
-  {
-    datestr = strsplit( as.character(file.info(oldfn)$ctime), " ")[[1]][1]
-    backupname = sub(".html", paste("_",datestr, ".html", sep=""), oldfn)
-    backupname = paste("not_in_github/", backupname, sep="")
-    x=file.copy(oldfn,backupname, overwrite=TRUE )   
-  }
-
 ```
 
 `r as.character(starttime)`  
@@ -66,7 +56,7 @@ if(!file.exists(outputdir))
 		# move old results and add a datastring
 		datestr = strsplit( as.character(file.info(outputdir)$ctime), " ")[[1]][1]
     backupname = paste("not_in_github/", outputdir, "_", datestr, sep="")
-    x=file.rename(outputdir,backupname, overwrite=TRUE )
+    x=file.rename(outputdir,backupname)
 		dir.create(outputdir)
 	}
 postfix = ".txt"
