@@ -235,6 +235,9 @@ print( xtable( volinia_overlap[["DCIS-normal"]][x,] , caption="With curated stat
 ```
 
 
+The difference in curated status for the filtered out microRNAs and the ones kept as expressed, and the ones found as significantly differentially expressed between the "DCIS" and "normal" stat. AHUS only for the "expressed" and "nonexpressed". Both UCAM and AHUS in the significant. 
+
+
 ```{r results='asis'}
 
 #	table(curatedtab$status[  curatedtab$MIMAT %in% rownames(mergedtables[[1]]) ])
@@ -242,9 +245,12 @@ print( xtable( volinia_overlap[["DCIS-normal"]][x,] , caption="With curated stat
 expressed =	table(curatedtab$status[curatedtab$MIMAT %in% filteredAHUSMIMAT])
 nonexpressed=	table(curatedtab$status[curatedtab$MIMAT %in% unfilteredAHUSMIMAT[!unfilteredAHUSMIMAT %in% filteredAHUSMIMAT]])
 
+genelist = intersect( rownames(mergedtables[["DCIS-normal"]])[mergedtables[["DCIS-normal"]]$adj.P.Val<0.05], 
+					 rownames(metatables[["DCIS-normal"]]) )
+significant = table(curatedtab$status[curatedtab$MIMAT %in% genelist])
 
 
-print( xtable( rbind(expressed,nonexpressed), caption="", digits=3), 
+print( xtable( rbind(nonexpressed,expressed,significant), caption="", digits=3), 
       comment = FALSE,
       type = "html",
       html.table.attributes="CELLPADDING=5",
@@ -252,7 +258,4 @@ print( xtable( rbind(expressed,nonexpressed), caption="", digits=3),
 
 
 ```
-
-
-
 

@@ -124,7 +124,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 ##  FEATURES AFTER IsGeneDetected FILTERING:  288 
 ##  NON Gene Detected : 651 
 ## ------------------------------------------------------</code></pre>
-<p>2014-12-08 17:11:25 <br /> <br /></p>
+<p>2014-12-09 15:43:00 <br /> <br /></p>
 <p>Agreement between our two approaches called <strong>merged</strong> and <strong>meta</strong>. Agreement between our results and Volinia. Checking all results toward a list of verified microRNAs.</p>
 <p><BR /> <BR /> ## Meta vs Merged results.</p>
 <p>Our data sets came from two providers, “AHUS” and “UCAM”, using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor (“merged” approach), and analyzing the two sets inependetly with Limma and combine the p-values (“meta” approach).</p>
@@ -1796,15 +1796,18 @@ DOWN
    </table>
 
 
-
+<p>The difference in curated status for the filtered out microRNAs and the ones kept as expressed, and the ones found as significantly differentially expressed between the “DCIS” and “normal” stat. AHUS only for the “expressed” and “nonexpressed”. Both UCAM and AHUS in the significant.</p>
 <pre class="r"><code>#   table(curatedtab$status[  curatedtab$MIMAT %in% rownames(mergedtables[[1]]) ])
 
 expressed = table(curatedtab$status[curatedtab$MIMAT %in% filteredAHUSMIMAT])
 nonexpressed=   table(curatedtab$status[curatedtab$MIMAT %in% unfilteredAHUSMIMAT[!unfilteredAHUSMIMAT %in% filteredAHUSMIMAT]])
 
+genelist = intersect( rownames(mergedtables[[&quot;DCIS-normal&quot;]])[mergedtables[[&quot;DCIS-normal&quot;]]$adj.P.Val&lt;0.05], 
+                     rownames(metatables[[&quot;DCIS-normal&quot;]]) )
+significant = table(curatedtab$status[curatedtab$MIMAT %in% genelist])
 
 
-print( xtable( rbind(expressed,nonexpressed), caption=&quot;&quot;, digits=3), 
+print( xtable( rbind(nonexpressed,expressed,significant), caption=&quot;&quot;, digits=3), 
       comment = FALSE,
       type = &quot;html&quot;,
       html.table.attributes=&quot;CELLPADDING=5&quot;,
@@ -1821,6 +1824,17 @@ white
 yellow
 </th>  </tr>
   <tr> <td align="right"> 
+nonexpressed
+</td> <td align="right">   
+64
+</td> <td align="right">   
+94
+</td> <td align="right">  
+159
+</td> <td align="right">    
+2
+</td> </tr>
+  <tr> <td align="right"> 
 expressed
 </td> <td align="right">    
 3
@@ -1832,20 +1846,17 @@ expressed
 1
 </td> </tr>
   <tr> <td align="right"> 
-nonexpressed
-</td> <td align="right">   
-64
-</td> <td align="right">   
-94
-</td> <td align="right">  
-159
+significant
 </td> <td align="right">    
-2
+1
+</td> <td align="right">    
+5
+</td> <td align="right">   
+46
+</td> <td align="right">    
+1
 </td> </tr>
    </table>
-
-
-
 
 
 
