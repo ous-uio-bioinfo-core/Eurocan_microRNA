@@ -1,7 +1,6 @@
 
 
-# setwd("/Users/vegardnygaard/prosjekter/eurocan/tidy")
-# setwd(""/Users/vegardnygaard/prosjekter/rprojects/Eurocan_microRNA"")
+# setwd("/Users/vegardnygaard/prosjekter/rprojects/Eurocan_microRNA")
 # source("parse_AFE_files.R")
 starttime = Sys.time()
 
@@ -14,7 +13,7 @@ library(AgiMicroRna)
 inputdir = "input"
 AFE_dir = "not_in_github/AHUS_AFE"
 outputdir = "not_in_github"
-
+startdir = getwd()
 
 ############################################################
 ### Read sampleannotation
@@ -33,7 +32,7 @@ row.names(sampleannotation) = sampleannotation$sample_id
 sampleannotation$FileName = sampleannotation$datafile
 setwd(AFE_dir) # no way to give a dir to the parser
 AHUS_agiMicroRNAdata = readMicroRnaAFE(sampleannotation[,])
-setwd("../")
+setwd(startdir)
 ############################################################
 ### Collapse to microRNA with RMA
 ############################################################
@@ -47,11 +46,12 @@ save(ahus_uRNAList, file=paste(outputdir, "/AHUS_rma_uRNAList.rdata", sep=""))
 
 		 
 sink("parse_AFE_files_sessionInfo.txt")
+print( paste("Parsing AFE files ended ",as.character(Sys.time()), "Time spent", 
+						 as.integer(round(difftime(Sys.time(),starttime, units="mins"))), "minutes"))
 print(sessionInfo())
 sink()
 		 
-print( paste("Parsing AFE files ended ",as.character(Sys.time()), "Time spent", 
-						 as.integer(round(difftime(Sys.time(),starttime, units="mins"))), "minutes"))
+
 
 		 
 		 

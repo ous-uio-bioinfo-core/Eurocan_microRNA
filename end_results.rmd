@@ -4,12 +4,7 @@ Overlap between data sets and Volinia.
 
 ```{r time, echo=FALSE}
 starttime = Sys.time()
-library(xtable)
-if(!exists("inputisread"))
-	source("read_input.r")
-postfix = ".txt"
-fdrCO = 0.05
-
+# copy and move an older version of the html file that will be produced
 oldfn = "end_results.html"
 if(file.exists(oldfn))
   {
@@ -22,17 +17,68 @@ if(file.exists(oldfn))
 <br/>
 <br/>
 
-Agreement between our two approaches called **merged** and **meta**.
-Agreement between our results and Volinia.
-Checking all results toward a list of verified microRNAs.
+We will check for
+
+- concordance between our two approaches called **meta** and **merged**.
+- concordance between our results and Volinia et al.
+- evidence status of our findings based on a database of curated microRNAs.
 
 <BR/>
 <BR/>
+```{r}
+library(xtable)
+if(!exists("inputisread"))
+	source("read_input.r")
+postfix = ".txt"
+fdrCO = 0.05
+```
 ## Meta vs Merged results.
 
-Our data sets came from two providers, "AHUS" and "UCAM", using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor ("merged" approach), and analyzing the two sets inependetly with Limma and combine the p-values ("meta" approach).
+Our data sets came from two providers, "AHUS" and "UCAM", using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor ("merged" approach), and analyzing the two sets inpendetly with Limma and combine the p-values ("meta" approach).
 
 Here we will list the agreemet between the two apporaches.
+
+First a recap of the numer of samples and grouping based on annotation.
+
+Sample count based on tissue type and provider.
+```{r results='asis'}
+print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]), 
+             caption="", digits=3), 
+      comment = TRUE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
+```
+
+Sample count based on PAM50 classification in each tissue and from each provider
+```{r results='asis'}
+for(p in unique(sampleannotation$provider))
+{
+
+	print(xtable(table(sampleannotation[sampleannotation$provider==p , c("tissue_type" ,"pam50_est")]), 
+             caption=p, digits=3), 
+      comment = TRUE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
+}
+```
+
+Sample count based on IHC diagnosis in each tissue and from each provider
+```{r results='asis'}
+for(p in unique(sampleannotation$provider))
+{
+
+	print(xtable(table(sampleannotation[sampleannotation$provider==p , c("tissue_type" ,"IHC")]), 
+             caption=p, digits=3), 
+      comment = TRUE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
+}
+```
+
+
 
 
 ```{r}

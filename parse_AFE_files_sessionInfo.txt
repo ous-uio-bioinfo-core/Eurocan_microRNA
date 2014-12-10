@@ -1,3 +1,4 @@
+[1] "Parsing AFE files ended  2014-12-10 17:36:15 Time spent 3 minutes"
 R version 3.1.1 (2014-07-10)
 Platform: x86_64-apple-darwin10.8.0 (64-bit)
 
