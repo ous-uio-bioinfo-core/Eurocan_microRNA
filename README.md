@@ -2,17 +2,18 @@ Eurocan_microRNA
 ================
 
 Code used to analyse microRNA expression array data in relation to the findings in Volinia et al.
+The code is split into several smaller files in order to make them more manageable.
 
 
 
 ### parseAFE.r
-Script used to parse the Agilent Feature Extraction Files. Creates a object of type uRNAlist to be used later. Only AFE-filse from AHUS are parsed. The UCAM dataset is provided in a processed state.
+Script used to parse the Agilent Feature Extraction Files. Creates a object of type uRNAlist to be used later. Only AFE-filse from AHUS are parsed. Will take about two hours to run on a normal computer. The UCAM dataset is provided in an already processed state.
 
 ### read_input.r
 Loads the two datasets and sampleannotation, and does some filtering and harmonization. 
 
 ### quality_control.rmd
-Some quality plotting of the data. Signal distributions, clustring based on data set origin or different grouping labels.
+Some quality control and overview plotting of the data. Signal distributions, clustring based on data set origin or different grouping labels.
 
 ### differential_analysis.rmd
 Calculates mean group differences and p-values for groups based on tissue type, pam50 classification or IHC. Genelists for the different comparisons are produced.
@@ -27,9 +28,9 @@ Neither the Agilent Feature Extraction Files for the AHUS experiment or the proc
  
 ### Commands to reproduce the reports and results
 
-# source("parseAFE.r") # takes two hours!!
-# command to make genelistfiles and html-reports.
-# takes little time
+source("parseAFE.r") #takes two hours!!
+command to make genelistfiles and html-reports.
+#takes little time
 source("read_input.r")
 knit2html("quality_control.rmd")
 knit2html("differential_analysis.rmd")
