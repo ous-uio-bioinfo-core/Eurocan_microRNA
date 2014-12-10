@@ -84,4 +84,4 @@ ucam_matrix = ucam_matrix[commonMIMAT, ]
 ahus_matrix = ahus_matrix[commonMIMAT, ]
 common_matrix= cbind(ahus_matrix, ucam_matrix)
 
-
+inputisread = TRUE

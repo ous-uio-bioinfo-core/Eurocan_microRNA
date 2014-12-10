@@ -1,13 +1,16 @@
 Overlap between data sets and Volinia.
 ========================================================
-
+`r as.character(Sys.time())`
 
 ```{r time, echo=FALSE}
-library(xtable)
-source("read_input.r")
 starttime = Sys.time()
-oldfn = "end_results.html"
+library(xtable)
+if(!exists("inputisread"))
+	source("read_input.r")
 postfix = ".txt"
+fdrCO = 0.05
+
+oldfn = "end_results.html"
 if(file.exists(oldfn))
   {
     datestr = strsplit( as.character(file.info(oldfn)$ctime), " ")[[1]][1]
@@ -16,8 +19,6 @@ if(file.exists(oldfn))
     x=file.copy(oldfn,backupname, overwrite=TRUE )   
   }
 ```
-
-`r as.character(Sys.time())`
 <br/>
 <br/>
 
@@ -36,21 +37,39 @@ Here we will list the agreemet between the two apporaches.
 
 ```{r}
 
-metafilefolder = "not_in_github/t-test"
+#metafilefolder = "not_in_github/t-test"
+metafilefolder = "not_in_github/lilianas"
 mergedfilefolder = "output-analysis"
 #metaresultfiles = list.files("lilianas/1000_permutations")
 #mergedresultfiles = list.files("output-analysis-2014-08-05", pattern="difflist")
 
-comparisons = c("DCIS-normal", "invasive-DCIS", "Normallike-DCIS", "LumA-DCIS", "LumB-DCIS", "Her2-DCIS", "Basallike-DCIS")
+comparisons = c("DCIS-normal", "invasive-DCIS", "Normallike-DCIS", "LumA-DCIS", "LumB-DCIS", 
+								"Her2-DCIS", "Basallike-DCIS")
+
+# meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), stringsAsFactors=FALSE)
+# meta2merged["DCIS-normal",] = list("DCIS_to_normal_test", "difflist-DCIS-vs-normal.txt",-1)
+# meta2merged["invasive-DCIS",] = list("DCIS_to_invasive_test", "difflist-invasive-vs-DCIS.txt",1)
+# meta2merged["Normallike-DCIS",] = list("DCIS_to_normal(invasive)_test", "difflist-pam50-Normallike-vs-DCIS.txt",1)
+# meta2merged["LumA-DCIS",] = list("DCIS_to_lumA_test", "difflist-pam50-LumA-vs-DCIS.txt",1)
+# meta2merged["LumB-DCIS",] = list("DCIS_to_lumB_test", "difflist-pam50-LumB-vs-DCIS.txt",1)
+# meta2merged["Her2-DCIS",] = list("DCIS_to_Her2_test", "difflist-pam50-Her2-vs-DCIS.txt",1)
+# meta2merged["Basallike-DCIS",] = list("basal_to_DCIS_test", "difflist-pam50-Basallike-vs-DCIS.txt",-1)
+
 
 meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), stringsAsFactors=FALSE)
-meta2merged["DCIS-normal",] = list("DCIS_to_normal_test", "difflist-DCIS-vs-normal.txt",-1)
-meta2merged["invasive-DCIS",] = list("DCIS_to_invasive_test", "difflist-invasive-vs-DCIS.txt",1)
-meta2merged["Normallike-DCIS",] = list("DCIS_to_normal(invasive)_test", "difflist-pam50-Normallike-vs-DCIS.txt",1)
-meta2merged["LumA-DCIS",] = list("DCIS_to_lumA_test", "difflist-pam50-LumA-vs-DCIS.txt",1)
-meta2merged["LumB-DCIS",] = list("DCIS_to_lumB_test", "difflist-pam50-LumB-vs-DCIS.txt",1)
-meta2merged["Her2-DCIS",] = list("DCIS_to_Her2_test", "difflist-pam50-Her2-vs-DCIS.txt",1)
-meta2merged["Basallike-DCIS",] = list("basal_to_DCIS_test", "difflist-pam50-Basallike-vs-DCIS.txt",-1)
+meta2merged["DCIS-normal",] = list("DCIS_to_normal_limma.txt", "difflist-DCIS-vs-normal.txt",-1)
+meta2merged["invasive-DCIS",] = list("DCIS_to_invasive_limma.txt", "difflist-invasive-vs-DCIS.txt",1)
+meta2merged["Normallike-DCIS",] = list("dcis_to_normal_like(invasive)_limma.txt", "difflist-pam50-Normallike-vs-DCIS.txt",1)
+meta2merged["LumA-DCIS",] = list("dcis_to_lumA_limma.txt", "difflist-pam50-LumA-vs-DCIS.txt",1)
+meta2merged["LumB-DCIS",] = list("dcis_to_lumB_limma.txt", "difflist-pam50-LumB-vs-DCIS.txt",1)
+meta2merged["Her2-DCIS",] = list("dcis_to_her2_limma.txt", "difflist-pam50-Her2-vs-DCIS.txt",1)
+meta2merged["Basallike-DCIS",] = list("basallike_to_dcis_limma.txt", "difflist-pam50-Basallike-vs-DCIS.txt",-1)
+
+meta2merged["HER2neg_ERneg_PGRneg-DCIS",] = list("dcis_to_HER2neg_ERneg_PGRneg_limma.txt", "difflist-IHC-HER2neg_ERneg_PGRneg-vs-DCIS.txt",1)
+meta2merged["HER2neg_ERpos-DCIS",] = list("dcis_to_HER2neg_ERpos_limma.txt", "difflist-IHC-HER2neg_ERpos-vs-DCIS.txt",1)
+meta2merged["HER2pos_ERneg-DCIS",] = list("dcis_to_HER2pos_ERneg_limma.txt", "difflist-IHC-HER2pos_ERneg-vs-DCIS.txt",1)
+meta2merged["HER2pos_ERpos-DCIS",] = list("dcis_to_HER2pos_ERpos_limma.txt", "difflist-IHC-HER2pos_ERpos-vs-DCIS.txt",1)
+
 
 metatables = list()
 mergedtables = list()
@@ -61,8 +80,13 @@ for(i in 1:nrow(meta2merged))
 {   
     thiscomp = rownames(meta2merged)[i]
     fn = paste(metafilefolder, "/", meta2merged[thiscomp, "metafn"], sep="")
+    if(file.info(fn)$size>10)
+    	{
     thismetatab = read.table(fn, sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                                      strip.white=TRUE, comment.char ="")
+    } else{
+    	thismetatab = thismetatab[0,] # workaround to deal with empty files from meta.
+    }
     fn = paste(mergedfilefolder, "/", meta2merged[thiscomp, "mergedfn"], sep="")
     thismergedtab = read.table(fn, sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                                      strip.white=TRUE, comment.char ="", row.names=1)
@@ -154,7 +178,7 @@ for(contrast in names(voliniatab))
 	overlaptab = overlaptab[!is.na(overlaptab$MIMATID),]
 	rownames(overlaptab) = overlaptab$MIMATID
 	overlaptab$Direction = ifelse(overlaptab$log2FC > 0, "UP", "DOWN")
-	overlaptab = overlaptab[, c("Direction","FDR")]
+	overlaptab = overlaptab[, c("miRNA", "MIMATID", "Direction","FDR")]
 	names(overlaptab) = paste(names(overlaptab), "_vol", sep="")
 		
 	tab = mergedtables[[contrast]]
@@ -169,13 +193,13 @@ for(contrast in names(voliniatab))
 	overlaptab$Direction_meta = NA
 	overlaptab[a, "Direction_meta"] = ifelse(tab[a, "logFC"] > 0,  "UP", "DOWN")
 	overlaptab$FDR_meta = NA
-	overlaptab[a, "FDR_meta"] = 0.05
+	overlaptab[a, "FDR_meta"] = fdrCO
 	
 	x = rowSums (overlaptab[,grepl("Direction", colnames(overlaptab))] == "UP")
 	overlaptab$validated = NA
 	overlaptab$validated[x %in% c(0,3)] = TRUE
 	overlaptab$validated[x %in% c(1,2)] = FALSE
-	
+	overlaptab$validated = overlaptab$validated & (overlaptab$FDR_merged<=fdrCO & overlaptab$FDR_meta<=fdrCO)
 	
 # 	a = overlaptab$Direction_vol > 0 & overlaptab$Direction_merged > 0 & overlaptab$Direction_meta > 0
 # 	b = overlaptab$Direction_vol < 0 & overlaptab$Direction_merged < 0 & overlaptab$Direction_meta < 0
@@ -201,7 +225,7 @@ print( xtable( volinia_overlap[["DCIS-normal"]][x,] , caption="microRNA found in
 ## Checking results towards a curated list of microRNA´s
 ```{r}
 	curatedfn = "curated_microRNA.csv"
-  curatedtab  = read.table(paste(annotdir, "/", curatedfn, sep=""), sep="\t", 
+  curatedtab  = read.table(paste("not_in_github", "/", curatedfn, sep=""), sep="\t", 
   												 header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                                      strip.white=TRUE, comment.char ="")
 	curatedtab$miRNA = paste("hsa-", curatedtab$miRNA, sep="")
