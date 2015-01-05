@@ -35,7 +35,7 @@ sampleannotation=read.table(paste(annotdir,  "/", sampleannotation_file, sep="")
                             sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                             strip.white=TRUE, comment.char ="")
 row.names(sampleannotation) = sampleannotation$sample_id
-
+sampleannotation$IHC[sampleannotation$IHC==""] = "unknown"
 #load(paste(datadir, "/", AHUS_binary_data_file, sep=""))
 #ahus_uRNAList  = rmaMicroRna(AHUS_agiMicroRNAdata$Agilent_miRNA_v3_4470C, normalize = TRUE, background = FALSE)
 #save(ahus_uRNAList, file="inputdata/AHUS_rma_uRNAList.rdata")

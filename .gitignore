@@ -101,3 +101,5 @@ sympy-plots-for-*.tex/
 
 .DS_Store
 not_in_github/
+figure/
+temp/

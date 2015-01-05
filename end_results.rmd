@@ -11,6 +11,10 @@ if(file.exists(oldfn))
     datestr = strsplit( as.character(file.info(oldfn)$ctime), " ")[[1]][1]
     backupname = sub(".html", paste("_",datestr, ".html", sep=""), oldfn)
     backupname = paste("not_in_github/", backupname, sep="")
+    if(!file.exists(backupname))
+		{
+			file.remove(backupname)
+		}
     x=file.copy(oldfn,backupname, overwrite=TRUE )   
   }
 ```
@@ -21,26 +25,29 @@ We will check for
 
 - concordance between our two approaches called **meta** and **merged**.
 - concordance between our results and Volinia et al.
-- evidence status of our findings based on a database of curated microRNAs.
 
 <BR/>
 <BR/>
-```{r}
+Read in prepared data.
+
+```{r message=FALSE}
 library(xtable)
 if(!exists("inputisread"))
 	source("read_input.r")
 postfix = ".txt"
 fdrCO = 0.05
 ```
+<br/>
 ## Meta vs Merged results.
 
-Our data sets came from two providers, "AHUS" and "UCAM", using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor ("merged" approach), and analyzing the two sets inpendetly with Limma and combine the p-values ("meta" approach).
+Our data sets came from two providers, "**AHUS**" and "**UCAM**", using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor ("**merged**" approach), and  analyzing the two sets independently with Limma and combine the p-values ("**meta**" approach).
 
-Here we will list the agreemet between the two apporaches.
+Here we will list the agreement between the two approaches.
 
-First a recap of the numer of samples and grouping based on annotation.
+First a recap of the number of samples and grouping based on annotation.
 
 Sample count based on tissue type and provider.
+
 ```{r results='asis'}
 print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]), 
              caption="", digits=3), 
@@ -49,13 +56,17 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
       html.table.attributes="CELLPADDING=5",
       include.rownames = TRUE)
 ```
+<br/>
+<br/>
+Sample count based on PAM50 classification in each tissue and from each provider:
 
-Sample count based on PAM50 classification in each tissue and from each provider
 ```{r results='asis'}
 for(p in unique(sampleannotation$provider))
 {
 
-	print(xtable(table(sampleannotation[sampleannotation$provider==p , c("tissue_type" ,"pam50_est")]), 
+	print(xtable(table(sampleannotation[sampleannotation$provider==p &
+																			sampleannotation$tissue_type %in% c("DCIS", "invasive")	, 
+																			c("tissue_type" ,"pam50_est")]), 
              caption=p, digits=3), 
       comment = TRUE,
       type = "html",
@@ -64,7 +75,11 @@ for(p in unique(sampleannotation$provider))
 }
 ```
 
+Due to the low number of DCIS samples, the pam50 classification were disregarded for those. The comparisons made, were between DCIS samples and the different pam50 classifications of invasive samples. Benign and normal samples were not used in these comparisons.
+<br/>
+<br/>
 Sample count based on IHC diagnosis in each tissue and from each provider
+
 ```{r results='asis'}
 for(p in unique(sampleannotation$provider))
 {
@@ -77,30 +92,21 @@ for(p in unique(sampleannotation$provider))
       include.rownames = TRUE)
 }
 ```
+Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded for those. The comparisons made, were between DCIS samples and the different IHC diagnoses of invasive samples. Benign and normal samples were not used in these comparisons either..
 
 
+<br/>
+<br/>
 
+Read in our results from files.
 
 ```{r}
 
-#metafilefolder = "not_in_github/t-test"
 metafilefolder = "not_in_github/lilianas"
 mergedfilefolder = "output-analysis"
-#metaresultfiles = list.files("lilianas/1000_permutations")
-#mergedresultfiles = list.files("output-analysis-2014-08-05", pattern="difflist")
 
 comparisons = c("DCIS-normal", "invasive-DCIS", "Normallike-DCIS", "LumA-DCIS", "LumB-DCIS", 
 								"Her2-DCIS", "Basallike-DCIS")
-
-# meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), stringsAsFactors=FALSE)
-# meta2merged["DCIS-normal",] = list("DCIS_to_normal_test", "difflist-DCIS-vs-normal.txt",-1)
-# meta2merged["invasive-DCIS",] = list("DCIS_to_invasive_test", "difflist-invasive-vs-DCIS.txt",1)
-# meta2merged["Normallike-DCIS",] = list("DCIS_to_normal(invasive)_test", "difflist-pam50-Normallike-vs-DCIS.txt",1)
-# meta2merged["LumA-DCIS",] = list("DCIS_to_lumA_test", "difflist-pam50-LumA-vs-DCIS.txt",1)
-# meta2merged["LumB-DCIS",] = list("DCIS_to_lumB_test", "difflist-pam50-LumB-vs-DCIS.txt",1)
-# meta2merged["Her2-DCIS",] = list("DCIS_to_Her2_test", "difflist-pam50-Her2-vs-DCIS.txt",1)
-# meta2merged["Basallike-DCIS",] = list("basal_to_DCIS_test", "difflist-pam50-Basallike-vs-DCIS.txt",-1)
-
 
 meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), stringsAsFactors=FALSE)
 meta2merged["DCIS-normal",] = list("DCIS_to_normal_limma.txt", "difflist-DCIS-vs-normal.txt",-1)
@@ -110,17 +116,17 @@ meta2merged["LumA-DCIS",] = list("dcis_to_lumA_limma.txt", "difflist-pam50-LumA-
 meta2merged["LumB-DCIS",] = list("dcis_to_lumB_limma.txt", "difflist-pam50-LumB-vs-DCIS.txt",1)
 meta2merged["Her2-DCIS",] = list("dcis_to_her2_limma.txt", "difflist-pam50-Her2-vs-DCIS.txt",1)
 meta2merged["Basallike-DCIS",] = list("basallike_to_dcis_limma.txt", "difflist-pam50-Basallike-vs-DCIS.txt",-1)
-
 meta2merged["HER2neg_ERneg_PGRneg-DCIS",] = list("dcis_to_HER2neg_ERneg_PGRneg_limma.txt", "difflist-IHC-HER2neg_ERneg_PGRneg-vs-DCIS.txt",1)
 meta2merged["HER2neg_ERpos-DCIS",] = list("dcis_to_HER2neg_ERpos_limma.txt", "difflist-IHC-HER2neg_ERpos-vs-DCIS.txt",1)
 meta2merged["HER2pos_ERneg-DCIS",] = list("dcis_to_HER2pos_ERneg_limma.txt", "difflist-IHC-HER2pos_ERneg-vs-DCIS.txt",1)
 meta2merged["HER2pos_ERpos-DCIS",] = list("dcis_to_HER2pos_ERpos_limma.txt", "difflist-IHC-HER2pos_ERpos-vs-DCIS.txt",1)
 
-
 metatables = list()
 mergedtables = list()
+consensustables = list()
 summarytab = data.frame( found_meta=integer(0),  found_merged=integer(0), 
                        found_both=integer(0),  stringsAsFactors=FALSE)
+intersect_tables=list()
 
 for(i in 1:nrow(meta2merged))
 {   
@@ -137,32 +143,60 @@ for(i in 1:nrow(meta2merged))
     thismergedtab = read.table(fn, sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                                      strip.white=TRUE, comment.char ="", row.names=1)
     
-    #harmonizing
+    #harmonizing a little
     colnames(thismetatab)[colnames(thismetatab)=="FC"] = "logFC"
     rownames(thismetatab) = thismetatab$MIMAT
     thismetatab$logFC = thismetatab$logFC * meta2merged[thiscomp, "direction"]
   #summarytab[thiscomp, "metafile"] = rownames(thisrows)[1]
   #summarytab[thiscomp, "mergedfile"] = thisrows[1, "mergedfn"]
 
+  	
   summarytab[thiscomp, "found_meta"] = nrow(thismetatab)
   b = thismergedtab$adj.P.Val <= 0.05
   summarytab[thiscomp, "found_merged"] = sum(b)
   
   commonMIMATID = intersect( rownames(thismetatab),  rownames(thismergedtab)[b])
   summarytab[thiscomp, "found_both"] = sum( thismetatab[commonMIMATID, "logFC"] * thismergedtab[commonMIMATID, "logFC"] > 0) 
+  summarytab[thiscomp, "wrong_direction"] = sum( thismetatab[commonMIMATID, "logFC"] * thismergedtab[commonMIMATID, "logFC"] < 0) 
   rm(commonMIMATID)
   metatables[[thiscomp]] = thismetatab
   mergedtables[[thiscomp]] = thismergedtab
+  
+  intersect_tables[[thiscomp]]=thismergedtab[, c("logFC", "adj.P.Val")]
+  
+  x = mergedtables[[thiscomp]][, c("logFC", "adj.P.Val")]
+  y = metatables[[thiscomp]][, c("MIMAT", "logFC")]
+
+ 	consensustable = merge(x, y, by.x = "row.names", by.y="row.names", suffixes=c(".merged", ".meta"), all.x=TRUE)
+  consensustable$adj.P.Val.meta = 1
+  consensustable$adj.P.Val.meta[!is.na(consensustable$logFC.meta)] = 0.05
+  consensustable$logFC.meta[is.na(consensustable$logFC.meta)] =0
+  consensustable$same_dir =  (consensustable$logFC.merged * consensustable$logFC.meta ) > 0
+  consensustable$consensus = consensustable$adj.P.Val <= 0.05 & 
+  	consensustable$adj.P.Val.meta <= 0.05 & consensustable$same_dir
+  consensustables[[thiscomp]] = consensustable[order(consensustable$consensus, decreasing=TRUE),]
 }
 
+if(sum(summarytab$wrong_direction)>0)
+	warning("Some common microRNAs were found that did not have the same dirrection of change!!")
 ```
 <br/>
 <br/>
 <br/>
-The number of microRNAs found differentially expressed between states, according to the two approaches. The direction of foldchange is taken into acount. 
-```{r}
-print(summarytab[,1:3])
+The number of microRNAs found differentially expressed between states, according to the two approaches. The direction of fold change is taken into account. 
+
+```{r results='asis'}
+
+	print(xtable(summarytab[,1:3], 
+             caption="Overlap between meta and merged", digits=3), 
+      comment = TRUE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
+
 ```
+
+
 For several of the comparisons, the shorter list seems to be mostly included in the longer.
 <br/>
 <br/>
@@ -176,6 +210,8 @@ volinia_invasive_vs_DCIS_file = "volinia-invasive-vs-DCIS.txt"
 ```
 
 `r volinia_DCIS_vs_normal_file` and  `r volinia_invasive_vs_DCIS_file` are copy-pasted from Volinia et al.s [supplementary tables S1 and S2](http://www.pnas.org/content/suppl/2012/02/02/1200010109.DCSupplemental/pnas.201200010SI.pdf). The tables were reformatted from the pdf file into a more practical tabular text format. This is the results we aim to validate with the AHUS and UCAM data sets.
+
+Read in Volinia results, and do a minor re-formatting.
 
 ```{r}
 
@@ -201,17 +237,17 @@ for(n in names(voliniatab))
 
 ```
 
-```{r results='asis'}
-print( xtable(head(voliniatab[[1]]), caption="Start of table S2 copied from Volinia et al.", digits=3), 
-      comment = FALSE,
-      type = "html",
-      html.table.attributes="CELLPADDING=5",
-      include.rownames = FALSE)
+This is how the tables look now (top only).
+
+```{r}
+print(head(voliniatab[[1]]), row.names = FALSE)
 ```
 
 
-Compared to the original tables from Volinia, the fold change is here log2 transformed and "IDC" is renamed to "invasive". 
+Compared to the original tables from Volinia, the fold change is here log2 transformed and "IDC" is renamed to "invasive", and the microRNAs are also mapped to MIMATID, which will be used in order to map to our results. 
 
+
+Count the overlaps of results and make a "validated"-call for each microRNA listed by Volinia et al.
 
 ```{r results='asis'}
 
@@ -247,16 +283,12 @@ for(contrast in names(voliniatab))
 	overlaptab$validated[x %in% c(1,2)] = FALSE
 	overlaptab$validated = overlaptab$validated & (overlaptab$FDR_merged<=fdrCO & overlaptab$FDR_meta<=fdrCO)
 	
-# 	a = overlaptab$Direction_vol > 0 & overlaptab$Direction_merged > 0 & overlaptab$Direction_meta > 0
-# 	b = overlaptab$Direction_vol < 0 & overlaptab$Direction_merged < 0 & overlaptab$Direction_meta < 0
-# 	c = overlaptab$FDR_merged < 0.05 & overlaptab$FDR_meta < 0.05
-# 	overlaptab$validated = (a|b) & c 		
-	
 	volinia_overlap[[contrast]] = overlaptab
 }
 
 ```
 
+And here is the result list from Volinia et al. with our results attached. First the "DCIS-normal" comparison. Rows are sorted by FDR from our "merged" approach.
 
 ```{r results='asis'}
 x = order(volinia_overlap[["DCIS-normal"]]$FDR_merged)
@@ -267,8 +299,32 @@ print( xtable( volinia_overlap[["DCIS-normal"]][x,] , caption="microRNA found in
       include.rownames = FALSE)
 ```
 
+<br/>
+<br/>
+And here is the same table for the "invasive-DCIS" comparison.
+
+```{r results='asis'}
+x = order(volinia_overlap[["invasive-DCIS"]]$FDR_merged)
+print( xtable( volinia_overlap[["invasive-DCIS"]][x,] , caption="microRNA found in Volinia compared to validation data", digits=3), 
+      comment = FALSE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = FALSE)
+
+```
+<br/>
+<br/>
+
+
+<br/>
+<br/>
 
 ## Checking results towards a curated list of microRNA´s
+
+**This part is very much still under construction**
+
+One collegue of mine is 
+
 ```{r}
 	curatedfn = "curated_microRNA.csv"
   curatedtab  = read.table(paste("not_in_github", "/", curatedfn, sep=""), sep="\t", 
@@ -296,36 +352,29 @@ for(n in names(volinia_overlap))
 	volinia_overlap[[n]]$curated = curatedtab[ match( rownames(volinia_overlap[[n]]), curatedtab$MIMAT ), "status"]
 	voliniatab[[n]]$curated = curatedtab[ match( as.character(voliniatab[[n]]$MIMATID), curatedtab$MIMAT ), "status"]
 }
-x = order(volinia_overlap[["DCIS-normal"]]$FDR_merged)
-print( xtable( volinia_overlap[["DCIS-normal"]][x,] , caption="With curated status", digits=3), 
-      comment = FALSE,
-      type = "html",
-      html.table.attributes="CELLPADDING=5",
-      include.rownames = FALSE)
+
+for(n in names(consensustables))
+{
+	consensustables[[n]]$curated = curatedtab[ match( (consensustables[[n]]$Row.names), curatedtab$MIMAT ), "status"]
+	write.table(consensustables[[n]], 
+            file=paste("difflist_with_curated_status_", n, ".txt"),
+            quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
+}
+# x = order(volinia_overlap[["DCIS-normal"]]$FDR_merged)
+# print( xtable( volinia_overlap[["DCIS-normal"]][x,] , caption="With curated status", digits=3), 
+#       comment = FALSE,
+#       type = "html",
+#       html.table.attributes="CELLPADDING=5",
+#       include.rownames = FALSE)
 ```
 
+<br/>
+<br/>
 
-The difference in curated status for the filtered out microRNAs and the ones kept as expressed, and the ones found as significantly differentially expressed between the "DCIS" and "normal" stat. AHUS only for the "expressed" and "nonexpressed". Both UCAM and AHUS in the significant. 
-
-
-```{r results='asis'}
-
-#	table(curatedtab$status[  curatedtab$MIMAT %in% rownames(mergedtables[[1]]) ])
-
-expressed =	table(curatedtab$status[curatedtab$MIMAT %in% filteredAHUSMIMAT])
-nonexpressed=	table(curatedtab$status[curatedtab$MIMAT %in% unfilteredAHUSMIMAT[!unfilteredAHUSMIMAT %in% filteredAHUSMIMAT]])
-
-genelist = intersect( rownames(mergedtables[["DCIS-normal"]])[mergedtables[["DCIS-normal"]]$adj.P.Val<0.05], 
-					 rownames(metatables[["DCIS-normal"]]) )
-significant = table(curatedtab$status[curatedtab$MIMAT %in% genelist])
-
-
-print( xtable( rbind(nonexpressed,expressed,significant), caption="", digits=3), 
-      comment = FALSE,
-      type = "html",
-      html.table.attributes="CELLPADDING=5",
-      include.rownames = TRUE)
-
-
+```{r sessionInfo, comment=""}
+sessionInfo()
 ```
+
+generation ended `r as.character(Sys.time())`. Time spent `r  as.integer(round(difftime(Sys.time(),starttime, units="mins")))` minutes .
+
 

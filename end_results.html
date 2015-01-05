@@ -54,74 +54,18 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="overlap-between-data-sets-and-volinia." class="section level1">
 <h1>Overlap between data sets and Volinia.</h1>
-<p>2014-12-10 17:57:22</p>
+<p>2015-01-05 12:56:43</p>
 <p><br /> <br /></p>
 <p>We will check for</p>
 <ul>
 <li>concordance between our two approaches called <strong>meta</strong> and <strong>merged</strong>.</li>
 <li>concordance between our results and Volinia et al.</li>
-<li>evidence status of our findings based on a database of curated microRNAs.</li>
 </ul>
-<p><BR /> <BR /></p>
+<p><BR /> <BR /> Read in prepared data.</p>
 <pre class="r"><code>library(xtable)
 if(!exists(&quot;inputisread&quot;))
     source(&quot;read_input.r&quot;)</code></pre>
-<pre><code>## Loading required package: AgiMicroRna
-## Loading required package: Biobase
-## Loading required package: BiocGenerics
-## Loading required package: parallel
-## 
-## Attaching package: 'BiocGenerics'
-## 
-## The following objects are masked from 'package:parallel':
-## 
-##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-##     clusterExport, clusterMap, parApply, parCapply, parLapply,
-##     parLapplyLB, parRapply, parSapply, parSapplyLB
-## 
-## The following object is masked from 'package:stats':
-## 
-##     xtabs
-## 
-## The following objects are masked from 'package:base':
-## 
-##     anyDuplicated, append, as.data.frame, as.vector, cbind,
-##     colnames, do.call, duplicated, eval, evalq, Filter, Find, get,
-##     intersect, is.unsorted, lapply, Map, mapply, match, mget,
-##     order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-##     rbind, Reduce, rep.int, rownames, sapply, setdiff, sort,
-##     table, tapply, union, unique, unlist
-## 
-## Welcome to Bioconductor
-## 
-##     Vignettes contain introductory material; view with
-##     'browseVignettes()'. To cite Bioconductor, see
-##     'citation(&quot;Biobase&quot;)', and for packages 'citation(&quot;pkgname&quot;)'.
-## 
-## Loading required package: limma
-## 
-## Attaching package: 'limma'
-## 
-## The following object is masked from 'package:BiocGenerics':
-## 
-##     plotMA
-## 
-## Loading required package: affy
-## Loading required package: preprocessCore
-## Loading required package: affycoretools
-## Loading required package: GO.db
-## Loading required package: AnnotationDbi
-## Loading required package: GenomeInfoDb</code></pre>
 <pre><code>## Warning: package 'RSQLite' was built under R version 3.1.2</code></pre>
-<pre><code>## Loading required package: DBI
-## 
-## 
-## 
-## Attaching package: 'AgiMicroRna'
-## 
-## The following object is masked from 'package:limma':
-## 
-##     readTargets</code></pre>
 <pre><code>## FILTERING PROBES BY FLAGS 
 ## 
 ## 
@@ -138,11 +82,10 @@ if(!exists(&quot;inputisread&quot;))
 ## ------------------------------------------------------</code></pre>
 <pre class="r"><code>postfix = &quot;.txt&quot;
 fdrCO = 0.05</code></pre>
-<div id="meta-vs-merged-results." class="section level2">
-<h2>Meta vs Merged results.</h2>
-<p>Our data sets came from two providers, “AHUS” and “UCAM”, using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor (“merged” approach), and analyzing the two sets inpendetly with Limma and combine the p-values (“meta” approach).</p>
-<p>Here we will list the agreemet between the two apporaches.</p>
-<p>First a recap of the numer of samples and grouping based on annotation.</p>
+<p><br /> ## Meta vs Merged results.</p>
+<p>Our data sets came from two providers, “<strong>AHUS</strong>” and “<strong>UCAM</strong>”, using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor (“<strong>merged</strong>” approach), and analyzing the two sets independently with Limma and combine the p-values (“<strong>meta</strong>” approach).</p>
+<p>Here we will list the agreement between the two approaches.</p>
+<p>First a recap of the number of samples and grouping based on annotation.</p>
 <p>Sample count based on tissue type and provider.</p>
 <pre class="r"><code>print(xtable(table(sampleannotation[, c(&quot;provider&quot; ,&quot;tissue_type&quot;)]), 
              caption=&quot;&quot;, digits=3), 
@@ -151,7 +94,7 @@ fdrCO = 0.05</code></pre>
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Dec 10 17:57:41 2014 -->
+<!-- Mon Jan  5 12:57:04 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> 
@@ -186,12 +129,13 @@ UCAM
 116
 </td> </tr>
    </table>
-
-<p>Sample count based on PAM50 classification in each tissue and from each provider</p>
+<p><br /> <br /> Sample count based on PAM50 classification in each tissue and from each provider:</p>
 <pre class="r"><code>for(p in unique(sampleannotation$provider))
 {
 
-    print(xtable(table(sampleannotation[sampleannotation$provider==p , c(&quot;tissue_type&quot; ,&quot;pam50_est&quot;)]), 
+    print(xtable(table(sampleannotation[sampleannotation$provider==p &amp;
+                                                                            sampleannotation$tissue_type %in% c(&quot;DCIS&quot;, &quot;invasive&quot;) , 
+                                                                            c(&quot;tissue_type&quot; ,&quot;pam50_est&quot;)]), 
              caption=p, digits=3), 
       comment = TRUE,
       type = &quot;html&quot;,
@@ -199,7 +143,7 @@ UCAM
       include.rownames = TRUE)
 }</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Dec 10 17:57:41 2014 -->
+<!-- Mon Jan  5 12:57:04 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 AHUS
@@ -217,21 +161,6 @@ Normallike
 </th> <th> 
 unknown
 </th>  </tr>
-  <tr> <td align="right"> 
-benign
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-3
-</td> <td align="right">    
-0
-</td> <td align="right">    
-6
-</td> <td align="right">   
-14
-</td> </tr>
   <tr> <td align="right"> 
 DCIS
 </td> <td align="right">    
@@ -262,24 +191,9 @@ invasive
 </td> <td align="right">    
 4
 </td> </tr>
-  <tr> <td align="right"> 
-normal
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-4
-</td> <td align="right">    
-0
-</td> <td align="right">   
-33
-</td> <td align="right">   
-33
-</td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Dec 10 17:57:41 2014 -->
+<!-- Mon Jan  5 12:57:04 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 UCAM
@@ -297,21 +211,6 @@ Normallike
 </th> <th> 
 unknown
 </th>  </tr>
-  <tr> <td align="right"> 
-benign
-</td> <td align="right">    
-2
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-6
-</td> <td align="right">    
-0
-</td> </tr>
   <tr> <td align="right"> 
 DCIS
 </td> <td align="right">    
@@ -342,24 +241,9 @@ invasive
 </td> <td align="right">   
 11
 </td> </tr>
-  <tr> <td align="right"> 
-normal
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-5
-</td> <td align="right">    
-1
-</td> <td align="right">   
-72
-</td> <td align="right">   
-38
-</td> </tr>
    </table>
 
-<p>Sample count based on IHC diagnosis in each tissue and from each provider</p>
+<p>Due to the low number of DCIS samples, the pam50 classification were disregarded for those. The comparisons made, were between DCIS samples and the different pam50 classifications of invasive samples. Benign and normal samples were not used in these comparisons. <br /> <br /> Sample count based on IHC diagnosis in each tissue and from each provider</p>
 <pre class="r"><code>for(p in unique(sampleannotation$provider))
 {
 
@@ -371,14 +255,12 @@ normal
       include.rownames = TRUE)
 }</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Dec 10 17:57:41 2014 -->
+<!-- Mon Jan  5 12:57:04 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 AHUS
 </caption>
 <tr> <th>  </th> <th> 
-V1
-</th> <th> 
 HER2neg_ERneg_PGRneg
 </th> <th> 
 HER2neg_ERpos
@@ -386,37 +268,37 @@ HER2neg_ERpos
 HER2pos_ERneg
 </th> <th> 
 HER2pos_ERpos
+</th> <th> 
+unknown
 </th>  </tr>
   <tr> <td align="right"> 
 benign
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
 </td> <td align="right">   
 23
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
 </td> </tr>
   <tr> <td align="right"> 
 DCIS
 </td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
 8
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
 </td> </tr>
   <tr> <td align="right"> 
 invasive
-</td> <td align="right">   
-14
 </td> <td align="right">    
 1
 </td> <td align="right">   
@@ -425,30 +307,30 @@ invasive
 4
 </td> <td align="right">    
 8
+</td> <td align="right">   
+14
 </td> </tr>
   <tr> <td align="right"> 
 normal
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
 </td> <td align="right">   
 70
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Dec 10 17:57:41 2014 -->
+<!-- Mon Jan  5 12:57:04 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 UCAM
 </caption>
 <tr> <th>  </th> <th> 
-V1
-</th> <th> 
 HER2neg_ERneg_PGRneg
 </th> <th> 
 HER2neg_ERpos
@@ -456,11 +338,11 @@ HER2neg_ERpos
 HER2pos_ERneg
 </th> <th> 
 HER2pos_ERpos
+</th> <th> 
+unknown
 </th>  </tr>
   <tr> <td align="right"> 
 benign
-</td> <td align="right">    
-1
 </td> <td align="right">    
 5
 </td> <td align="right">    
@@ -469,11 +351,11 @@ benign
 0
 </td> <td align="right">    
 0
+</td> <td align="right">    
+1
 </td> </tr>
   <tr> <td align="right"> 
 DCIS
-</td> <td align="right">    
-0
 </td> <td align="right">    
 2
 </td> <td align="right">    
@@ -482,11 +364,11 @@ DCIS
 5
 </td> <td align="right">    
 0
+</td> <td align="right">    
+0
 </td> </tr>
   <tr> <td align="right"> 
 invasive
-</td> <td align="right">    
-5
 </td> <td align="right">  
 198
 </td> <td align="right">  
@@ -495,44 +377,31 @@ invasive
 83
 </td> <td align="right">   
 85
+</td> <td align="right">    
+5
 </td> </tr>
   <tr> <td align="right"> 
 normal
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
 </td> <td align="right">  
 116
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
-</td> <td align="right">    
-0
 </td> </tr>
    </table>
-
-
-
-
-
-<pre class="r"><code>#metafilefolder = &quot;not_in_github/t-test&quot;
-metafilefolder = &quot;not_in_github/lilianas&quot;
+<p>Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded for those. The comparisons made, were between DCIS samples and the different IHC diagnoses of invasive samples. Benign and normal samples were not used in these comparisons either..</p>
+<p><br /> <br /></p>
+<p>Read in our results from files.</p>
+<pre class="r"><code>metafilefolder = &quot;not_in_github/lilianas&quot;
 mergedfilefolder = &quot;output-analysis&quot;
-#metaresultfiles = list.files(&quot;lilianas/1000_permutations&quot;)
-#mergedresultfiles = list.files(&quot;output-analysis-2014-08-05&quot;, pattern=&quot;difflist&quot;)
 
 comparisons = c(&quot;DCIS-normal&quot;, &quot;invasive-DCIS&quot;, &quot;Normallike-DCIS&quot;, &quot;LumA-DCIS&quot;, &quot;LumB-DCIS&quot;, 
                                 &quot;Her2-DCIS&quot;, &quot;Basallike-DCIS&quot;)
-
-# meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), stringsAsFactors=FALSE)
-# meta2merged[&quot;DCIS-normal&quot;,] = list(&quot;DCIS_to_normal_test&quot;, &quot;difflist-DCIS-vs-normal.txt&quot;,-1)
-# meta2merged[&quot;invasive-DCIS&quot;,] = list(&quot;DCIS_to_invasive_test&quot;, &quot;difflist-invasive-vs-DCIS.txt&quot;,1)
-# meta2merged[&quot;Normallike-DCIS&quot;,] = list(&quot;DCIS_to_normal(invasive)_test&quot;, &quot;difflist-pam50-Normallike-vs-DCIS.txt&quot;,1)
-# meta2merged[&quot;LumA-DCIS&quot;,] = list(&quot;DCIS_to_lumA_test&quot;, &quot;difflist-pam50-LumA-vs-DCIS.txt&quot;,1)
-# meta2merged[&quot;LumB-DCIS&quot;,] = list(&quot;DCIS_to_lumB_test&quot;, &quot;difflist-pam50-LumB-vs-DCIS.txt&quot;,1)
-# meta2merged[&quot;Her2-DCIS&quot;,] = list(&quot;DCIS_to_Her2_test&quot;, &quot;difflist-pam50-Her2-vs-DCIS.txt&quot;,1)
-# meta2merged[&quot;Basallike-DCIS&quot;,] = list(&quot;basal_to_DCIS_test&quot;, &quot;difflist-pam50-Basallike-vs-DCIS.txt&quot;,-1)
-
 
 meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), stringsAsFactors=FALSE)
 meta2merged[&quot;DCIS-normal&quot;,] = list(&quot;DCIS_to_normal_limma.txt&quot;, &quot;difflist-DCIS-vs-normal.txt&quot;,-1)
@@ -542,17 +411,17 @@ meta2merged[&quot;LumA-DCIS&quot;,] = list(&quot;dcis_to_lumA_limma.txt&quot;, &
 meta2merged[&quot;LumB-DCIS&quot;,] = list(&quot;dcis_to_lumB_limma.txt&quot;, &quot;difflist-pam50-LumB-vs-DCIS.txt&quot;,1)
 meta2merged[&quot;Her2-DCIS&quot;,] = list(&quot;dcis_to_her2_limma.txt&quot;, &quot;difflist-pam50-Her2-vs-DCIS.txt&quot;,1)
 meta2merged[&quot;Basallike-DCIS&quot;,] = list(&quot;basallike_to_dcis_limma.txt&quot;, &quot;difflist-pam50-Basallike-vs-DCIS.txt&quot;,-1)
-
 meta2merged[&quot;HER2neg_ERneg_PGRneg-DCIS&quot;,] = list(&quot;dcis_to_HER2neg_ERneg_PGRneg_limma.txt&quot;, &quot;difflist-IHC-HER2neg_ERneg_PGRneg-vs-DCIS.txt&quot;,1)
 meta2merged[&quot;HER2neg_ERpos-DCIS&quot;,] = list(&quot;dcis_to_HER2neg_ERpos_limma.txt&quot;, &quot;difflist-IHC-HER2neg_ERpos-vs-DCIS.txt&quot;,1)
 meta2merged[&quot;HER2pos_ERneg-DCIS&quot;,] = list(&quot;dcis_to_HER2pos_ERneg_limma.txt&quot;, &quot;difflist-IHC-HER2pos_ERneg-vs-DCIS.txt&quot;,1)
 meta2merged[&quot;HER2pos_ERpos-DCIS&quot;,] = list(&quot;dcis_to_HER2pos_ERpos_limma.txt&quot;, &quot;difflist-IHC-HER2pos_ERpos-vs-DCIS.txt&quot;,1)
 
-
 metatables = list()
 mergedtables = list()
+consensustables = list()
 summarytab = data.frame( found_meta=integer(0),  found_merged=integer(0), 
                        found_both=integer(0),  stringsAsFactors=FALSE)
+intersect_tables=list()
 
 for(i in 1:nrow(meta2merged))
 {   
@@ -569,44 +438,171 @@ for(i in 1:nrow(meta2merged))
     thismergedtab = read.table(fn, sep=&quot;\t&quot;, header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                                      strip.white=TRUE, comment.char =&quot;&quot;, row.names=1)
     
-    #harmonizing
+    #harmonizing a little
     colnames(thismetatab)[colnames(thismetatab)==&quot;FC&quot;] = &quot;logFC&quot;
     rownames(thismetatab) = thismetatab$MIMAT
     thismetatab$logFC = thismetatab$logFC * meta2merged[thiscomp, &quot;direction&quot;]
   #summarytab[thiscomp, &quot;metafile&quot;] = rownames(thisrows)[1]
   #summarytab[thiscomp, &quot;mergedfile&quot;] = thisrows[1, &quot;mergedfn&quot;]
 
+    
   summarytab[thiscomp, &quot;found_meta&quot;] = nrow(thismetatab)
   b = thismergedtab$adj.P.Val &lt;= 0.05
   summarytab[thiscomp, &quot;found_merged&quot;] = sum(b)
   
   commonMIMATID = intersect( rownames(thismetatab),  rownames(thismergedtab)[b])
   summarytab[thiscomp, &quot;found_both&quot;] = sum( thismetatab[commonMIMATID, &quot;logFC&quot;] * thismergedtab[commonMIMATID, &quot;logFC&quot;] &gt; 0) 
+  summarytab[thiscomp, &quot;wrong_direction&quot;] = sum( thismetatab[commonMIMATID, &quot;logFC&quot;] * thismergedtab[commonMIMATID, &quot;logFC&quot;] &lt; 0) 
   rm(commonMIMATID)
   metatables[[thiscomp]] = thismetatab
   mergedtables[[thiscomp]] = thismergedtab
-}</code></pre>
-<p><br /> <br /> <br /> The number of microRNAs found differentially expressed between states, according to the two approaches. The direction of foldchange is taken into acount.</p>
-<pre class="r"><code>print(summarytab[,1:3])</code></pre>
-<pre><code>##                           found_meta found_merged found_both
-## DCIS-normal                      113           86         83
-## invasive-DCIS                      0           10          0
-## Normallike-DCIS                    7           39          7
-## LumA-DCIS                         10           31          7
-## LumB-DCIS                         33           37         22
-## Her2-DCIS                         11           17          6
-## Basallike-DCIS                     7           58          7
-## HER2neg_ERneg_PGRneg-DCIS          2           31          2
-## HER2neg_ERpos-DCIS                 1           13          0
-## HER2pos_ERneg-DCIS                15           21          8
-## HER2pos_ERpos-DCIS                 3            9          0</code></pre>
+  
+  intersect_tables[[thiscomp]]=thismergedtab[, c(&quot;logFC&quot;, &quot;adj.P.Val&quot;)]
+  
+  x = mergedtables[[thiscomp]][, c(&quot;logFC&quot;, &quot;adj.P.Val&quot;)]
+  y = metatables[[thiscomp]][, c(&quot;MIMAT&quot;, &quot;logFC&quot;)]
+
+    consensustable = merge(x, y, by.x = &quot;row.names&quot;, by.y=&quot;row.names&quot;, suffixes=c(&quot;.merged&quot;, &quot;.meta&quot;), all.x=TRUE)
+  consensustable$adj.P.Val.meta = 1
+  consensustable$adj.P.Val.meta[!is.na(consensustable$logFC.meta)] = 0.05
+  consensustable$logFC.meta[is.na(consensustable$logFC.meta)] =0
+  consensustable$same_dir =  (consensustable$logFC.merged * consensustable$logFC.meta ) &gt; 0
+  consensustable$consensus = consensustable$adj.P.Val &lt;= 0.05 &amp; 
+    consensustable$adj.P.Val.meta &lt;= 0.05 &amp; consensustable$same_dir
+  consensustables[[thiscomp]] = consensustable[order(consensustable$consensus, decreasing=TRUE),]
+}
+
+if(sum(summarytab$wrong_direction)&gt;0)
+    warning(&quot;Some common microRNAs were found that did not have the same dirrection of change!!&quot;)</code></pre>
+<p><br /> <br /> <br /> The number of microRNAs found differentially expressed between states, according to the two approaches. The direction of fold change is taken into account.</p>
+<pre class="r"><code>    print(xtable(summarytab[,1:3], 
+             caption=&quot;Overlap between meta and merged&quot;, digits=3), 
+      comment = TRUE,
+      type = &quot;html&quot;,
+      html.table.attributes=&quot;CELLPADDING=5&quot;,
+      include.rownames = TRUE)</code></pre>
+<!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
+<!-- Mon Jan  5 12:57:08 2015 -->
+<table CELLPADDING="5">
+<caption align="bottom"> 
+Overlap between meta and merged
+</caption>
+<tr> <th>  </th> <th> 
+found_meta
+</th> <th> 
+found_merged
+</th> <th> 
+found_both
+</th>  </tr>
+  <tr> <td align="right"> 
+DCIS-normal
+</td> <td align="right">  
+113
+</td> <td align="right">   
+86
+</td> <td align="right">   
+83
+</td> </tr>
+  <tr> <td align="right"> 
+invasive-DCIS
+</td> <td align="right">    
+0
+</td> <td align="right">   
+10
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+Normallike-DCIS
+</td> <td align="right">    
+7
+</td> <td align="right">   
+39
+</td> <td align="right">    
+7
+</td> </tr>
+  <tr> <td align="right"> 
+LumA-DCIS
+</td> <td align="right">   
+10
+</td> <td align="right">   
+31
+</td> <td align="right">    
+7
+</td> </tr>
+  <tr> <td align="right"> 
+LumB-DCIS
+</td> <td align="right">   
+33
+</td> <td align="right">   
+37
+</td> <td align="right">   
+22
+</td> </tr>
+  <tr> <td align="right"> 
+Her2-DCIS
+</td> <td align="right">   
+11
+</td> <td align="right">   
+17
+</td> <td align="right">    
+6
+</td> </tr>
+  <tr> <td align="right"> 
+Basallike-DCIS
+</td> <td align="right">    
+7
+</td> <td align="right">   
+58
+</td> <td align="right">    
+7
+</td> </tr>
+  <tr> <td align="right"> 
+HER2neg_ERneg_PGRneg-DCIS
+</td> <td align="right">    
+2
+</td> <td align="right">   
+31
+</td> <td align="right">    
+2
+</td> </tr>
+  <tr> <td align="right"> 
+HER2neg_ERpos-DCIS
+</td> <td align="right">    
+1
+</td> <td align="right">   
+13
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+HER2pos_ERneg-DCIS
+</td> <td align="right">   
+15
+</td> <td align="right">   
+21
+</td> <td align="right">    
+8
+</td> </tr>
+  <tr> <td align="right"> 
+HER2pos_ERpos-DCIS
+</td> <td align="right">    
+3
+</td> <td align="right">    
+9
+</td> <td align="right">    
+0
+</td> </tr>
+   </table>
+
+
 <p>For several of the comparisons, the shorter list seems to be mostly included in the longer. <br /> <br /></p>
-</div>
 <div id="our-results-vs.volinia-et-al.s-results" class="section level2">
 <h2>Our results vs. Volinia et al.´s results</h2>
 <pre class="r"><code>volinia_DCIS_vs_normal_file = &quot;volinia-DCIS-vs-normal.txt&quot;
 volinia_invasive_vs_DCIS_file = &quot;volinia-invasive-vs-DCIS.txt&quot;</code></pre>
 <p>volinia-DCIS-vs-normal.txt and volinia-invasive-vs-DCIS.txt are copy-pasted from Volinia et al.s <a href="http://www.pnas.org/content/suppl/2012/02/02/1200010109.DCSupplemental/pnas.201200010SI.pdf">supplementary tables S1 and S2</a>. The tables were reformatted from the pdf file into a more practical tabular text format. This is the results we aim to validate with the AHUS and UCAM data sets.</p>
+<p>Read in Volinia results, and do a minor re-formatting.</p>
 <pre class="r"><code>voliniatab = list()
 voliniatab[[&quot;invasive-DCIS&quot;]] = read.table(file=paste(annotdir, &quot;/&quot;, volinia_invasive_vs_DCIS_file, sep=&quot;&quot;),
                                       sep=&quot;\t&quot;, check.names=TRUE, 
@@ -626,80 +622,17 @@ for(n in names(voliniatab))
     names(voliniatab[[n]])[names(voliniatab[[n]])==&quot;fc&quot;] = &quot;log2FC&quot;
     names(voliniatab[[n]])[names(voliniatab[[n]])==&quot;pval&quot;] = &quot;FDR&quot; # this was described as FDR in their paper.
 }</code></pre>
-<pre class="r"><code>print( xtable(head(voliniatab[[1]]), caption=&quot;Start of table S2 copied from Volinia et al.&quot;, digits=3), 
-      comment = FALSE,
-      type = &quot;html&quot;,
-      html.table.attributes=&quot;CELLPADDING=5&quot;,
-      include.rownames = FALSE)</code></pre>
-<table CELLPADDING="5">
-<caption align="bottom"> 
-Start of table S2 copied from Volinia et al.
-</caption>
-<tr> <th> 
-miRNA
-</th> <th> 
-MIMATID
-</th> <th> 
-log2FC
-</th> <th> 
-FDR
-</th>  </tr>
-  <tr> <td> 
-miR-10b
-</td> <td> 
-MIMAT0000254
-</td> <td align="right"> 
--1.286
-</td> <td align="right"> 
-0.000
-</td> </tr>
-  <tr> <td> 
-miR-143
-</td> <td> 
-MIMAT0000435
-</td> <td align="right"> 
--1.358
-</td> <td align="right"> 
-0.000
-</td> </tr>
-  <tr> <td> 
-let-7d
-</td> <td> 
-MI0000065_MIMAT0000065
-</td> <td align="right"> 
-1.333
-</td> <td align="right"> 
-0.000
-</td> </tr>
-  <tr> <td> 
-miR-218(2)
-</td> <td>  </td> <td align="right"> 
--0.690
-</td> <td align="right"> 
-0.000
-</td> </tr>
-  <tr> <td> 
-miR-335-5p
-</td> <td> 
-MIMAT0000765
-</td> <td align="right"> 
--1.184
-</td> <td align="right"> 
-0.000
-</td> </tr>
-  <tr> <td> 
-miR-126
-</td> <td> 
-MIMAT0000445
-</td> <td align="right"> 
--1.120
-</td> <td align="right"> 
-0.000
-</td> </tr>
-   </table>
-
-
-<p>Compared to the original tables from Volinia, the fold change is here log2 transformed and “IDC” is renamed to “invasive”.</p>
+<p>This is how the tables look now (top only).</p>
+<pre class="r"><code>print(head(voliniatab[[1]]), row.names = FALSE)</code></pre>
+<pre><code>##       miRNA                MIMATID     log2FC      FDR
+##     miR-10b           MIMAT0000254 -1.2863042 4.00e-07
+##     miR-143           MIMAT0000435 -1.3584540 5.00e-07
+##      let-7d MI0000065_MIMAT0000065  1.3334237 5.20e-06
+##  miR-218(2)                   &lt;NA&gt; -0.6896599 1.59e-05
+##  miR-335-5p           MIMAT0000765 -1.1844246 5.43e-05
+##     miR-126           MIMAT0000445 -1.1202942 7.13e-05</code></pre>
+<p>Compared to the original tables from Volinia, the fold change is here log2 transformed and “IDC” is renamed to “invasive”, and the microRNAs are also mapped to MIMATID, which will be used in order to map to our results.</p>
+<p>Count the overlaps of results and make a “validated”-call for each microRNA listed by Volinia et al.</p>
 <pre class="r"><code>volinia_overlap = list()
 
 for(contrast in names(voliniatab))
@@ -732,13 +665,9 @@ for(contrast in names(voliniatab))
     overlaptab$validated[x %in% c(1,2)] = FALSE
     overlaptab$validated = overlaptab$validated &amp; (overlaptab$FDR_merged&lt;=fdrCO &amp; overlaptab$FDR_meta&lt;=fdrCO)
     
-#   a = overlaptab$Direction_vol &gt; 0 &amp; overlaptab$Direction_merged &gt; 0 &amp; overlaptab$Direction_meta &gt; 0
-#   b = overlaptab$Direction_vol &lt; 0 &amp; overlaptab$Direction_merged &lt; 0 &amp; overlaptab$Direction_meta &lt; 0
-#   c = overlaptab$FDR_merged &lt; 0.05 &amp; overlaptab$FDR_meta &lt; 0.05
-#   overlaptab$validated = (a|b) &amp; c        
-    
     volinia_overlap[[contrast]] = overlaptab
 }</code></pre>
+<p>And here is the result list from Volinia et al. with our results attached. First the “DCIS-normal” comparison. Rows are sorted by FDR from our “merged” approach.</p>
 <pre class="r"><code>x = order(volinia_overlap[[&quot;DCIS-normal&quot;]]$FDR_merged)
 print( xtable( volinia_overlap[[&quot;DCIS-normal&quot;]][x,] , caption=&quot;microRNA found in Volinia compared to validation data&quot;, digits=3), 
       comment = FALSE,
@@ -1671,10 +1600,149 @@ DOWN
 </td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
    </table>
 
-
+<p><br /> <br /> And here is the same table for the “invasive-DCIS” comparison.</p>
+<pre class="r"><code>x = order(volinia_overlap[[&quot;invasive-DCIS&quot;]]$FDR_merged)
+print( xtable( volinia_overlap[[&quot;invasive-DCIS&quot;]][x,] , caption=&quot;microRNA found in Volinia compared to validation data&quot;, digits=3), 
+      comment = FALSE,
+      type = &quot;html&quot;,
+      html.table.attributes=&quot;CELLPADDING=5&quot;,
+      include.rownames = FALSE)</code></pre>
+<table CELLPADDING="5">
+<caption align="bottom"> 
+microRNA found in Volinia compared to validation data
+</caption>
+<tr> <th> 
+miRNA_vol
+</th> <th> 
+MIMATID_vol
+</th> <th> 
+Direction_vol
+</th> <th> 
+FDR_vol
+</th> <th> 
+Direction_merged
+</th> <th> 
+FDR_merged
+</th> <th> 
+Direction_meta
+</th> <th> 
+FDR_meta
+</th> <th> 
+validated
+</th>  </tr>
+  <tr> <td> 
+let-7d
+</td> <td> 
+MI0000065_MIMAT0000065
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.057
+</td> <td>  </td> <td align="right">  </td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-210
+</td> <td> 
+MIMAT0000267
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.300
+</td> <td>  </td> <td align="right">  </td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-221
+</td> <td> 
+MIMAT0000278
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.307
+</td> <td>  </td> <td align="right">  </td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-126
+</td> <td> 
+MIMAT0000445
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.361
+</td> <td>  </td> <td align="right">  </td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-143
+</td> <td> 
+MIMAT0000435
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.499
+</td> <td>  </td> <td align="right">  </td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-335-5p
+</td> <td> 
+MIMAT0000765
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.616
+</td> <td>  </td> <td align="right">  </td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-10b
+</td> <td> 
+MIMAT0000254
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.991
+</td> <td>  </td> <td align="right">  </td> <td> 
+FALSE
+</td> </tr>
+   </table>
+<p><br /> <br /></p>
+<p><br /> <br /></p>
 </div>
 <div id="checking-results-towards-a-curated-list-of-micrornas" class="section level2">
 <h2>Checking results towards a curated list of microRNA´s</h2>
+<p><strong>This part is very much still under construction</strong></p>
+<p>One collegue of mine is</p>
 <pre class="r"><code>    curatedfn = &quot;curated_microRNA.csv&quot;
   curatedtab  = read.table(paste(&quot;not_in_github&quot;, &quot;/&quot;, curatedfn, sep=&quot;&quot;), sep=&quot;\t&quot;, 
                                                  header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
@@ -1699,1093 +1767,89 @@ DOWN
     volinia_overlap[[n]]$curated = curatedtab[ match( rownames(volinia_overlap[[n]]), curatedtab$MIMAT ), &quot;status&quot;]
     voliniatab[[n]]$curated = curatedtab[ match( as.character(voliniatab[[n]]$MIMATID), curatedtab$MIMAT ), &quot;status&quot;]
 }
-x = order(volinia_overlap[[&quot;DCIS-normal&quot;]]$FDR_merged)
-print( xtable( volinia_overlap[[&quot;DCIS-normal&quot;]][x,] , caption=&quot;With curated status&quot;, digits=3), 
-      comment = FALSE,
-      type = &quot;html&quot;,
-      html.table.attributes=&quot;CELLPADDING=5&quot;,
-      include.rownames = FALSE)</code></pre>
-<table CELLPADDING="5">
-<caption align="bottom"> 
-With curated status
-</caption>
-<tr> <th> 
-miRNA_vol
-</th> <th> 
-MIMATID_vol
-</th> <th> 
-Direction_vol
-</th> <th> 
-FDR_vol
-</th> <th> 
-Direction_merged
-</th> <th> 
-FDR_merged
-</th> <th> 
-Direction_meta
-</th> <th> 
-FDR_meta
-</th> <th> 
-validated
-</th> <th> 
-curated
-</th>  </tr>
-  <tr> <td> 
-miR-21
-</td> <td> 
-MIMAT0000076
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-497
-</td> <td> 
-MIMAT0002820
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-145
-</td> <td> 
-MIMAT0000437
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-193a-5p
-</td> <td> 
-MIMAT0004614
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.002
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td>  </td> </tr>
-  <tr> <td> 
-miR-378
-</td> <td> 
-MIMAT0000731_MIMAT0000732
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td>  </td> </tr>
-  <tr> <td> 
-miR-155
-</td> <td> 
-MIMAT0000646
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.005
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-200c
-</td> <td> 
-MIMAT0000617
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.001
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-425
-</td> <td> 
-MIMAT0001343_MIMAT0003393
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.012
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-183
-</td> <td> 
-MIMAT0000261
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-200b
-</td> <td> 
-MIMAT0000318
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.004
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-429
-</td> <td> 
-MIMAT0001536
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-96
-</td> <td> 
-MIMAT0000095
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-142-3p
-</td> <td> 
-MIMAT0000434
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.005
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td>  </td> </tr>
-  <tr> <td> 
-miR-143*
-</td> <td> 
-MIMAT0004599
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td>  </td> </tr>
-  <tr> <td> 
-miR-140-3p
-</td> <td> 
-MIMAT0004597
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td>  </td> </tr>
-  <tr> <td> 
-miR-142-5p
-</td> <td> 
-MIMAT0000433
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td>  </td> </tr>
-  <tr> <td> 
-miR-99a
-</td> <td> 
-MIMAT0000097
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-let-7b
-</td> <td> 
-MI0000063_MIMAT0000063
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-let-7c
-</td> <td> 
-MI0000064_MIMAT0000064
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-193b
-</td> <td> 
-MIMAT0002819
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.003
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-106b
-</td> <td> 
-MIMAT0000680
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.001
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.004
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-145*
-</td> <td> 
-MIMAT0004601
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.006
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td>  </td> </tr>
-  <tr> <td> 
-miR-342
-</td> <td> 
-MIMAT0000753
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.005
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.006
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-100
-</td> <td> 
-MIMAT0000098
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.008
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-210
-</td> <td> 
-MIMAT0000267
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.009
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.022
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-22
-</td> <td> 
-MIMAT0000077
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.024
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-652
-</td> <td> 
-MIMAT0003322
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.041
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-374b
-</td> <td> 
-MIMAT0004955
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.051
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-19a
-</td> <td> 
-MIMAT0000073
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.008
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.073
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-376c
-</td> <td> 
-MIMAT0000720
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.005
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.088
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-221
-</td> <td> 
-MIMAT0000278
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.112
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-361-5p
-</td> <td> 
-MIMAT0000703
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.114
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-30d
-</td> <td> 
-MIMAT0000245
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.003
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.116
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-223
-</td> <td> 
-MIMAT0000280
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.003
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.124
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-185
-</td> <td> 
-MIMAT0000455
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.005
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.130
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-374a
-</td> <td> 
-MIMAT0000727
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.195
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-127-3p
-</td> <td> 
-MIMAT0000446
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.200
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-26b
-</td> <td> 
-MIMAT0000083
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.002
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.377
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-574-3p
-</td> <td> 
-MIMAT0003239
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.378
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-20a
-</td> <td> 
-MIMAT0000075
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.007
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.446
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-107
-</td> <td> 
-MIMAT0000104
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.001
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.468
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-125a
-</td> <td> 
-MIMAT0000443
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.006
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.782
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-423-5p
-</td> <td> 
-MIMAT0004748
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.002
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.852
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td>  </td> </tr>
-  <tr> <td> 
-let-7d
-</td> <td> 
-MI0000065_MIMAT0000065
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.887
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-15b
-</td> <td> 
-MIMAT0000417
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.001
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.945
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-29c
-</td> <td> 
-MIMAT0000681
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.006
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.951
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-15a
-</td> <td> 
-MIMAT0000068
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.013
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.972
-</td> <td>  </td> <td align="right">  </td> <td> 
-FALSE
-</td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-182
-</td> <td> 
-MIMAT0000259
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.001
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-423-3p
-</td> <td> 
-MIMAT0001340
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-106b*
-</td> <td> 
-MIMAT0004672
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.002
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td>  </td> </tr>
-  <tr> <td> 
-miR-32
-</td> <td> 
-MIMAT0000090
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.002
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-28-3p
-</td> <td> 
-MIMAT0004502
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.004
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td>  </td> </tr>
-  <tr> <td> 
-miR-340
-</td> <td> 
-MIMAT0000750_MIMAT0004692
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.005
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-452
-</td> <td> 
-MIMAT0001635
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.005
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td> 
-white
-</td> </tr>
-  <tr> <td> 
-miR-17*
-</td> <td> 
-MIMAT0000071
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.015
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> <td>  </td> </tr>
-   </table>
 
+for(n in names(consensustables))
+{
+    consensustables[[n]]$curated = curatedtab[ match( (consensustables[[n]]$Row.names), curatedtab$MIMAT ), &quot;status&quot;]
+    write.table(consensustables[[n]], 
+            file=paste(&quot;difflist_with_curated_status_&quot;, n, &quot;.txt&quot;),
+            quote=FALSE, sep=&quot;\t&quot;, row.names=TRUE, col.names=NA)
+}
+# x = order(volinia_overlap[[&quot;DCIS-normal&quot;]]$FDR_merged)
+# print( xtable( volinia_overlap[[&quot;DCIS-normal&quot;]][x,] , caption=&quot;With curated status&quot;, digits=3), 
+#       comment = FALSE,
+#       type = &quot;html&quot;,
+#       html.table.attributes=&quot;CELLPADDING=5&quot;,
+#       include.rownames = FALSE)</code></pre>
+<p><br /> <br /></p>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.1.1 (2014-07-10)
+Platform: x86_64-apple-darwin10.8.0 (64-bit)
 
-<p>The difference in curated status for the filtered out microRNAs and the ones kept as expressed, and the ones found as significantly differentially expressed between the “DCIS” and “normal” stat. AHUS only for the “expressed” and “nonexpressed”. Both UCAM and AHUS in the significant.</p>
-<pre class="r"><code>#   table(curatedtab$status[  curatedtab$MIMAT %in% rownames(mergedtables[[1]]) ])
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
-expressed = table(curatedtab$status[curatedtab$MIMAT %in% filteredAHUSMIMAT])
-nonexpressed=   table(curatedtab$status[curatedtab$MIMAT %in% unfilteredAHUSMIMAT[!unfilteredAHUSMIMAT %in% filteredAHUSMIMAT]])
+attached base packages:
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
-genelist = intersect( rownames(mergedtables[[&quot;DCIS-normal&quot;]])[mergedtables[[&quot;DCIS-normal&quot;]]$adj.P.Val&lt;0.05], 
-                     rownames(metatables[[&quot;DCIS-normal&quot;]]) )
-significant = table(curatedtab$status[curatedtab$MIMAT %in% genelist])
+other attached packages:
+ [1] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0         
+ [4] RSQLite_1.0.0         DBI_0.3.1             AnnotationDbi_1.26.1 
+ [7] GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3          
+[10] limma_3.20.9          Biobase_2.24.0        BiocGenerics_0.10.0  
+[13] xtable_1.7-4         
 
-
-print( xtable( rbind(nonexpressed,expressed,significant), caption=&quot;&quot;, digits=3), 
-      comment = FALSE,
-      type = &quot;html&quot;,
-      html.table.attributes=&quot;CELLPADDING=5&quot;,
-      include.rownames = TRUE)</code></pre>
-<table CELLPADDING="5">
-<caption align="bottom">  </caption>
-<tr> <th>  </th> <th> 
-purple
-</th> <th> 
-rejected
-</th> <th> 
-white
-</th> <th> 
-yellow
-</th>  </tr>
-  <tr> <td align="right"> 
-nonexpressed
-</td> <td align="right">   
-64
-</td> <td align="right">   
-94
-</td> <td align="right">  
-159
-</td> <td align="right">    
-2
-</td> </tr>
-  <tr> <td align="right"> 
-expressed
-</td> <td align="right">    
-3
-</td> <td align="right">   
-24
-</td> <td align="right">  
-145
-</td> <td align="right">    
-1
-</td> </tr>
-  <tr> <td align="right"> 
-significant
-</td> <td align="right">    
-1
-</td> <td align="right">    
-5
-</td> <td align="right">   
-46
-</td> <td align="right">    
-1
-</td> </tr>
-   </table>
-
-
-
+loaded via a namespace (and not attached):
+ [1] acepack_1.3-3.3           affyio_1.32.0            
+ [3] annaffy_1.36.0            annotate_1.42.1          
+ [5] AnnotationForge_1.6.1     base64enc_0.1-2          
+ [7] BatchJobs_1.4             BBmisc_1.7               
+ [9] BiocInstaller_1.14.3      BiocParallel_0.6.1       
+[11] biomaRt_2.20.0            Biostrings_2.32.1        
+[13] biovizBase_1.12.3         bit_1.1-12               
+[15] bitops_1.0-6              brew_1.0-6               
+[17] BSgenome_1.32.0           Category_2.30.0          
+[19] caTools_1.17.1            checkmate_1.5.0          
+[21] cluster_1.15.3            codetools_0.2-9          
+[23] colorspace_1.2-4          DESeq2_1.4.5             
+[25] dichromat_2.0-0           digest_0.6.4             
+[27] edgeR_3.6.8               evaluate_0.5.5           
+[29] fail_1.2                  ff_2.2-13                
+[31] foreach_1.4.2             foreign_0.8-61           
+[33] formatR_1.0               Formula_1.1-2            
+[35] gcrma_2.36.0              gdata_2.13.3             
+[37] genefilter_1.46.1         geneplotter_1.42.0       
+[39] GenomicAlignments_1.0.6   GenomicFeatures_1.16.3   
+[41] GenomicRanges_1.16.4      ggbio_1.12.10            
+[43] ggplot2_1.0.0             GOstats_2.30.0           
+[45] gplots_2.14.2             graph_1.42.0             
+[47] grid_3.1.1                gridExtra_0.9.1          
+[49] GSEABase_1.26.0           gtable_0.1.2             
+[51] gtools_3.4.1              Hmisc_3.14-5             
+[53] htmltools_0.2.6           hwriter_1.3.2            
+[55] IRanges_1.22.10           iterators_1.0.7          
+[57] KernSmooth_2.23-13        knitr_1.8                
+[59] lattice_0.20-29           latticeExtra_0.6-26      
+[61] locfit_1.5-9.1            MASS_7.3-35              
+[63] Matrix_1.1-4              munsell_0.4.2            
+[65] nnet_7.3-8                oligoClasses_1.26.0      
+[67] PFAM.db_2.14.0            plyr_1.8.1               
+[69] proto_0.3-10              R.methodsS3_1.6.1        
+[71] R.oo_1.18.0               R.utils_1.34.0           
+[73] R2HTML_2.3.1              RBGL_1.40.1              
+[75] RColorBrewer_1.0-5        Rcpp_0.11.3              
+[77] RcppArmadillo_0.4.450.1.0 RCurl_1.95-4.3           
+[79] ReportingTools_2.4.0      reshape2_1.4             
+[81] rmarkdown_0.3.3           rpart_4.1-8              
+[83] Rsamtools_1.16.1          rtracklayer_1.24.2       
+[85] scales_0.2.4              sendmailR_1.2-1          
+[87] splines_3.1.1             stats4_3.1.1             
+[89] stringr_0.6.2             survival_2.37-7          
+[91] tools_3.1.1               VariantAnnotation_1.10.5 
+[93] XML_3.98-1.1              XVector_0.4.0            
+[95] zlibbioc_1.10.0          </code></pre>
+<p>generation ended 2015-01-05 12:57:08. Time spent 0 minutes .</p>
 </div>
 </div>
 
