@@ -54,7 +54,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="finding-differentially-expressed-microrna-in-the-ahus-and-ucam-data-sets" class="section level1">
 <h1>Finding differentially expressed microRNA in the AHUS and UCAM data sets</h1>
-<p>2015-01-05 14:34:18<br /><br /> <br /></p>
+<p>2015-01-07 11:02:05<br /><br /> <br /></p>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>The aim of the analysis performed in this report is to validate some of the findings from <a href="http://www.pnas.org/content/early/2012/02/01/1200010109">Volinia et al.</a>, based on two independent data sets using 3 different Agilent microRNA microarrays from two providers called <strong>AHUS</strong> and <strong>UCAM</strong>.</p>
@@ -93,23 +93,21 @@ if(!exists(&quot;inputisread&quot;))
 ##  NON Gene Detected : 651 
 ## ------------------------------------------------------</code></pre>
 <pre class="r"><code>outputdir = paste( &quot;output-analysis&quot;, sep=&quot;&quot;)
-if(!file.exists(outputdir))
-    {dir.create(outputdir)}else{
-        # move old results and add a datastring
-        datestr = strsplit( as.character(file.info(outputdir)$ctime), &quot; &quot;)[[1]][1]
-    backupname = paste(&quot;not_in_github/&quot;, outputdir, &quot;_&quot;, datestr, sep=&quot;&quot;)
-        if(!file.exists(backupname))
-        {
-            file.remove(backupname)
-        }
-    x=file.rename(outputdir,backupname)
-        dir.create(outputdir)
-    }</code></pre>
-<pre><code>## Warning in file.rename(outputdir, backupname): cannot rename file
-## 'output-analysis' to 'not_in_github/output-analysis_2015-01-05', reason
-## 'Directory not empty'</code></pre>
-<pre><code>## Warning in dir.create(outputdir): 'output-analysis' already exists</code></pre>
-<pre class="r"><code>postfix = &quot;.txt&quot;</code></pre>
+if(file.exists(outputdir))
+{
+    # move old results and add a datastring
+    datestr = strsplit( as.character(file.info(outputdir)$ctime), &quot; &quot;)[[1]][1]
+  backupname = paste(&quot;not_in_github/&quot;, outputdir, &quot;_&quot;, datestr, sep=&quot;&quot;)
+    if(file.exists(backupname))
+    {
+        unlink(backupname, recursive=TRUE)
+    }
+  x=file.rename(outputdir,backupname)   
+}
+difflistdir = paste(outputdir, &quot;/difflists_merged&quot;, sep=&quot;&quot;)
+dir.create(outputdir)
+dir.create(difflistdir)
+postfix = &quot;.txt&quot;</code></pre>
 <p>The datamatrix has 1573 samples and 266 microRNAs.</p>
 <pre class="r"><code>print(xtable(table(sampleannotation[, c(&quot;provider&quot;, &quot;tissue_type&quot;)]), 
              caption=&quot;&quot;, digits=3), 
@@ -118,7 +116,7 @@ if(!file.exists(outputdir))
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jan  5 14:34:37 2015 -->
+<!-- Wed Jan  7 11:02:25 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> 
@@ -183,7 +181,7 @@ DCIS_vs_normal_test = topTable(fit2, coef=&quot;DCIS-normal&quot;, adjust=&quot;
 print( paste(&quot;Diff genes with fdr&lt;0.05 for DCIS vs. normal: &quot;,
                sum(DCIS_vs_normal_test$adj.P.Val &lt; 0.05), sep=&quot;&quot;))</code></pre>
 <p>[1] “Diff genes with fdr&lt;0.05 for DCIS vs. normal: 86”</p>
-<pre class="r"><code>DCIS_vs_normal_difflistfile = paste(outputdir, 
+<pre class="r"><code>DCIS_vs_normal_difflistfile = paste(difflistdir, 
                                     &quot;/difflist-DCIS-vs-normal&quot;,
                                     postfix, sep=&quot;&quot;)
 write.table(DCIS_vs_normal_test, 
@@ -297,7 +295,7 @@ B
   print( paste(&quot;Diff genes with fdr&lt;0.05 for invasive vs. DCIS: &quot;,
                sum(invasive_vs_DCIS_test$adj.P.Val &lt; 0.05), sep=&quot;&quot;))</code></pre>
 <p>[1] “Diff genes with fdr&lt;0.05 for invasive vs. DCIS: 10”</p>
-<pre class="r"><code>invasive_vs_DCIS_difflistfile=paste(outputdir, 
+<pre class="r"><code>invasive_vs_DCIS_difflistfile=paste(difflistdir, 
                                     &quot;/difflist-invasive-vs-DCIS&quot;,
                                     postfix, sep=&quot;&quot;) 
 write.table(invasive_vs_DCIS_test, 
@@ -458,7 +456,7 @@ for(thiscontrast in pam50contrasts)
   thisname= gsub(&quot;-&quot;, &quot;-vs-&quot;, thiscontrast)
   thislabel = strsplit(thiscontrast, &quot;-&quot;)[[1]][1]
 
-  difflistfile=paste(outputdir, &quot;/difflist-pam50-&quot;,thisname, postfix, sep=&quot;&quot;)
+  difflistfile=paste(difflistdir, &quot;/difflist-pam50-&quot;,thisname, postfix, sep=&quot;&quot;)
   write.table(thisres, 
             file=difflistfile,
             quote=FALSE, sep=&quot;\t&quot;, row.names=TRUE, col.names=NA)
@@ -473,7 +471,7 @@ for(thiscontrast in pam50contrasts)
 ## [1] &quot;Diff genes with fdr&lt;0.05 for LumB vs DCIS: 37&quot;
 ## [1] &quot;Diff genes with fdr&lt;0.05 for Her2 vs DCIS: 17&quot;
 ## [1] &quot;Diff genes with fdr&lt;0.05 for Basallike vs DCIS: 58&quot;</code></pre>
-<pre class="r"><code>write.table(signchangetab, file=paste(outputdir, &quot;/signchangetab-pam50subgroups&quot;, 
+<pre class="r"><code>write.table(signchangetab, file=paste(difflistdir, &quot;/signchangetab-pam50subgroups&quot;, 
                      &quot;-vs-DCIS&quot;, postfix, sep=&quot;&quot;),
             quote=FALSE, sep=&quot;\t&quot;, row.names=TRUE, col.names=NA, na=&quot;&quot;)
 
@@ -492,7 +490,7 @@ for(i in 1:(length(pam50labels)-1))
 
 }
 
-fn = paste(outputdir, &quot;/subtypecorrelation&quot;, postfix, sep=&quot;&quot;)
+fn = paste(difflistdir, &quot;/subtypecorrelation&quot;, postfix, sep=&quot;&quot;)
 write(&quot;Count of significant genes found going in the same direction for the pam50 subtypes&quot;, file=fn)
 write.table(correlationmatrix1, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA, na=&quot;X&quot;, append=TRUE)</code></pre>
 <pre><code>## Warning in write.table(correlationmatrix1, file = fn, quote = FALSE, sep =
@@ -551,7 +549,7 @@ for(thiscontrast in IHCcontrasts)
   thisname= gsub(&quot;-&quot;, &quot;-vs-&quot;, thiscontrast)
   thislabel = strsplit(thiscontrast, &quot;-&quot;)[[1]][1]
 
-  difflistfile=paste(outputdir, &quot;/difflist-IHC-&quot;,thisname, postfix, sep=&quot;&quot;)
+  difflistfile=paste(difflistdir, &quot;/difflist-IHC-&quot;,thisname, postfix, sep=&quot;&quot;)
   write.table(thisres, 
             file=difflistfile,
             quote=FALSE, sep=&quot;\t&quot;, row.names=TRUE, col.names=NA)
@@ -642,7 +640,7 @@ loaded via a namespace (and not attached):
 [91] tools_3.1.1               VariantAnnotation_1.10.5 
 [93] XML_3.98-1.1              XVector_0.4.0            
 [95] zlibbioc_1.10.0          </code></pre>
-<p>generation ended 2015-01-05 14:34:38. Time spent 0 minutes .</p>
+<p>generation ended 2015-01-07 11:02:26. Time spent 0 minutes .</p>
 </div>
 </div>
 

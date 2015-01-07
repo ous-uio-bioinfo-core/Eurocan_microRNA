@@ -73,15 +73,20 @@ colnames(ucam_matrix) = paste("UCAM_", colnames(ucam_matrix), sep="") # another 
 ucam_matrix = ucam_matrix[, colnames(ucam_matrix) %in% sampleannotation$sample_id]
 
 # Make a vecor of all common MIMAT before filtering.
+ucam_genes = read.table(paste(annotdir, "/", "UCAM_genes.txt", sep=""), header = FALSE, sep="\t", 
+												stringsAsFactors=FALSE)[,1] # The IDs of all genes from the UCAM platform, also the ones filtered out in the data matrix.
+unfilteredUCAMMIMAT =  mimatmapping[ucam_genes]
+rm(ucam_genes)
+unfilteredUCAMMIMAT = unfilteredUCAMMIMAT[!is.na(unfilteredUCAMMIMAT)]
 filteredAHUSMIMAT =  rownames(ahus_matrix)
 unfilteredAHUSMIMAT =  mimatmapping[ahus_uRNAList$genes$GeneName]
 unfilteredAHUSMIMAT = unfilteredAHUSMIMAT[!is.na(unfilteredAHUSMIMAT)]
-unfilteredcommonMIMAT = intersect(unfilteredAHUSMIMAT, rownames(ucam_matrix))
+unfilteredcommonMIMAT = intersect(unfilteredAHUSMIMAT, unfilteredUCAMMIMAT)
 
 # filter data based on common MIMATS,
-commonMIMAT = intersect(rownames(ucam_matrix), rownames(ahus_matrix))
-ucam_matrix = ucam_matrix[commonMIMAT, ]
-ahus_matrix = ahus_matrix[commonMIMAT, ]
+filteredcommonMIMAT = intersect(rownames(ucam_matrix), rownames(ahus_matrix))
+ucam_matrix = ucam_matrix[filteredcommonMIMAT, ]
+ahus_matrix = ahus_matrix[filteredcommonMIMAT, ]
 common_matrix= cbind(ahus_matrix, ucam_matrix)
 
 inputisread = TRUE

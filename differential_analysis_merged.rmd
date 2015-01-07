@@ -48,18 +48,20 @@ if(!exists("inputisread"))
 	source("read_input.r")
 
 outputdir = paste( "output-analysis", sep="")
-if(!file.exists(outputdir))
-	{dir.create(outputdir)}else{
-		# move old results and add a datastring
-		datestr = strsplit( as.character(file.info(outputdir)$ctime), " ")[[1]][1]
-    backupname = paste("not_in_github/", outputdir, "_", datestr, sep="")
-		if(!file.exists(backupname))
-		{
-			file.remove(backupname)
-		}
-    x=file.rename(outputdir,backupname)
-		dir.create(outputdir)
+if(file.exists(outputdir))
+{
+	# move old results and add a datastring
+	datestr = strsplit( as.character(file.info(outputdir)$ctime), " ")[[1]][1]
+  backupname = paste("not_in_github/", outputdir, "_", datestr, sep="")
+	if(file.exists(backupname))
+	{
+		unlink(backupname, recursive=TRUE)
 	}
+  x=file.rename(outputdir,backupname)	
+}
+difflistdir = paste(outputdir, "/difflists_merged", sep="")
+dir.create(outputdir)
+dir.create(difflistdir)
 postfix = ".txt"
 
 ```
@@ -109,7 +111,7 @@ fit2 <- eBayes(fit2)
 DCIS_vs_normal_test = topTable(fit2, coef="DCIS-normal", adjust="BH", number=999)
 print( paste("Diff genes with fdr<0.05 for DCIS vs. normal: ",
                sum(DCIS_vs_normal_test$adj.P.Val < 0.05), sep=""))
-DCIS_vs_normal_difflistfile = paste(outputdir, 
+DCIS_vs_normal_difflistfile = paste(difflistdir, 
                                     "/difflist-DCIS-vs-normal",
                                     postfix, sep="")
 write.table(DCIS_vs_normal_test, 
@@ -130,7 +132,7 @@ Now, the invasive vs. DCIS comparison.
 invasive_vs_DCIS_test =  topTable(fit2, coef="invasive-DCIS", adjust="BH", number=999)
   print( paste("Diff genes with fdr<0.05 for invasive vs. DCIS: ",
                sum(invasive_vs_DCIS_test$adj.P.Val < 0.05), sep=""))
-invasive_vs_DCIS_difflistfile=paste(outputdir, 
+invasive_vs_DCIS_difflistfile=paste(difflistdir, 
                                     "/difflist-invasive-vs-DCIS",
                                     postfix, sep="") 
 write.table(invasive_vs_DCIS_test, 
@@ -201,7 +203,7 @@ for(thiscontrast in pam50contrasts)
   thisname= gsub("-", "-vs-", thiscontrast)
   thislabel = strsplit(thiscontrast, "-")[[1]][1]
 
-  difflistfile=paste(outputdir, "/difflist-pam50-",thisname, postfix, sep="")
+  difflistfile=paste(difflistdir, "/difflist-pam50-",thisname, postfix, sep="")
   write.table(thisres, 
             file=difflistfile,
             quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
@@ -212,7 +214,7 @@ for(thiscontrast in pam50contrasts)
   signchangetab[rownames(thisres)[thisres$adj.P.Val<0.05], thislabel][thisres$logFC[thisres$adj.P.Val<0.05]<0] = "DOWN" 
 }
 
-write.table(signchangetab, file=paste(outputdir, "/signchangetab-pam50subgroups", 
+write.table(signchangetab, file=paste(difflistdir, "/signchangetab-pam50subgroups", 
                      "-vs-DCIS", postfix, sep=""),
             quote=FALSE, sep="\t", row.names=TRUE, col.names=NA, na="")
 
@@ -231,7 +233,7 @@ for(i in 1:(length(pam50labels)-1))
 
 }
 
-fn = paste(outputdir, "/subtypecorrelation", postfix, sep="")
+fn = paste(difflistdir, "/subtypecorrelation", postfix, sep="")
 write("Count of significant genes found going in the same direction for the pam50 subtypes", file=fn)
 write.table(correlationmatrix1, file=fn,quote=FALSE, sep="\t", col.names=NA, na="X", append=TRUE)
 write("\n\n\nCount of significant genes found going in the opposite direction for the pam50 subtypes", file=fn, append=TRUE)
@@ -288,7 +290,7 @@ for(thiscontrast in IHCcontrasts)
   thisname= gsub("-", "-vs-", thiscontrast)
   thislabel = strsplit(thiscontrast, "-")[[1]][1]
 
-  difflistfile=paste(outputdir, "/difflist-IHC-",thisname, postfix, sep="")
+  difflistfile=paste(difflistdir, "/difflist-IHC-",thisname, postfix, sep="")
   write.table(thisres, 
             file=difflistfile,
             quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
