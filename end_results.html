@@ -54,7 +54,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="overlap-between-our-results-and-volinia-et-al." class="section level1">
 <h1>Overlap between our results and Volinia et al.</h1>
-<p>2015-01-07 12:03:01</p>
+<p>2015-01-08 18:01:25</p>
 <p><br /> <br /></p>
 <p>We will check for</p>
 <ul>
@@ -101,7 +101,7 @@ fdrCO = 0.05</code></pre>
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jan  7 12:03:21 2015 -->
+<!-- Thu Jan  8 18:01:45 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> 
@@ -150,7 +150,7 @@ UCAM
       include.rownames = TRUE)
 }</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jan  7 12:03:21 2015 -->
+<!-- Thu Jan  8 18:01:45 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 AHUS
@@ -200,7 +200,7 @@ invasive
 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jan  7 12:03:21 2015 -->
+<!-- Thu Jan  8 18:01:45 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 UCAM
@@ -262,7 +262,7 @@ invasive
       include.rownames = TRUE)
 }</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jan  7 12:03:21 2015 -->
+<!-- Thu Jan  8 18:01:45 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 AHUS
@@ -332,7 +332,7 @@ normal
 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jan  7 12:03:21 2015 -->
+<!-- Thu Jan  8 18:01:45 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 UCAM
@@ -467,7 +467,7 @@ for(i in 1:nrow(meta2merged))
  
     thistable = merge(x, y, by.x = &quot;row.names&quot;, by.y=&quot;row.names&quot;, suffixes=c(&quot;.merged&quot;, &quot;.meta&quot;), all.x=TRUE)
   row.names(thistable) = thistable$Row.names
-  thistable = thistable[,-1]
+  thistable = cbind(MIMAT = thistable$Row.names, name=unfilteredcommonname[thistable$Row.names], thistable[,-1])
   thistable$adj.P.Val.meta = 1
   thistable$adj.P.Val.meta[!is.na(thistable$logFC.meta)] = 0.05
   thistable$logFC.meta[is.na(thistable$logFC.meta)] =0
@@ -487,7 +487,7 @@ if(sum(summarytab$wrong_direction)&gt;0)
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jan  7 12:03:24 2015 -->
+<!-- Thu Jan  8 18:01:48 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 Overlap between meta and merged
@@ -602,6 +602,49 @@ HER2pos_ERpos-DCIS
 
 
 <p>For several of the comparisons, the shorter list seems to be mostly included in the longer. <br /> <br /></p>
+<pre class="r"><code>signchangetab = as.data.frame(matrix( nrow=nrow(consensustables[[1]]), 
+                                                                            ncol=length(consensustables)+2), stringsAsFactors=FALSE)
+colnames(signchangetab) = c(&quot;MIMATID&quot;, &quot;name&quot;, names(consensustables))
+rownames(signchangetab) = rownames(consensustables[[1]])
+signchangetab[,&quot;MIMATID&quot;] = consensustables[[1]]$MIMAT
+signchangetab[,&quot;name&quot;] = unfilteredcommonname[consensustables[[1]]$MIMAT]
+
+for(n in names(consensustables))
+{
+    x = consensustables[[n]][rownames(signchangetab),]
+    signchangetab[ x$consensus &amp; x$logFC.merged&lt;0, n ] = &quot;DOWN&quot;
+    signchangetab[ x$consensus &amp; x$logFC.merged&gt;0, n ] = &quot;UP&quot; 
+}
+
+write.table(signchangetab, file=paste(consensusdir, &quot;/signchangetab&quot;, postfix, sep=&quot;&quot;),
+            quote=FALSE, sep=&quot;\t&quot;, row.names=FALSE, col.names=TRUE, na=&quot;&quot;)
+
+
+comps = names(consensustables)
+correlationmatrix1 = matrix(nrow=length(comps), ncol=length(comps),dimnames=list(comps,comps))
+correlationmatrix2 = correlationmatrix1
+for(i in 1:(length(comps)-1))
+{
+  for(j in (i+1):length(comps))
+  {
+    correlationmatrix1[i,j] = sum(signchangetab[, comps[i]]==signchangetab[, comps[j]], na.rm=TRUE)
+    correlationmatrix1[j,i] = correlationmatrix1[i,j]
+    
+    correlationmatrix2[i,j] = sum(signchangetab[, comps[i]]!=signchangetab[, comps[j]], na.rm=TRUE)
+    correlationmatrix2[j,i] = correlationmatrix2[i,j]
+  }
+
+}
+
+fn = paste(consensusdir, &quot;/subtypecorrelation&quot;, postfix, sep=&quot;&quot;)
+write(&quot;Count of significant microRNAs found going in the same direction for the subtypes&quot;, file=fn)
+write.table(correlationmatrix1, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA, na=&quot;X&quot;, append=TRUE)</code></pre>
+<pre><code>## Warning in write.table(correlationmatrix1, file = fn, quote = FALSE, sep =
+## &quot;\t&quot;, : appending column names to file</code></pre>
+<pre class="r"><code>write(&quot;\n\n\nCount of significant microRNAs found going in the opposite direction for the subtypes&quot;, file=fn, append=TRUE)
+write.table(correlationmatrix2, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA,  na=&quot;X&quot;, append=TRUE)</code></pre>
+<pre><code>## Warning in write.table(correlationmatrix2, file = fn, quote = FALSE, sep =
+## &quot;\t&quot;, : appending column names to file</code></pre>
 </div>
 <div id="our-results-vs.volinia-et-al.s-results" class="section level2">
 <h2>Our results vs. Volinia et al.´s results</h2>
@@ -1798,43 +1841,54 @@ FALSE
 <h2>Checking results towards a curated list of microRNA´s</h2>
 <p>Bastian Fromm and colleagues have carefully evaluated the evidence for the Human micro RNAs reported in mirBase and provided a classification based on this. In short, a lot of microRNAs in mirBASE and included in the microarray platforms are probably not real microRNAs.</p>
 <p>A list of human microRNAs and their curation classification is provided:</p>
-<pre class="r"><code>    curatedfn = &quot;curated_microRNA.csv&quot;
-  curatedtab  = read.table(paste(&quot;not_in_github&quot;, &quot;/&quot;, curatedfn, sep=&quot;&quot;), sep=&quot;\t&quot;, 
+<pre class="r"><code>    curatedfn = &quot;curated_microRNA_MIMAT.csv&quot;
+  orgcuratedtab  = read.table(paste(&quot;not_in_github&quot;, &quot;/&quot;, curatedfn, sep=&quot;&quot;), sep=&quot;\t&quot;, 
                                                  header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                                      strip.white=TRUE, comment.char =&quot;&quot;)
-    curatedtab$miRNA = paste(&quot;hsa-&quot;, curatedtab$miRNA, sep=&quot;&quot;)
+    orgcuratedtab$miRNA = paste(&quot;hsa-&quot;, orgcuratedtab$miRNA, sep=&quot;&quot;)
   # ad hoc fix
-    curatedtab$miRNA = gsub(&quot;-mir-&quot;, &quot;-miR-&quot;, curatedtab$miRNA)
+    orgcuratedtab$miRNA = gsub(&quot;-mir-&quot;, &quot;-miR-&quot;, orgcuratedtab$miRNA)
+    
+    curatedtab = orgcuratedtab[,c(1,2,3)]
+    names(curatedtab)[3]= &quot;MIMAT&quot;
+    
+    curatedtab = rbind(curatedtab, 
+                                         setNames( orgcuratedtab[,c(1,2,4)], names(curatedtab)),
+                                         setNames( orgcuratedtab[,c(1,2,5)], names(curatedtab)),
+                                         setNames( orgcuratedtab[,c(1,2,6)], names(curatedtab)) )
+    curatedtab = curatedtab[curatedtab$MIMAT != &quot;&quot;, ]
 
-    curatedtab$MIMAT = mimatmapping[curatedtab$miRNA]
+    #curatedtab$MIMAT = mimatmapping[curatedtab$miRNA]
     #table(curatedtab$status)
-    curatedtab = curatedtab[!is.na(curatedtab$MIMAT),]
+    #curatedtab = curatedtab[!is.na(curatedtab$MIMAT),]
     table(curatedtab$status)</code></pre>
 <pre><code>## 
 ##   purple rejected    white   yellow 
-##      244      515      347        4</code></pre>
+##      653     2349     1374        9</code></pre>
 <p>The above counts are the microRNAs that were mapped to MIMAT IDs.</p>
 <p>The status labels explained:</p>
 <ul>
-<li><em>purple</em>: no evidence for microRNA expression</li>
-<li><em>rejected</em>: not a microRNA based on structure</li>
+<li><em>purple</em>: equivocal - expression data lacking from one arm</li>
+<li><em>rejected</em>: not a microRNA based on structure/read distribution</li>
 <li><em>white</em>: a microRNA</li>
-<li><em>yellow</em>: maybe a microRNA</li>
+<li><em>yellow</em>: non-canonical microRNA</li>
 </ul>
 <p>We want to check the curation status of our findings. Are our significant microRNAs real microRNAs? In addition as a quality control, it is useful to see the proportion of the statuses in the microRNAs that are filtered out and the ones retained.</p>
 <p>Adding the curated status to the results</p>
 <pre class="r"><code>for(n in names(volinia_overlap))
 {
-    volinia_overlap[[n]]$curated = curatedtab[ match( rownames(volinia_overlap[[n]]), curatedtab$MIMAT ), &quot;status&quot;]
-    voliniatab[[n]]$curated = curatedtab[ match( as.character(voliniatab[[n]]$MIMATID), curatedtab$MIMAT ), &quot;status&quot;]
+    x = unlist(lapply(rownames(volinia_overlap[[n]]), FUN=function(x)strsplit(x, &quot;_&quot;)[[1]][1]))
+    volinia_overlap[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), &quot;status&quot;]
+    #voliniatab[[n]]$curated = curatedtab[ match( as.character(voliniatab[[n]]$MIMATID), curatedtab$MIMAT ), &quot;status&quot;]
 }
 
 for(n in names(consensustables))
 {
-    consensustables[[n]]$curated = curatedtab[ match( (row.names(consensustables[[n]])), curatedtab$MIMAT ), &quot;status&quot;]
+    x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, &quot;_&quot;)[[1]][1]))
+    consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), &quot;status&quot;]
     write.table(consensustables[[n]], 
             file=paste(consensusdir, &quot;/consensusresults_&quot;,meta2merged[n, &quot;comparisontype&quot;], &quot;__&quot;, n, &quot;.txt&quot;, sep=&quot;&quot;),
-            quote=FALSE, sep=&quot;\t&quot;, row.names=TRUE, col.names=NA)
+            quote=FALSE, sep=&quot;\t&quot;, row.names=FALSE, col.names=TRUE)
 }</code></pre>
 <p>Result files for all the comparisons with p-values for the two approaches, and with the curation status added, are <a href="output-analysis/consensus">here</a>. The tables look like this (top of the DCIS-normal comparison as an example):</p>
 <pre class="r"><code>print( xtable( consensustables[[&quot;DCIS-normal&quot;]][1:5,], caption=&quot;&quot;, digits=3), 
@@ -1845,6 +1899,10 @@ for(n in names(consensustables))
 <table CELLPADDING="5">
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> 
+MIMAT
+</th> <th> 
+name
+</th> <th> 
 logFC.merged
 </th> <th> 
 adj.P.Val.merged
@@ -1861,6 +1919,10 @@ curated
 </th>  </tr>
   <tr> <td align="right"> 
 MIMAT0005893
+</td> <td> 
+MIMAT0005893
+</td> <td> 
+hsa-miR-1305
 </td> <td align="right"> 
 0.681
 </td> <td align="right"> 
@@ -1878,6 +1940,10 @@ purple
 </td> </tr>
   <tr> <td align="right"> 
 MIMAT0005942
+</td> <td> 
+MIMAT0005942
+</td> <td> 
+hsa-miR-1288
 </td> <td align="right"> 
 0.342
 </td> <td align="right"> 
@@ -1895,6 +1961,10 @@ rejected
 </td> </tr>
   <tr> <td align="right"> 
 MIMAT0000076
+</td> <td> 
+MIMAT0000076
+</td> <td> 
+hsa-miR-21
 </td> <td align="right"> 
 2.407
 </td> <td align="right"> 
@@ -1912,6 +1982,10 @@ white
 </td> </tr>
   <tr> <td align="right"> 
 MIMAT0000250
+</td> <td> 
+MIMAT0000250
+</td> <td> 
+hsa-miR-139-5p
 </td> <td align="right"> 
 -1.276
 </td> <td align="right"> 
@@ -1929,6 +2003,10 @@ white
 </td> </tr>
   <tr> <td align="right"> 
 MIMAT0005938
+</td> <td> 
+MIMAT0005938
+</td> <td> 
+hsa-miR-1274b
 </td> <td align="right"> 
 1.600
 </td> <td align="right"> 
@@ -1977,15 +2055,15 @@ NA
   <tr> <td align="right"> 
 DCIS-normal
 </td> <td align="right">   
-46
+69
 </td> <td align="right">    
 1
 </td> <td align="right">    
 1
 </td> <td align="right">    
-5
-</td> <td align="right">   
-30
+9
+</td> <td align="right">    
+3
 </td> </tr>
   <tr> <td align="right"> 
 invasive-DCIS
@@ -2016,7 +2094,7 @@ Normallike-DCIS
   <tr> <td align="right"> 
 LumA-DCIS
 </td> <td align="right">    
-3
+6
 </td> <td align="right">    
 0
 </td> <td align="right">    
@@ -2024,12 +2102,12 @@ LumA-DCIS
 </td> <td align="right">    
 1
 </td> <td align="right">    
-3
+0
 </td> </tr>
   <tr> <td align="right"> 
 LumB-DCIS
 </td> <td align="right">   
-14
+22
 </td> <td align="right">    
 0
 </td> <td align="right">    
@@ -2037,12 +2115,12 @@ LumB-DCIS
 </td> <td align="right">    
 0
 </td> <td align="right">    
-8
+0
 </td> </tr>
   <tr> <td align="right"> 
 Her2-DCIS
 </td> <td align="right">    
-4
+6
 </td> <td align="right">    
 0
 </td> <td align="right">    
@@ -2050,12 +2128,12 @@ Her2-DCIS
 </td> <td align="right">    
 0
 </td> <td align="right">    
-2
+0
 </td> </tr>
   <tr> <td align="right"> 
 Basallike-DCIS
 </td> <td align="right">    
-5
+7
 </td> <td align="right">    
 0
 </td> <td align="right">    
@@ -2063,7 +2141,7 @@ Basallike-DCIS
 </td> <td align="right">    
 0
 </td> <td align="right">    
-2
+0
 </td> </tr>
   <tr> <td align="right"> 
 HER2neg_ERneg_PGRneg-DCIS
@@ -2094,7 +2172,7 @@ HER2neg_ERpos-DCIS
   <tr> <td align="right"> 
 HER2pos_ERneg-DCIS
 </td> <td align="right">    
-3
+7
 </td> <td align="right">    
 0
 </td> <td align="right">    
@@ -2102,7 +2180,7 @@ HER2pos_ERneg-DCIS
 </td> <td align="right">    
 1
 </td> <td align="right">    
-4
+0
 </td> </tr>
   <tr> <td align="right"> 
 HER2pos_ERpos-DCIS
@@ -2123,12 +2201,16 @@ HER2pos_ERpos-DCIS
 <p><br /> <br /></p>
 <p><strong>Differences in curation status for groups of microRNA</strong></p>
 <p>The difference in curated status for the filtered out microRNAs and the ones kept as expressed, and the ones found as significantly differentially expressed between the “DCIS” and “normal” state are interesting at least from a quality control point of view.</p>
-<pre class="r"><code>expressed = table(curatedtab$status[curatedtab$MIMAT %in% filteredcommonMIMAT])
-nonexpressed=   table(curatedtab$status[curatedtab$MIMAT %in% unfilteredcommonMIMAT[!unfilteredcommonMIMAT %in% filteredcommonMIMAT]])
+<pre class="r"><code>filt1 = unlist(lapply(filteredcommonMIMAT, FUN=function(x)strsplit(x, &quot;_&quot;)[[1]][1]))
+unfilt1 = unlist(lapply(unfilteredcommonMIMAT, FUN=function(x)strsplit(x, &quot;_&quot;)[[1]][1]))
 
-genelist = intersect( rownames(mergedtables[[&quot;DCIS-normal&quot;]])[mergedtables[[&quot;DCIS-normal&quot;]]$adj.P.Val&lt;0.05], 
-                     rownames(metatables[[&quot;DCIS-normal&quot;]]) )
-significant = table(curatedtab$status[curatedtab$MIMAT %in% genelist])
+expressed = table(curatedtab$status[curatedtab$MIMAT %in% filt1])
+nonexpressed=   table(curatedtab$status[curatedtab$MIMAT %in% unfilt1[!unfilt1 %in% filt1]])
+
+#genelist = rownames(consensustables[[&quot;DCIS-normal&quot;]])[consensustables[[&quot;DCIS-normal&quot;]]$consensus]
+#significant = table(curatedtab$status[curatedtab$MIMAT %in% genelist])
+
+significant = table(consensustables[[&quot;DCIS-normal&quot;]]$curated[ consensustables[[&quot;DCIS-normal&quot;]]$consensus])
 
 print( xtable( rbind(nonexpressed,expressed,significant), caption=&quot;&quot;, digits=3), 
       comment = FALSE,
@@ -2149,11 +2231,11 @@ yellow
   <tr> <td align="right"> 
 nonexpressed
 </td> <td align="right">   
-64
+71
 </td> <td align="right">  
-100
+144
 </td> <td align="right">  
-159
+381
 </td> <td align="right">    
 2
 </td> </tr>
@@ -2162,9 +2244,9 @@ expressed
 </td> <td align="right">    
 3
 </td> <td align="right">   
-18
+27
 </td> <td align="right">  
-144
+261
 </td> <td align="right">    
 1
 </td> </tr>
@@ -2173,15 +2255,30 @@ significant
 </td> <td align="right">    
 1
 </td> <td align="right">    
-5
+9
 </td> <td align="right">   
-46
+69
 </td> <td align="right">    
 1
 </td> </tr>
    </table>
 
 <p>In the above table, <em>nonexpressed</em> is the number of micorRNAs that were filtered out in one or both of the platforms. The filter was mainly based on some expression threshold in a minimum amount of samples. For short these can be considered non-expressed. The <em>expressed</em> class consists of the microRNAs that passed the filter criteria in both platforms. The <em>significant</em> class is here the microRNAs that were found as significant in the “normal to DCIS”-comparison for the combined UCAM and AHUS data sets.</p>
+<p><br /> <br /> <br /> MIMAT ids that do not map to the list of curated</p>
+<pre class="r"><code>expressed = filt1[!filt1 %in% curatedtab$MIMAT]
+nonexpressed=   unfilt1[!unfilt1 %in% filt1]
+nonexpressed =  nonexpressed[!nonexpressed %in% curatedtab$MIMAT]
+
+print(&quot;&lt;br/&gt;&lt;br/&gt;**expressed**&lt;br/&gt;&quot;)</code></pre>
+<p>[1] “<br /><br /><strong>expressed</strong><br />”</p>
+<pre class="r"><code>print( paste( &quot;[&quot;, expressed ,&quot;]&quot;, &quot;(http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=&quot;,expressed,&quot;) &quot;,
+                            unfilteredcommonname[expressed] , &quot;&lt;br/&gt;&quot;, sep=&quot;&quot;) )</code></pre>
+<p>[1] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005954">MIMAT0005954</a> hsa-miR-720<br />”<br />[2] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005927">MIMAT0005927</a> hsa-miR-1274a<br />” [3] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005938">MIMAT0005938</a> hsa-miR-1274b<br />”</p>
+<pre class="r"><code>print(&quot;&lt;br/&gt;&lt;br/&gt;**nonexpressed**&lt;br/&gt;&quot;)</code></pre>
+<p>[1] “<br /><br /><strong>nonexpressed</strong><br />”</p>
+<pre class="r"><code>print( paste( &quot;[&quot;, nonexpressed ,&quot;]&quot;, &quot;(http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=&quot;,nonexpressed,&quot;)&quot;,
+                            unfilteredcommonname[nonexpressed] , &quot;&lt;br/&gt;&quot;,sep=&quot;&quot;) )</code></pre>
+<p>[1] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0009150">MIMAT0009150</a>bkv-miR-B1-3p<br />”<br /> [2] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0009149">MIMAT0009149</a>bkv-miR-B1-5p<br />”<br /> [3] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003390">MIMAT0003390</a>ebv-miR-BART1-3p<br />”<br /> [4] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000999">MIMAT0000999</a>ebv-miR-BART1-5p<br />”<br /> [5] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003420">MIMAT0003420</a>ebv-miR-BART10<br />”<br /> [6] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004817">MIMAT0004817</a>ebv-miR-BART10*<br />&quot;<br /> [7] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003422">MIMAT0003422</a>ebv-miR-BART11-3p<br />” [8] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003421">MIMAT0003421</a>ebv-miR-BART11-5p<br />” [9] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003423">MIMAT0003423</a>ebv-miR-BART12<br />”<br /> [10] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003424">MIMAT0003424</a>ebv-miR-BART13<br />”<br /> [11] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004818">MIMAT0004818</a>ebv-miR-BART13*<br />&quot;<br /> [12] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003426">MIMAT0003426</a>ebv-miR-BART14<br />”<br /> [13] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003425">MIMAT0003425</a>ebv-miR-BART14*<br />&quot;<br /> [14] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003713">MIMAT0003713</a>ebv-miR-BART15<br />”<br /> [15] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003714">MIMAT0003714</a>ebv-miR-BART16<br />”<br /> [16] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003716">MIMAT0003716</a>ebv-miR-BART17-3p<br />” [17] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003715">MIMAT0003715</a>ebv-miR-BART17-5p<br />” [18] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004835">MIMAT0004835</a>ebv-miR-BART18-3p<br />” [19] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003717">MIMAT0003717</a>ebv-miR-BART18-5p<br />” [20] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003718">MIMAT0003718</a>ebv-miR-BART19-3p<br />” [21] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004836">MIMAT0004836</a>ebv-miR-BART19-5p<br />” [22] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004744">MIMAT0004744</a>ebv-miR-BART2-3p<br />”<br /> [23] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001000">MIMAT0001000</a>ebv-miR-BART2-5p<br />”<br /> [24] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003720">MIMAT0003720</a>ebv-miR-BART20-3p<br />” [25] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003719">MIMAT0003719</a>ebv-miR-BART20-5p<br />” [26] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003411">MIMAT0003411</a>ebv-miR-BART3<br />”<br /> [27] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003410">MIMAT0003410</a>ebv-miR-BART3*<br />&quot;<br /> [28] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003412">MIMAT0003412</a>ebv-miR-BART4<br />”<br /> [29] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003413">MIMAT0003413</a>ebv-miR-BART5<br />”<br /> [30] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003415">MIMAT0003415</a>ebv-miR-BART6-3p<br />”<br /> [31] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003414">MIMAT0003414</a>ebv-miR-BART6-5p<br />”<br /> [32] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003416">MIMAT0003416</a>ebv-miR-BART7<br />”<br /> [33] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004815">MIMAT0004815</a>ebv-miR-BART7*<br />&quot;<br /> [34] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003417">MIMAT0003417</a>ebv-miR-BART8<br />”<br /> [35] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003418">MIMAT0003418</a>ebv-miR-BART8*<br />&quot;<br /> [36] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003419">MIMAT0003419</a>ebv-miR-BART9<br />”<br /> [37] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004816">MIMAT0004816</a>ebv-miR-BART9*<br />&quot;<br /> [38] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000995">MIMAT0000995</a>ebv-miR-BHRF1-1<br />”<br /> [39] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000997">MIMAT0000997</a>ebv-miR-BHRF1-2<br />”<br /> [40] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000996">MIMAT0000996</a>ebv-miR-BHRF1-2*<br />&quot;<br /> [41] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000998">MIMAT0000998</a>ebv-miR-BHRF1-3<br />”<br /> [42] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001577">MIMAT0001577</a>hcmv-miR-UL112<br />”<br /> [43] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001578">MIMAT0001578</a>hcmv-miR-UL148D<br />”<br /> [44] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001574">MIMAT0001574</a>hcmv-miR-UL22A<br />”<br /> [45] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001575">MIMAT0001575</a>hcmv-miR-UL22A*<br />&quot;<br /> [46] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001576">MIMAT0001576</a>hcmv-miR-UL36<br />”<br /> [47] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004754">MIMAT0004754</a>hcmv-miR-UL36*<br />&quot;<br /> [48] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003343">MIMAT0003343</a>hcmv-miR-UL70-3p<br />”<br /> [49] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003342">MIMAT0003342</a>hcmv-miR-UL70-5p<br />”<br /> [50] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001581">MIMAT0001581</a>hcmv-miR-US25-1<br />”<br /> [51] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004755">MIMAT0004755</a>hcmv-miR-US25-1*<br />&quot;<br /> [52] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001583">MIMAT0001583</a>hcmv-miR-US25-2-3p<br />” [53] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001582">MIMAT0001582</a>hcmv-miR-US25-2-5p<br />” [54] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004756">MIMAT0004756</a>hcmv-miR-US33-3p<br />”<br /> [55] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001584">MIMAT0001584</a>hcmv-miR-US33-5p<br />”<br /> [56] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003341">MIMAT0003341</a>hcmv-miR-US4<br />”<br /> [57] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001579">MIMAT0001579</a>hcmv-miR-US5-1<br />”<br /> [58] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001580">MIMAT0001580</a>hcmv-miR-US5-2<br />”<br /> [59] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004480">MIMAT0004480</a>hiv1-miR-H1<br />”<br /> [60] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004478">MIMAT0004478</a>hiv1-miR-N367<br />”<br /> [61] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0006017">MIMAT0006017</a>hiv1-miR-TAR-3p<br />”<br /> [62] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0006016">MIMAT0006016</a>hiv1-miR-TAR-5p<br />”<br /> [63] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004483">MIMAT0004483</a>hsa-let-7c*<br />&quot;<br /> [64] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0007402">MIMAT0007402</a>hsa-miR-103-as<br />”<br /> [65] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005897">MIMAT0005897</a>hsa-miR-1245<br />”<br /> [66] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005946">MIMAT0005946</a>hsa-miR-1280<br />”<br /> [67] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003251">MIMAT0003251</a>hsa-miR-548a-3p<br />”<br /> [68] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004803">MIMAT0004803</a>hsa-miR-548a-5p<br />”<br /> [69] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003254">MIMAT0003254</a>hsa-miR-548b-3p<br />”<br /> [70] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004798">MIMAT0004798</a>hsa-miR-548b-5p<br />”<br /> [71] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003285">MIMAT0003285</a>hsa-miR-548c-3p<br />”<br /> [72] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004806">MIMAT0004806</a>hsa-miR-548c-5p<br />”<br /> [73] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003323">MIMAT0003323</a>hsa-miR-548d-3p<br />”<br /> [74] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004812">MIMAT0004812</a>hsa-miR-548d-5p<br />”<br /> [75] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005874">MIMAT0005874</a>hsa-miR-548e<br />”<br /> [76] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005895">MIMAT0005895</a>hsa-miR-548f<br />”<br /> [77] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005912">MIMAT0005912</a>hsa-miR-548g<br />”<br /> [78] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005928">MIMAT0005928</a>hsa-miR-548h<br />”<br /> [79] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005935">MIMAT0005935</a>hsa-miR-548i<br />”<br /> [80] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005875">MIMAT0005875</a>hsa-miR-548j<br />”<br /> [81] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005882">MIMAT0005882</a>hsa-miR-548k<br />”<br /> [82] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005889">MIMAT0005889</a>hsa-miR-548l<br />”<br /> [83] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005917">MIMAT0005917</a>hsa-miR-548m<br />”<br /> [84] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005916">MIMAT0005916</a>hsa-miR-548n<br />”<br /> [85] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005919">MIMAT0005919</a>hsa-miR-548o<br />”<br /> [86] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005934">MIMAT0005934</a>hsa-miR-548p<br />”<br /> [87] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008399">MIMAT0008399</a>hsv1-miR-H2<br />”<br /> [88] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008398">MIMAT0008398</a>hsv1-miR-H2*<br />&quot;<br /> [89] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008401">MIMAT0008401</a>hsv1-miR-H4<br />”<br /> [90] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008402">MIMAT0008402</a>hsv1-miR-H4*<br />&quot;<br /> [91] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008403">MIMAT0008403</a>hsv1-miR-H5-3p<br />”<br /> [92] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008404">MIMAT0008404</a>hsv1-miR-H6-3p<br />”<br /> [93] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0009148">MIMAT0009148</a>jcv-miR-J1-3p<br />”<br /> [94] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0009147">MIMAT0009147</a>jcv-miR-J1-5p<br />”<br /> [95] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002182">MIMAT0002182</a>kshv-miR-K12-1<br />”<br /> [96] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002180">MIMAT0002180</a>kshv-miR-K12-10b<br />”<br /> [97] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002181">MIMAT0002181</a>kshv-miR-K12-11<br />”<br /> [98] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003712">MIMAT0003712</a>NA<br />”<br /> [99] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MI0002476">MI0002476</a>NA<br />”<br />[100] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002193">MIMAT0002193</a>kshv-miR-K12-3<br />”<br />[101] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002194">MIMAT0002194</a>kshv-miR-K12-3*<br />&quot;<br />[102] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002192">MIMAT0002192</a>kshv-miR-K12-4-3p<br />” [103] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002191">MIMAT0002191</a>kshv-miR-K12-4-5p<br />” [104] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002189">MIMAT0002189</a>kshv-miR-K12-6-3p<br />” [105] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002188">MIMAT0002188</a>kshv-miR-K12-6-5p<br />” [106] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002185">MIMAT0002185</a>kshv-miR-K12-9<br />”<br />[107] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002184">MIMAT0002184</a>kshv-miR-K12-9*<br />&quot;</p>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.1.1 (2014-07-10)
 Platform: x86_64-apple-darwin10.8.0 (64-bit)
@@ -2249,7 +2346,7 @@ loaded via a namespace (and not attached):
 [91] tools_3.1.1               VariantAnnotation_1.10.5 
 [93] XML_3.98-1.1              XVector_0.4.0            
 [95] zlibbioc_1.10.0          </code></pre>
-<p>generation ended 2015-01-07 12:03:25. Time spent 0 minutes .</p>
+<p>generation ended 2015-01-08 18:01:49. Time spent 0 minutes .</p>
 </div>
 </div>
 

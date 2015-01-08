@@ -30,6 +30,19 @@ mimatmapping = mimattab[,2]
 names(mimatmapping)= mimattab[,1]
 rm(mimattab)
 
+## make mapping from micorRNA name to MIMAT id, when several MIMAT matches, only the first alphabetically will be used.
+# aliases <- read.delim(paste(annotdir ,"/aliases.txt", sep=""), header = FALSE, sep = "") ## file from miRbase
+# colnames(aliases) <- c("MIMAT", "name")
+# library(data.table)
+# df <- data.table(aliases, key="MIMAT")
+# df <- df[, list(name = unlist(strsplit(as.character(name), ";"))), by=MIMAT]
+# df = as.data.frame(as.matrix(df), stringsAsFactors=FALSE)
+# df = df[ grepl("MIMAT", df$MIMAT), ]
+# df = df[order(df$name, df$MIMAT),]
+# df = df[!duplicated(df$name),]
+# mimatmapping = df$MIMAT
+# names(mimatmapping)= df$name
+
 # read sampleannotation table
 sampleannotation=read.table(paste(annotdir,  "/", sampleannotation_file, sep=""),
                             sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
@@ -65,6 +78,12 @@ ucam_matrix = ucam_matrix[ucam_matrix[,2] %in%  names(mimatmapping),]
 rowsd = apply(ucam_matrix[,-c(1,2)], MARGIN=1, FUN=sd)
 ucam_matrix = ucam_matrix[order(rowsd, decreasing=TRUE), ]
 ucam_matrix = ucam_matrix[!duplicated(ucam_matrix[,2]), ]
+
+# debug
+# x =  mimatmapping[ucam_matrix[,2]]
+# y = duplicated(x) | duplicated(x, fromLast = TRUE)
+# ucam_matrix[y,2]
+
 rownames(ucam_matrix) = mimatmapping[ucam_matrix[,2]]
 ucam_matrix = as.matrix(ucam_matrix[, -c(1,2)])
 colnames(ucam_matrix) = paste("UCAM_", colnames(ucam_matrix), sep="") # another naming scheme is used in the annotation I made.
@@ -82,6 +101,19 @@ filteredAHUSMIMAT =  rownames(ahus_matrix)
 unfilteredAHUSMIMAT =  mimatmapping[ahus_uRNAList$genes$GeneName]
 unfilteredAHUSMIMAT = unfilteredAHUSMIMAT[!is.na(unfilteredAHUSMIMAT)]
 unfilteredcommonMIMAT = intersect(unfilteredAHUSMIMAT, unfilteredUCAMMIMAT)
+
+# # a back to name mapping for the two data sets
+# commonanot = data.frame(MIMAT=unfilteredcommonMIMAT, UCAMname=NA, AHUSname=NA)
+# commonanot$UCAMname = names(unfilteredUCAMMIMAT[match(unfilteredcommonMIMAT, unfilteredUCAMMIMAT)])
+# commonanot$AHUSname = names(unfilteredAHUSMIMAT[match(unfilteredcommonMIMAT, unfilteredAHUSMIMAT)])
+# a = (commonanot$UCAMname == commonanot$AHUSname)
+# commonanot[!a,] # only 3 differed
+
+# make a mapping back to the microRNA name. only use AHUS names since thay were almost all the same
+unfilteredcommonname = names(unfilteredAHUSMIMAT[unfilteredAHUSMIMAT %in% unfilteredcommonMIMAT])
+names(unfilteredcommonname) = mimatmapping[unfilteredcommonname]
+	
+
 
 # filter data based on common MIMATS,
 filteredcommonMIMAT = intersect(rownames(ucam_matrix), rownames(ahus_matrix))

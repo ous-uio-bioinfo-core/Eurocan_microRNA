@@ -54,7 +54,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="finding-differentially-expressed-microrna-in-the-ahus-and-ucam-data-sets" class="section level1">
 <h1>Finding differentially expressed microRNA in the AHUS and UCAM data sets</h1>
-<p>2015-01-07 11:02:05<br /><br /> <br /></p>
+<p>2015-01-08 18:00:40<br /><br /> <br /></p>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>The aim of the analysis performed in this report is to validate some of the findings from <a href="http://www.pnas.org/content/early/2012/02/01/1200010109">Volinia et al.</a>, based on two independent data sets using 3 different Agilent microRNA microarrays from two providers called <strong>AHUS</strong> and <strong>UCAM</strong>.</p>
@@ -116,7 +116,7 @@ postfix = &quot;.txt&quot;</code></pre>
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jan  7 11:02:25 2015 -->
+<!-- Thu Jan  8 18:00:59 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> 
@@ -173,6 +173,7 @@ batch = factor(sampleannotation$provider)
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub(&quot;group&quot;, &quot;&quot;, colnames(design))
 fit = lmFit(common_matrix, design)
+fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
 cont.matrix = makeContrasts ( contrasts=c(&quot;DCIS-normal&quot;, &quot;invasive-DCIS&quot;), levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 &lt;- eBayes(fit2)
@@ -197,6 +198,8 @@ print(xtable(head(DCIS_vs_normal_test), caption=&quot;Top of the result from the
 Top of the result from the DCIS vs normal test
 </caption>
 <tr> <th> 
+name
+</th> <th> 
 logFC
 </th> <th> 
 AveExpr
@@ -209,7 +212,9 @@ adj.P.Val
 </th> <th> 
 B
 </th>  </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-1305
+</td> <td align="right"> 
 0.681
 </td> <td align="right"> 
 6.564
@@ -222,7 +227,9 @@ B
 </td> <td align="right"> 
 72.627
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-1288
+</td> <td align="right"> 
 0.342
 </td> <td align="right"> 
 6.256
@@ -235,7 +242,9 @@ B
 </td> <td align="right"> 
 63.205
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-21
+</td> <td align="right"> 
 2.407
 </td> <td align="right"> 
 14.925
@@ -248,7 +257,9 @@ B
 </td> <td align="right"> 
 49.709
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-139-5p
+</td> <td align="right"> 
 -1.276
 </td> <td align="right"> 
 7.033
@@ -261,7 +272,9 @@ B
 </td> <td align="right"> 
 38.083
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-1274b
+</td> <td align="right"> 
 1.600
 </td> <td align="right"> 
 11.862
@@ -274,7 +287,9 @@ B
 </td> <td align="right"> 
 38.057
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-486-5p
+</td> <td align="right"> 
 -1.820
 </td> <td align="right"> 
 7.517
@@ -311,6 +326,8 @@ print(xtable(head(invasive_vs_DCIS_test), caption=&quot;Top of the result from t
 Top of the result from the invasive vs DCIS test
 </caption>
 <tr> <th> 
+name
+</th> <th> 
 logFC
 </th> <th> 
 AveExpr
@@ -323,7 +340,9 @@ adj.P.Val
 </th> <th> 
 B
 </th>  </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-1288
+</td> <td align="right"> 
 -0.302
 </td> <td align="right"> 
 6.256
@@ -336,7 +355,9 @@ B
 </td> <td align="right"> 
 51.376
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-1305
+</td> <td align="right"> 
 -0.546
 </td> <td align="right"> 
 6.564
@@ -349,7 +370,9 @@ B
 </td> <td align="right"> 
 47.793
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-1274b
+</td> <td align="right"> 
 -0.931
 </td> <td align="right"> 
 11.862
@@ -362,7 +385,9 @@ B
 </td> <td align="right"> 
 9.260
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-15b
+</td> <td align="right"> 
 0.715
 </td> <td align="right"> 
 12.638
@@ -375,7 +400,9 @@ B
 </td> <td align="right"> 
 3.893
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-720
+</td> <td align="right"> 
 -0.793
 </td> <td align="right"> 
 14.486
@@ -388,7 +415,9 @@ B
 </td> <td align="right"> 
 1.376
 </td> </tr>
-  <tr> <td align="right"> 
+  <tr> <td> 
+hsa-miR-107
+</td> <td align="right"> 
 0.588
 </td> <td align="right"> 
 10.031
@@ -425,10 +454,11 @@ pam50labels = pam50labels[!pam50labels %in% c(&quot;unknown&quot;, &quot;DCIS&qu
 <pre class="r"><code>#signchangetab = matrix( nrow=nrow(common_matrix_batchnorm), ncol=length(pam50labels),
 #                       dimnames=list(rownames(common_matrix_batchnorm), pam50labels))
 dcis_invasive = sampleannotation$tissue_type %in% c(&quot;DCIS&quot;, &quot;invasive&quot;)
-signchangetab = as.data.frame(matrix( nrow=nrow(common_matrix), ncol=length(pam50labels)+2), stringsAsFactors=FALSE)
-colnames(signchangetab) = c(&quot;microRNA&quot;, &quot;MIMATID&quot;, pam50labels)
-rownames(signchangetab) = rownames(common_matrix)
-signchangetab[,&quot;MIMATID&quot;] = rownames(common_matrix)
+
+#signchangetab = as.data.frame(matrix( nrow=nrow(common_matrix), ncol=length(pam50labels)+2), stringsAsFactors=FALSE)
+#colnames(signchangetab) = c(&quot;microRNA&quot;, &quot;MIMATID&quot;, pam50labels)
+#rownames(signchangetab) = rownames(common_matrix)
+#signchangetab[,&quot;MIMATID&quot;] = rownames(common_matrix)
 
 pam50contrasts = paste(pam50labels, &quot;-DCIS&quot;, sep=&quot;&quot;)
 
@@ -445,6 +475,7 @@ batch = factor(sampleannotation$provider[dcis_invasive])
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub(&quot;group&quot;, &quot;&quot;, colnames(design))
 fit = lmFit(common_matrix[,dcis_invasive], design)
+fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
 cont.matrix = makeContrasts ( contrasts=pam50contrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 &lt;- eBayes(fit2)
@@ -463,42 +494,38 @@ for(thiscontrast in pam50contrasts)
   print( paste(&quot;Diff genes with fdr&lt;0.05 for &quot;, thislabel, &quot; vs DCIS: &quot;,
                sum(thisres$adj.P.Val &lt; 0.05), sep=&quot;&quot;))
   
-  signchangetab[rownames(thisres)[thisres$adj.P.Val&lt;0.05], thislabel] = &quot;UP&quot;
-  signchangetab[rownames(thisres)[thisres$adj.P.Val&lt;0.05], thislabel][thisres$logFC[thisres$adj.P.Val&lt;0.05]&lt;0] = &quot;DOWN&quot; 
+  #signchangetab[rownames(thisres)[thisres$adj.P.Val&lt;0.05], thislabel] = &quot;UP&quot;
+  #signchangetab[rownames(thisres)[thisres$adj.P.Val&lt;0.05], thislabel][thisres$logFC[thisres$adj.P.Val&lt;0.05]&lt;0] = &quot;DOWN&quot; 
 }</code></pre>
 <pre><code>## [1] &quot;Diff genes with fdr&lt;0.05 for Normallike vs DCIS: 39&quot;
 ## [1] &quot;Diff genes with fdr&lt;0.05 for LumA vs DCIS: 31&quot;
 ## [1] &quot;Diff genes with fdr&lt;0.05 for LumB vs DCIS: 37&quot;
 ## [1] &quot;Diff genes with fdr&lt;0.05 for Her2 vs DCIS: 17&quot;
 ## [1] &quot;Diff genes with fdr&lt;0.05 for Basallike vs DCIS: 58&quot;</code></pre>
-<pre class="r"><code>write.table(signchangetab, file=paste(difflistdir, &quot;/signchangetab-pam50subgroups&quot;, 
-                     &quot;-vs-DCIS&quot;, postfix, sep=&quot;&quot;),
-            quote=FALSE, sep=&quot;\t&quot;, row.names=TRUE, col.names=NA, na=&quot;&quot;)
+<pre class="r"><code>#write.table(signchangetab, file=paste(difflistdir, &quot;/signchangetab-pam50subgroups&quot;, 
+#                     &quot;-vs-DCIS&quot;, postfix, sep=&quot;&quot;),
+#            quote=FALSE, sep=&quot;\t&quot;, row.names=TRUE, col.names=NA, na=&quot;&quot;)
 
-correlationmatrix1 = matrix(nrow=length(pam50labels), ncol=length(pam50labels),dimnames=list(pam50labels,pam50labels))
-correlationmatrix2 = correlationmatrix1
-for(i in 1:(length(pam50labels)-1))
-{
-  for(j in (i+1):length(pam50labels))
-  {
-    correlationmatrix1[i,j] = sum(signchangetab[, pam50labels[i]]==signchangetab[, pam50labels[j]], na.rm=TRUE)
-    correlationmatrix1[j,i] = correlationmatrix1[i,j]
-    
-    correlationmatrix2[i,j] = sum(signchangetab[, pam50labels[i]]!=signchangetab[, pam50labels[j]], na.rm=TRUE)
-    correlationmatrix2[j,i] = correlationmatrix2[i,j]
-  }
-
-}
-
-fn = paste(difflistdir, &quot;/subtypecorrelation&quot;, postfix, sep=&quot;&quot;)
-write(&quot;Count of significant genes found going in the same direction for the pam50 subtypes&quot;, file=fn)
-write.table(correlationmatrix1, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA, na=&quot;X&quot;, append=TRUE)</code></pre>
-<pre><code>## Warning in write.table(correlationmatrix1, file = fn, quote = FALSE, sep =
-## &quot;\t&quot;, : appending column names to file</code></pre>
-<pre class="r"><code>write(&quot;\n\n\nCount of significant genes found going in the opposite direction for the pam50 subtypes&quot;, file=fn, append=TRUE)
-write.table(correlationmatrix2, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA,  na=&quot;X&quot;, append=TRUE)</code></pre>
-<pre><code>## Warning in write.table(correlationmatrix2, file = fn, quote = FALSE, sep =
-## &quot;\t&quot;, : appending column names to file</code></pre>
+# correlationmatrix1 = matrix(nrow=length(pam50labels), ncol=length(pam50labels),dimnames=list(pam50labels,pam50labels))
+# correlationmatrix2 = correlationmatrix1
+# for(i in 1:(length(pam50labels)-1))
+# {
+#   for(j in (i+1):length(pam50labels))
+#   {
+#     correlationmatrix1[i,j] = sum(signchangetab[, pam50labels[i]]==signchangetab[, pam50labels[j]], na.rm=TRUE)
+#     correlationmatrix1[j,i] = correlationmatrix1[i,j]
+#     
+#     correlationmatrix2[i,j] = sum(signchangetab[, pam50labels[i]]!=signchangetab[, pam50labels[j]], na.rm=TRUE)
+#     correlationmatrix2[j,i] = correlationmatrix2[i,j]
+#   }
+# 
+# }
+# 
+# fn = paste(difflistdir, &quot;/subtypecorrelation&quot;, postfix, sep=&quot;&quot;)
+# write(&quot;Count of significant genes found going in the same direction for the pam50 subtypes&quot;, file=fn)
+# write.table(correlationmatrix1, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA, na=&quot;X&quot;, append=TRUE)
+# write(&quot;\n\n\nCount of significant genes found going in the opposite direction for the pam50 subtypes&quot;, file=fn, append=TRUE)
+# write.table(correlationmatrix2, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA,  na=&quot;X&quot;, append=TRUE)</code></pre>
 <p>This is diff genes between all the DCIS (which is a small and diverse group) and each of the pam50 classes for the invasive samples.</p>
 <p><br /> <br /></p>
 </div>
@@ -538,6 +565,7 @@ batch = factor(sampleannotation$provider[dcis_invasive])
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub(&quot;group&quot;, &quot;&quot;, colnames(design))
 fit = lmFit(common_matrix[,dcis_invasive], design)
+fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
 cont.matrix = makeContrasts ( contrasts=IHCcontrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 &lt;- eBayes(fit2)
@@ -640,7 +668,7 @@ loaded via a namespace (and not attached):
 [91] tools_3.1.1               VariantAnnotation_1.10.5 
 [93] XML_3.98-1.1              XVector_0.4.0            
 [95] zlibbioc_1.10.0          </code></pre>
-<p>generation ended 2015-01-07 11:02:26. Time spent 0 minutes .</p>
+<p>generation ended 2015-01-08 18:01:00. Time spent 0 minutes .</p>
 </div>
 </div>
 

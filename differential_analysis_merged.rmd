@@ -104,6 +104,7 @@ batch = factor(sampleannotation$provider)
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub("group", "", colnames(design))
 fit = lmFit(common_matrix, design)
+fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
 cont.matrix = makeContrasts ( contrasts=c("DCIS-normal", "invasive-DCIS"), levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 <- eBayes(fit2)
@@ -172,10 +173,11 @@ The diff test,
 #signchangetab = matrix( nrow=nrow(common_matrix_batchnorm), ncol=length(pam50labels),
 #                       dimnames=list(rownames(common_matrix_batchnorm), pam50labels))
 dcis_invasive = sampleannotation$tissue_type %in% c("DCIS", "invasive")
-signchangetab = as.data.frame(matrix( nrow=nrow(common_matrix), ncol=length(pam50labels)+2), stringsAsFactors=FALSE)
-colnames(signchangetab) = c("microRNA", "MIMATID", pam50labels)
-rownames(signchangetab) = rownames(common_matrix)
-signchangetab[,"MIMATID"] = rownames(common_matrix)
+
+#signchangetab = as.data.frame(matrix( nrow=nrow(common_matrix), ncol=length(pam50labels)+2), stringsAsFactors=FALSE)
+#colnames(signchangetab) = c("microRNA", "MIMATID", pam50labels)
+#rownames(signchangetab) = rownames(common_matrix)
+#signchangetab[,"MIMATID"] = rownames(common_matrix)
 
 pam50contrasts = paste(pam50labels, "-DCIS", sep="")
 
@@ -192,6 +194,7 @@ batch = factor(sampleannotation$provider[dcis_invasive])
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub("group", "", colnames(design))
 fit = lmFit(common_matrix[,dcis_invasive], design)
+fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
 cont.matrix = makeContrasts ( contrasts=pam50contrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 <- eBayes(fit2)
@@ -210,34 +213,34 @@ for(thiscontrast in pam50contrasts)
   print( paste("Diff genes with fdr<0.05 for ", thislabel, " vs DCIS: ",
                sum(thisres$adj.P.Val < 0.05), sep=""))
   
-  signchangetab[rownames(thisres)[thisres$adj.P.Val<0.05], thislabel] = "UP"
-  signchangetab[rownames(thisres)[thisres$adj.P.Val<0.05], thislabel][thisres$logFC[thisres$adj.P.Val<0.05]<0] = "DOWN" 
+  #signchangetab[rownames(thisres)[thisres$adj.P.Val<0.05], thislabel] = "UP"
+  #signchangetab[rownames(thisres)[thisres$adj.P.Val<0.05], thislabel][thisres$logFC[thisres$adj.P.Val<0.05]<0] = "DOWN" 
 }
 
-write.table(signchangetab, file=paste(difflistdir, "/signchangetab-pam50subgroups", 
-                     "-vs-DCIS", postfix, sep=""),
-            quote=FALSE, sep="\t", row.names=TRUE, col.names=NA, na="")
+#write.table(signchangetab, file=paste(difflistdir, "/signchangetab-pam50subgroups", 
+#                     "-vs-DCIS", postfix, sep=""),
+#            quote=FALSE, sep="\t", row.names=TRUE, col.names=NA, na="")
 
-correlationmatrix1 = matrix(nrow=length(pam50labels), ncol=length(pam50labels),dimnames=list(pam50labels,pam50labels))
-correlationmatrix2 = correlationmatrix1
-for(i in 1:(length(pam50labels)-1))
-{
-  for(j in (i+1):length(pam50labels))
-  {
-    correlationmatrix1[i,j] = sum(signchangetab[, pam50labels[i]]==signchangetab[, pam50labels[j]], na.rm=TRUE)
-    correlationmatrix1[j,i] = correlationmatrix1[i,j]
-    
-    correlationmatrix2[i,j] = sum(signchangetab[, pam50labels[i]]!=signchangetab[, pam50labels[j]], na.rm=TRUE)
-    correlationmatrix2[j,i] = correlationmatrix2[i,j]
-  }
-
-}
-
-fn = paste(difflistdir, "/subtypecorrelation", postfix, sep="")
-write("Count of significant genes found going in the same direction for the pam50 subtypes", file=fn)
-write.table(correlationmatrix1, file=fn,quote=FALSE, sep="\t", col.names=NA, na="X", append=TRUE)
-write("\n\n\nCount of significant genes found going in the opposite direction for the pam50 subtypes", file=fn, append=TRUE)
-write.table(correlationmatrix2, file=fn,quote=FALSE, sep="\t", col.names=NA,  na="X", append=TRUE)
+# correlationmatrix1 = matrix(nrow=length(pam50labels), ncol=length(pam50labels),dimnames=list(pam50labels,pam50labels))
+# correlationmatrix2 = correlationmatrix1
+# for(i in 1:(length(pam50labels)-1))
+# {
+#   for(j in (i+1):length(pam50labels))
+#   {
+#     correlationmatrix1[i,j] = sum(signchangetab[, pam50labels[i]]==signchangetab[, pam50labels[j]], na.rm=TRUE)
+#     correlationmatrix1[j,i] = correlationmatrix1[i,j]
+#     
+#     correlationmatrix2[i,j] = sum(signchangetab[, pam50labels[i]]!=signchangetab[, pam50labels[j]], na.rm=TRUE)
+#     correlationmatrix2[j,i] = correlationmatrix2[i,j]
+#   }
+# 
+# }
+# 
+# fn = paste(difflistdir, "/subtypecorrelation", postfix, sep="")
+# write("Count of significant genes found going in the same direction for the pam50 subtypes", file=fn)
+# write.table(correlationmatrix1, file=fn,quote=FALSE, sep="\t", col.names=NA, na="X", append=TRUE)
+# write("\n\n\nCount of significant genes found going in the opposite direction for the pam50 subtypes", file=fn, append=TRUE)
+# write.table(correlationmatrix2, file=fn,quote=FALSE, sep="\t", col.names=NA,  na="X", append=TRUE)
 ```
 
 This is diff genes between all the DCIS (which is a small and diverse group) and each of the pam50 classes for the invasive samples.
@@ -279,6 +282,7 @@ batch = factor(sampleannotation$provider[dcis_invasive])
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub("group", "", colnames(design))
 fit = lmFit(common_matrix[,dcis_invasive], design)
+fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
 cont.matrix = makeContrasts ( contrasts=IHCcontrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 <- eBayes(fit2)
