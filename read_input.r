@@ -83,7 +83,7 @@ ucam_matrix = ucam_matrix[!duplicated(ucam_matrix[,2]), ]
 # x =  mimatmapping[ucam_matrix[,2]]
 # y = duplicated(x) | duplicated(x, fromLast = TRUE)
 # ucam_matrix[y,2]
-
+ucam_microrna_names_filtered=ucam_matrix[,2]
 rownames(ucam_matrix) = mimatmapping[ucam_matrix[,2]]
 ucam_matrix = as.matrix(ucam_matrix[, -c(1,2)])
 colnames(ucam_matrix) = paste("UCAM_", colnames(ucam_matrix), sep="") # another naming scheme is used in the annotation I made.
@@ -95,8 +95,12 @@ ucam_matrix = ucam_matrix[, colnames(ucam_matrix) %in% sampleannotation$sample_i
 ucam_genes = read.table(paste(annotdir, "/", "UCAM_genes.txt", sep=""), header = FALSE, sep="\t", 
 												stringsAsFactors=FALSE)[,1] # The IDs of all genes from the UCAM platform, also the ones filtered out in the data matrix.
 unfilteredUCAMMIMAT =  mimatmapping[ucam_genes]
-rm(ucam_genes)
+#rm(ucam_genes)
 unfilteredUCAMMIMAT = unfilteredUCAMMIMAT[!is.na(unfilteredUCAMMIMAT)]
+unfilteredUCAMMIMAT = unfilteredUCAMMIMAT[!duplicated(unfilteredUCAMMIMAT)]
+filteredUCAMMIMAT =   mimatmapping[ucam_microrna_names_filtered]
+filteredUCAMMIMAT = filteredUCAMMIMAT[!is.na(filteredUCAMMIMAT)]
+
 filteredAHUSMIMAT =  rownames(ahus_matrix)
 unfilteredAHUSMIMAT =  mimatmapping[ahus_uRNAList$genes$GeneName]
 unfilteredAHUSMIMAT = unfilteredAHUSMIMAT[!is.na(unfilteredAHUSMIMAT)]

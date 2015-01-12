@@ -409,7 +409,7 @@ A list of human microRNAs and their curation classification is provided:
                                      strip.white=TRUE, comment.char ="")
 	orgcuratedtab$miRNA = paste("hsa-", orgcuratedtab$miRNA, sep="")
   # ad hoc fix
-	orgcuratedtab$miRNA = gsub("-mir-", "-miR-", orgcuratedtab$miRNA)
+	#orgcuratedtab$miRNA = gsub("-mir-", "-miR-", orgcuratedtab$miRNA)
 	
 	curatedtab = orgcuratedtab[,c(1,2,3)]
 	names(curatedtab)[3]= "MIMAT"
@@ -504,8 +504,8 @@ The difference in curated status for the filtered out microRNAs and the ones kep
 filt1 = unlist(lapply(filteredcommonMIMAT, FUN=function(x)strsplit(x, "_")[[1]][1]))
 unfilt1 = unlist(lapply(unfilteredcommonMIMAT, FUN=function(x)strsplit(x, "_")[[1]][1]))
 
-expressed =	table(curatedtab$status[curatedtab$MIMAT %in% filt1])
-nonexpressed=	table(curatedtab$status[curatedtab$MIMAT %in% unfilt1[!unfilt1 %in% filt1]])
+expressed =	table(curatedtab$status[match(filt1, curatedtab$MIMAT)])
+nonexpressed=	table(curatedtab$status[match(unfilt1[!unfilt1 %in% filt1],curatedtab$MIMAT) ])
 
 #genelist = rownames(consensustables[["DCIS-normal"]])[consensustables[["DCIS-normal"]]$consensus]
 #significant = table(curatedtab$status[curatedtab$MIMAT %in% genelist])

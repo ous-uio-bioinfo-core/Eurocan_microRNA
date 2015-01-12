@@ -1,0 +1,131 @@
+Ad hoc counting for Bastian
+========================================================
+`r as.character(Sys.time())`
+
+```{r time, echo=FALSE}
+starttime = Sys.time()
+oldfn = "forBastian.html"
+if(file.exists(oldfn))
+  {
+    datestr = strsplit( as.character(file.info(oldfn)$ctime), " ")[[1]][1]
+    backupname = sub(".html", paste("_",datestr, ".html", sep=""), oldfn)
+    backupname = paste("not_in_github/", backupname, sep="")
+    x=file.copy(oldfn,backupname, overwrite=TRUE )   
+  }
+```
+<br/>
+<br/>
+
+## Introduction
+
+This file is not part of our Eurocan microRNA project, but special made for Bastian. 
+
+<br/>
+<br/>
+
+## Input data
+
+Setting some dependencies
+```{r dependencies, message=FALSE}
+
+library(limma)
+library(xtable)
+
+set.seed(100)
+if(!exists("inputisread"))
+	source("read_input.r")
+
+```
+
+<br/>
+<br/>
+
+Reading Bastian´s list of microRNAs with MIMAT and status.
+
+```{r}
+	curatedfn = "curated_microRNA_MIMAT.csv"
+  orgcuratedtab  = read.table(paste("not_in_github", "/", curatedfn, sep=""), sep="\t", 
+  												 header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
+                                     strip.white=TRUE, comment.char ="")
+	orgcuratedtab$miRNA = paste("hsa-", orgcuratedtab$miRNA, sep="")
+	
+	curatedtab = orgcuratedtab[,c(1,2,3)]
+	names(curatedtab)[3]= "MIMAT"
+	
+	curatedtab = rbind(curatedtab, 
+										 setNames( orgcuratedtab[,c(1,2,4)], names(curatedtab)),
+										 setNames( orgcuratedtab[,c(1,2,5)], names(curatedtab)),
+										 setNames( orgcuratedtab[,c(1,2,6)], names(curatedtab)) )
+	curatedtab = curatedtab[curatedtab$MIMAT != "", ]
+
+	table(orgcuratedtab$status)
+```
+
+The above table is the count of the different types from Bastian´s file.
+
+<br/>
+<br/>
+
+## microRNA in Caldas et al.
+
+The array they used was custom made with a lot of *CRI* probes. In total it has **`r length(ucam_genes)`** unique microRNA IDs. The breakdown based on type (as deduced by the 3 first letters:)
+```{r}
+table(substring(ucam_genes, 1, 3))
+```
+<br/>
+<br/>
+
+Mapping names from the microarray to Bastians list via MIMATID.
+
+```{r results='asis'}
+
+expressedmatched = unlist(lapply(filteredUCAMMIMAT, FUN=function(x)strsplit(x, "_")[[1]][1]))
+notexpressedmatched = unlist(lapply(unfilteredUCAMMIMAT[!unfilteredUCAMMIMAT %in% filteredUCAMMIMAT], FUN=function(x)strsplit(x, "_")[[1]][1]))
+
+expressed =	table(curatedtab$status[match(expressedmatched, curatedtab$MIMAT)])
+nonexpressed=	table(curatedtab$status[match( notexpressedmatched, curatedtab$MIMAT)])
+tab = rbind(nonexpressed,expressed)
+tab = cbind(tab, sum=rowSums(tab))
+
+print( xtable(tab, caption="", digits=0), 
+      comment = FALSE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
+
+#table(expressedmatched %in% notexpressedmatched)
+```
+
+The above table might count a microRNA two times. Several different microRNA names from the array might end up link to the same microRNA listed in Bastian´s file. Both arms of the miroRNA can be printed, and sometimes one is expressed, while the other is not. This is difficult to count in an easy understandable way. If I counted unique microRNA´s, some will be both expressed and non-expressed.
+
+
+
+
+
+
+
+## References
+
+The shaping and functional consequences of the microRNA landscape in breast cancer.
+Dvinge H, Git A, Gräf S, Salmon-Divon M, Curtis C, Sottoriva A, Zhao Y, Hirst M, Armisen J, Miska EA, Chin SF, Provenzano E, Turashvili G, Green A, Ellis I, Aparicio S, Caldas C.
+Nature. 2013 May 16;497(7449):378-82. doi: 10.1038/nature12108. Epub 2013 May 5.
+
+  
+  R Core Team (2013). R: A language and environment for statistical computing. R Foundation for Statistical Computing,
+  Vienna, Austria. URL http://www.R-project.org/
+
+  Yihui Xie (2013). knitr: A general-purpose package for dynamic report generation in R. R package version 1.5.
+
+  Yihui Xie (2013) Dynamic Documents with R and knitr. Chapman and Hall/CRC. ISBN 978-1482203530
+
+  Yihui Xie (2013) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and
+  Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
+  
+  RStudio Team (2012). RStudio: Integrated Development for R. RStudio, Inc., Boston, MA URL http://www.rstudio.com/.
+
+
+```{r sessionInfo, comment=""}
+sessionInfo()
+```
+
+generation ended `r as.character(Sys.time())`. Time spent `r  as.integer(round(difftime(Sys.time(),starttime, units="mins")))` minutes .

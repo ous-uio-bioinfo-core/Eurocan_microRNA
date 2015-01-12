@@ -1,5 +1,6 @@
 Finding differentially expressed microRNA in the  AHUS and UCAM data sets
 ========================================================
+`r as.character(Sys.time())`
 
 ```{r time, echo=FALSE}
 starttime = Sys.time()
@@ -12,8 +13,6 @@ if(file.exists(oldfn))
     x=file.copy(oldfn,backupname, overwrite=TRUE )   
   }
 ```
-
-`r as.character(starttime)`  
 <br/>
 <br/>
 
