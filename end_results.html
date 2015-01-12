@@ -54,7 +54,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="overlap-between-our-results-and-volinia-et-al." class="section level1">
 <h1>Overlap between our results and Volinia et al.</h1>
-<p>2015-01-08 18:01:25</p>
+<p>2015-01-12 14:17:56</p>
 <p><br /> <br /></p>
 <p>We will check for</p>
 <ul>
@@ -82,6 +82,7 @@ if(!exists(&quot;inputisread&quot;))
 ##  NON Gene Detected : 651 
 ## ------------------------------------------------------</code></pre>
 <pre class="r"><code>postfix = &quot;.txt&quot;
+options(digits=4)
 outputdir = &quot;output-analysis&quot;
 consensusdir = paste(outputdir, &quot;/consensus&quot;, sep=&quot;&quot;)
 if(!file.exists(consensusdir))
@@ -101,7 +102,7 @@ fdrCO = 0.05</code></pre>
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jan  8 18:01:45 2015 -->
+<!-- Mon Jan 12 14:18:16 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> 
@@ -150,7 +151,7 @@ UCAM
       include.rownames = TRUE)
 }</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jan  8 18:01:45 2015 -->
+<!-- Mon Jan 12 14:18:16 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 AHUS
@@ -200,7 +201,7 @@ invasive
 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jan  8 18:01:45 2015 -->
+<!-- Mon Jan 12 14:18:16 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 UCAM
@@ -262,7 +263,7 @@ invasive
       include.rownames = TRUE)
 }</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jan  8 18:01:45 2015 -->
+<!-- Mon Jan 12 14:18:16 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 AHUS
@@ -332,7 +333,7 @@ normal
 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jan  8 18:01:45 2015 -->
+<!-- Mon Jan 12 14:18:16 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 UCAM
@@ -402,7 +403,7 @@ normal
 </td> </tr>
    </table>
 
-<p>Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded for those. The comparisons made, were between DCIS samples and the different IHC diagnoses of invasive samples. Benign and normal samples were not used in these comparisons either..</p>
+<p>Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded for those. The comparisons made, were between DCIS samples and the different IHC diagnoses of invasive samples. Benign and normal samples were not used in these comparisons either.</p>
 <p><br /> <br /></p>
 <p>Read in our results from files.</p>
 <pre class="r"><code>metafilefolder = &quot;not_in_github/lilianas&quot;
@@ -479,7 +480,7 @@ for(i in 1:nrow(meta2merged))
 
 if(sum(summarytab$wrong_direction)&gt;0)
     warning(&quot;Some common microRNAs were found that did not have the same dirrection of change!!&quot;)</code></pre>
-<p><br /> <br /> The number of microRNAs found differentially expressed between states, according to the two approaches. The direction of fold change is taken into account.</p>
+<p>The above tables are written to <a href="output-analysis/consensus">files</a> later. <br /> <br /> Next, summarize the number of microRNAs found differentially expressed between states, according to the two approaches. The direction of fold change is taken into account.</p>
 <pre class="r"><code>    print(xtable(summarytab[,1:3], 
              caption=&quot;Overlap between meta and merged&quot;, digits=3), 
       comment = TRUE,
@@ -487,7 +488,7 @@ if(sum(summarytab$wrong_direction)&gt;0)
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jan  8 18:01:48 2015 -->
+<!-- Mon Jan 12 14:18:19 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 Overlap between meta and merged
@@ -601,7 +602,8 @@ HER2pos_ERpos-DCIS
    </table>
 
 
-<p>For several of the comparisons, the shorter list seems to be mostly included in the longer. <br /> <br /></p>
+<p>For several of the comparisons, the shorter list seems to be mostly included in the longer. We will use the intersect as differentially expressed microRNAs, i.e a microRNA is deemed differentially expressed if it is within 0.05 FDR in both the meta and merged analyses. <br /> <br /></p>
+<p>Next, a table is written to file with all the expressed (not filtered out) microRNAs listed and whether they were found to be up regulated or down regulated in the different comparisons.</p>
 <pre class="r"><code>signchangetab = as.data.frame(matrix( nrow=nrow(consensustables[[1]]), 
                                                                             ncol=length(consensustables)+2), stringsAsFactors=FALSE)
 colnames(signchangetab) = c(&quot;MIMATID&quot;, &quot;name&quot;, names(consensustables))
@@ -615,12 +617,11 @@ for(n in names(consensustables))
     signchangetab[ x$consensus &amp; x$logFC.merged&lt;0, n ] = &quot;DOWN&quot;
     signchangetab[ x$consensus &amp; x$logFC.merged&gt;0, n ] = &quot;UP&quot; 
 }
-
-write.table(signchangetab, file=paste(consensusdir, &quot;/signchangetab&quot;, postfix, sep=&quot;&quot;),
-            quote=FALSE, sep=&quot;\t&quot;, row.names=FALSE, col.names=TRUE, na=&quot;&quot;)
-
-
-comps = names(consensustables)
+signchangetabfn = paste(consensusdir, &quot;/signchangetab&quot;, postfix, sep=&quot;&quot;)
+write.table(signchangetab, file=signchangetabfn,
+            quote=FALSE, sep=&quot;\t&quot;, row.names=FALSE, col.names=TRUE, na=&quot;&quot;)</code></pre>
+<p><a href="output-analysis/consensus/signchangetab.txt">Link to file</a> <br /> <br /> Next, the overlap in findings between the comparisons.</p>
+<pre class="r"><code>comps = names(consensustables)
 correlationmatrix1 = matrix(nrow=length(comps), ncol=length(comps),dimnames=list(comps,comps))
 correlationmatrix2 = correlationmatrix1
 for(i in 1:(length(comps)-1))
@@ -636,15 +637,309 @@ for(i in 1:(length(comps)-1))
 
 }
 
-fn = paste(consensusdir, &quot;/subtypecorrelation&quot;, postfix, sep=&quot;&quot;)
-write(&quot;Count of significant microRNAs found going in the same direction for the subtypes&quot;, file=fn)
-write.table(correlationmatrix1, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA, na=&quot;X&quot;, append=TRUE)</code></pre>
-<pre><code>## Warning in write.table(correlationmatrix1, file = fn, quote = FALSE, sep =
-## &quot;\t&quot;, : appending column names to file</code></pre>
-<pre class="r"><code>write(&quot;\n\n\nCount of significant microRNAs found going in the opposite direction for the subtypes&quot;, file=fn, append=TRUE)
-write.table(correlationmatrix2, file=fn,quote=FALSE, sep=&quot;\t&quot;, col.names=NA,  na=&quot;X&quot;, append=TRUE)</code></pre>
-<pre><code>## Warning in write.table(correlationmatrix2, file = fn, quote = FALSE, sep =
-## &quot;\t&quot;, : appending column names to file</code></pre>
+correlationmatrixfn = paste(consensusdir, &quot;/subtypecorrelation&quot;, postfix, sep=&quot;&quot;)
+h1 = &quot;Count of significant microRNAs found going in the same direction for the subtypes&quot;
+write(h1, file=correlationmatrixfn)
+write(paste(&quot;\t&quot;, colnames(correlationmatrix1), collapse=&quot;\t&quot;), file=correlationmatrixfn)
+write.table(correlationmatrix1, file=correlationmatrixfn,quote=FALSE, sep=&quot;\t&quot;, col.names=FALSE, na=&quot;X&quot;, append=TRUE)
+write(&quot;\n\n\n&quot;, file=correlationmatrixfn, append=TRUE)
+h2 = &quot;Count of significant microRNAs found going in the opposite direction for the subtypes&quot;
+write(h2, file=correlationmatrixfn, append=TRUE)
+write(paste(&quot;\t&quot;, colnames(correlationmatrix2), collapse=&quot;\t&quot;), file=correlationmatrixfn)
+write.table(correlationmatrix2, file=correlationmatrixfn,quote=FALSE, sep=&quot;\t&quot;, col.names=FALSE,  na=&quot;X&quot;, append=TRUE)
+
+print(xtable(correlationmatrix1, 
+             caption=h1, digits=3), 
+      comment = TRUE,
+      type = &quot;html&quot;,
+      html.table.attributes=&quot;CELLPADDING=5&quot;,
+      include.rownames = TRUE)</code></pre>
+<!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
+<!-- Mon Jan 12 14:18:19 2015 -->
+<table CELLPADDING="5">
+<caption align="bottom"> 
+Count of significant microRNAs found going in the same direction for the subtypes
+</caption>
+<tr> <th>  </th> <th> 
+DCIS-normal
+</th> <th> 
+invasive-DCIS
+</th> <th> 
+Normallike-DCIS
+</th> <th> 
+LumA-DCIS
+</th> <th> 
+LumB-DCIS
+</th> <th> 
+Her2-DCIS
+</th> <th> 
+Basallike-DCIS
+</th> <th> 
+HER2neg_ERneg_PGRneg-DCIS
+</th> <th> 
+HER2neg_ERpos-DCIS
+</th> <th> 
+HER2pos_ERneg-DCIS
+</th> <th> 
+HER2pos_ERpos-DCIS
+</th>  </tr>
+  <tr> <td align="right"> 
+DCIS-normal
+</td> <td align="right">  </td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+1
+</td> <td align="right">   
+10
+</td> <td align="right">    
+2
+</td> <td align="right">    
+2
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+invasive-DCIS
+</td> <td align="right">    
+0
+</td> <td align="right">  </td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+Normallike-DCIS
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">  </td> <td align="right">    
+2
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+LumA-DCIS
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> <td align="right">    
+2
+</td> <td align="right">  </td> <td align="right">    
+2
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+LumB-DCIS
+</td> <td align="right">   
+10
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+2
+</td> <td align="right">  </td> <td align="right">    
+2
+</td> <td align="right">    
+1
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+Her2-DCIS
+</td> <td align="right">    
+2
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+2
+</td> <td align="right">  </td> <td align="right">    
+1
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> <td align="right">    
+4
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+Basallike-DCIS
+</td> <td align="right">    
+2
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+1
+</td> <td align="right">    
+1
+</td> <td align="right">  </td> <td align="right">    
+2
+</td> <td align="right">    
+0
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+HER2neg_ERneg_PGRneg-DCIS
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+1
+</td> <td align="right">    
+1
+</td> <td align="right">    
+2
+</td> <td align="right">  </td> <td align="right">    
+0
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+HER2neg_ERpos-DCIS
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">  </td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+HER2pos_ERneg-DCIS
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+1
+</td> <td align="right">    
+4
+</td> <td align="right">    
+1
+</td> <td align="right">    
+1
+</td> <td align="right">    
+0
+</td> <td align="right">  </td> <td align="right">    
+0
+</td> </tr>
+  <tr> <td align="right"> 
+HER2pos_ERpos-DCIS
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">    
+0
+</td> <td align="right">  </td> </tr>
+   </table>
+
+<p><a href="output-analysis/consensus/subtypecorrelation.txt">Link to file</a></p>
+<p><br /> <br /> <br /></p>
 </div>
 <div id="our-results-vs.volinia-et-al.s-results" class="section level2">
 <h2>Our results vs. Volinia et al.´s results</h2>
@@ -673,13 +968,13 @@ for(n in names(voliniatab))
 }</code></pre>
 <p>This is how the tables look now (top only).</p>
 <pre class="r"><code>print(head(voliniatab[[1]]), row.names = FALSE)</code></pre>
-<pre><code>##       miRNA                MIMATID     log2FC      FDR
-##     miR-10b           MIMAT0000254 -1.2863042 4.00e-07
-##     miR-143           MIMAT0000435 -1.3584540 5.00e-07
-##      let-7d MI0000065_MIMAT0000065  1.3334237 5.20e-06
-##  miR-218(2)                   &lt;NA&gt; -0.6896599 1.59e-05
-##  miR-335-5p           MIMAT0000765 -1.1844246 5.43e-05
-##     miR-126           MIMAT0000445 -1.1202942 7.13e-05</code></pre>
+<pre><code>##       miRNA                MIMATID  log2FC      FDR
+##     miR-10b           MIMAT0000254 -1.2863 4.00e-07
+##     miR-143           MIMAT0000435 -1.3585 5.00e-07
+##      let-7d MI0000065_MIMAT0000065  1.3334 5.20e-06
+##  miR-218(2)                   &lt;NA&gt; -0.6897 1.59e-05
+##  miR-335-5p           MIMAT0000765 -1.1844 5.43e-05
+##     miR-126           MIMAT0000445 -1.1203 7.13e-05</code></pre>
 <p>Compared to the original tables from Volinia, the fold change is here log2 transformed and “IDC” is renamed to “invasive”, and the microRNAs are also mapped to MIMATID, which will be used in order to map to our results.</p>
 <p>Count the overlaps of results and make a “validated”-call for each microRNA listed by Volinia et al.</p>
 <pre class="r"><code>volinia_overlap = list()
@@ -1861,10 +2156,10 @@ FALSE
     #curatedtab$MIMAT = mimatmapping[curatedtab$miRNA]
     #table(curatedtab$status)
     #curatedtab = curatedtab[!is.na(curatedtab$MIMAT),]
-    table(curatedtab$status)</code></pre>
+    table(orgcuratedtab$status)</code></pre>
 <pre><code>## 
 ##   purple rejected    white   yellow 
-##      653     2349     1374        9</code></pre>
+##      302      969      484        4</code></pre>
 <p>The above counts are the microRNAs that were mapped to MIMAT IDs.</p>
 <p>The status labels explained:</p>
 <ul>
@@ -1886,7 +2181,7 @@ for(n in names(consensustables))
 {
     x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, &quot;_&quot;)[[1]][1]))
     consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), &quot;status&quot;]
-    write.table(consensustables[[n]], 
+    write.table( format( consensustables[[n]], digits=4), 
             file=paste(consensusdir, &quot;/consensusresults_&quot;,meta2merged[n, &quot;comparisontype&quot;], &quot;__&quot;, n, &quot;.txt&quot;, sep=&quot;&quot;),
             quote=FALSE, sep=&quot;\t&quot;, row.names=FALSE, col.names=TRUE)
 }</code></pre>
@@ -2346,7 +2641,7 @@ loaded via a namespace (and not attached):
 [91] tools_3.1.1               VariantAnnotation_1.10.5 
 [93] XML_3.98-1.1              XVector_0.4.0            
 [95] zlibbioc_1.10.0          </code></pre>
-<p>generation ended 2015-01-08 18:01:49. Time spent 0 minutes .</p>
+<p>generation ended 2015-01-12 14:18:20. Time spent 0 minutes .</p>
 </div>
 </div>
 

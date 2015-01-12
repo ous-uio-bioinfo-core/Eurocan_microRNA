@@ -36,6 +36,7 @@ library(xtable)
 if(!exists("inputisread"))
 	source("read_input.r")
 postfix = ".txt"
+options(digits=4)
 outputdir = "output-analysis"
 consensusdir = paste(outputdir, "/consensus", sep="")
 if(!file.exists(consensusdir))
@@ -100,7 +101,7 @@ for(p in unique(sampleannotation$provider))
 }
 ```
 
-Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded for those. The comparisons made, were between DCIS samples and the different IHC diagnoses of invasive samples. Benign and normal samples were not used in these comparisons either..
+Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded for those. The comparisons made, were between DCIS samples and the different IHC diagnoses of invasive samples. Benign and normal samples were not used in these comparisons either.
 
 
 <br/>
@@ -186,9 +187,10 @@ if(sum(summarytab$wrong_direction)>0)
 	warning("Some common microRNAs were found that did not have the same dirrection of change!!")
 
 ```
+The above tables are written to [files](output-analysis/consensus) later.
 <br/>
 <br/>
-The number of microRNAs found differentially expressed between states, according to the two approaches. The direction of fold change is taken into account. 
+Next, summarize the number of microRNAs found differentially expressed between states, according to the two approaches. The direction of fold change is taken into account. 
 
 ```{r results='asis'}
 
@@ -202,10 +204,13 @@ The number of microRNAs found differentially expressed between states, according
 ```
 
 
-For several of the comparisons, the shorter list seems to be mostly included in the longer.
+For several of the comparisons, the shorter list seems to be mostly included in the longer. We will use the intersect as differentially expressed microRNAs, i.e a microRNA is deemed differentially expressed if it is within 0.05 FDR in both the meta and merged analyses.
 <br/>
 <br/>
-```{r results='asis'}
+
+Next, a table is written to file with all the expressed (not filtered out) microRNAs listed and whether they were found to be up regulated or down regulated in the different comparisons.
+
+```{r}
 signchangetab = as.data.frame(matrix( nrow=nrow(consensustables[[1]]), 
 																			ncol=length(consensustables)+2), stringsAsFactors=FALSE)
 colnames(signchangetab) = c("MIMATID", "name", names(consensustables))
@@ -219,11 +224,17 @@ for(n in names(consensustables))
 	signchangetab[ x$consensus & x$logFC.merged<0, n ] = "DOWN"
 	signchangetab[ x$consensus & x$logFC.merged>0, n ] = "UP" 
 }
-
-write.table(signchangetab, file=paste(consensusdir, "/signchangetab", postfix, sep=""),
+signchangetabfn = paste(consensusdir, "/signchangetab", postfix, sep="")
+write.table(signchangetab, file=signchangetabfn,
             quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE, na="")
+```
 
+[Link to file](`r signchangetabfn`)
+<br/>
+<br/>
+Next, the overlap in findings between the comparisons.
 
+```{r results='asis'}
 comps = names(consensustables)
 correlationmatrix1 = matrix(nrow=length(comps), ncol=length(comps),dimnames=list(comps,comps))
 correlationmatrix2 = correlationmatrix1
@@ -240,14 +251,30 @@ for(i in 1:(length(comps)-1))
 
 }
 
-fn = paste(consensusdir, "/subtypecorrelation", postfix, sep="")
-write("Count of significant microRNAs found going in the same direction for the subtypes", file=fn)
-write.table(correlationmatrix1, file=fn,quote=FALSE, sep="\t", col.names=NA, na="X", append=TRUE)
-write("\n\n\nCount of significant microRNAs found going in the opposite direction for the subtypes", file=fn, append=TRUE)
-write.table(correlationmatrix2, file=fn,quote=FALSE, sep="\t", col.names=NA,  na="X", append=TRUE)
+correlationmatrixfn = paste(consensusdir, "/subtypecorrelation", postfix, sep="")
+h1 = "Count of significant microRNAs found going in the same direction for the subtypes"
+write(h1, file=correlationmatrixfn)
+write(paste("\t", colnames(correlationmatrix1), collapse="\t"), file=correlationmatrixfn)
+write.table(correlationmatrix1, file=correlationmatrixfn,quote=FALSE, sep="\t", col.names=FALSE, na="X", append=TRUE)
+write("\n\n\n", file=correlationmatrixfn, append=TRUE)
+h2 = "Count of significant microRNAs found going in the opposite direction for the subtypes"
+write(h2, file=correlationmatrixfn, append=TRUE)
+write(paste("\t", colnames(correlationmatrix2), collapse="\t"), file=correlationmatrixfn)
+write.table(correlationmatrix2, file=correlationmatrixfn,quote=FALSE, sep="\t", col.names=FALSE,  na="X", append=TRUE)
 
+print(xtable(correlationmatrix1, 
+             caption=h1, digits=3), 
+      comment = TRUE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
 ```
 
+[Link to file](`r correlationmatrixfn`)
+
+<br/>
+<br/>
+<br/>
 
 ## Our results vs. Volinia et al.´s results
 
@@ -396,7 +423,7 @@ A list of human microRNAs and their curation classification is provided:
 	#curatedtab$MIMAT = mimatmapping[curatedtab$miRNA]
 	#table(curatedtab$status)
 	#curatedtab = curatedtab[!is.na(curatedtab$MIMAT),]
-	table(curatedtab$status)
+	table(orgcuratedtab$status)
 ```
 
 The above counts are the microRNAs that were mapped to MIMAT IDs. 
@@ -425,7 +452,7 @@ for(n in names(consensustables))
 {
 	x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1]))
 	consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), "status"]
-	write.table(consensustables[[n]], 
+	write.table( format( consensustables[[n]], digits=4), 
             file=paste(consensusdir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, ".txt", sep=""),
             quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
 }
