@@ -79,24 +79,74 @@ Mapping names from the microarray to Bastians list via MIMATID.
 
 ```{r results='asis'}
 
-expressedmatched = unlist(lapply(filteredUCAMMIMAT, FUN=function(x)strsplit(x, "_")[[1]][1]))
-notexpressedmatched = unlist(lapply(unfilteredUCAMMIMAT[!unfilteredUCAMMIMAT %in% filteredUCAMMIMAT], FUN=function(x)strsplit(x, "_")[[1]][1]))
+comb = data.frame(uniqueID=union(unfilteredUCAMMIMAT, unfilteredAHUSMIMAT), stringsAsFactors=FALSE)
+comb$lookupID = unlist(lapply(comb$uniqueID, FUN=function(x)strsplit(x, "_")[[1]][1]))
+comb$status = curatedtab[match(comb$lookupID, curatedtab$MIMAT), "status"]
+comb$name = curatedtab[match(comb$lookupID, curatedtab$MIMAT), "miRNA"]
+comb$AHUS = "notonarray"
+comb$AHUS[(comb$uniqueID %in% unfilteredAHUSMIMAT)]="notexpressed"
+comb$AHUS[(comb$uniqueID %in% filteredAHUSMIMAT)]="expressed"
+comb$UCAM = "notonarray"
+comb$UCAM[(comb$uniqueID %in% unfilteredUCAMMIMAT)]="notexpressed"
+comb$UCAM[(comb$uniqueID %in% filteredUCAMMIMAT)]="expressed"
+comb = comb[!is.na(comb$status),]
+#comb[1:10,]
+#table(comb[comb$status=="purple", c("AHUS", "UCAM")])
 
-expressed =	table(curatedtab$status[match(expressedmatched, curatedtab$MIMAT)])
-nonexpressed=	table(curatedtab$status[match( notexpressedmatched, curatedtab$MIMAT)])
-tab = rbind(nonexpressed,expressed)
+
+tab = rbind(nonexpressed=table(comb$status[comb$UCAM=="notexpressed"]),
+						expressed=table(comb$status[comb$UCAM=="expressed"]))
+
 tab = cbind(tab, sum=rowSums(tab))
+perctab = round(tab/rowSums(tab) * 100 * 2, 0)
+x = paste(tab,paste("(", perctab, "%)", sep=""), sep=" ")
+nicetab = matrix(x, nrow=nrow(perctab), ncol=ncol(perctab), dimnames=dimnames(perctab))
 
-print( xtable(tab, caption="", digits=0), 
+print( xtable(nicetab, caption="", digits=0), 
+      comment = FALSE,
+      type = "html",
+      html.table.attributes="CELLPADDING=5",
+      include.rownames = TRUE)
+```
+The above table might count a microRNA two times. Several different microRNA names from the array might end up link to the same microRNA listed in Bastian´s file. Both arms of the miroRNA can be printed, and sometimes one is expressed, while the other is not. This is difficult to count in an easy understandable way. If I counted unique microRNA´s, some will be both expressed and non-expressed.
+<br/>
+<br/>
+The above numbers differed from what we got from the combined data set, especially for the purple type. Therefore, I do the same table for the AHUS only data:
+
+```{r results='asis'}
+tab = rbind(nonexpressed=table(comb$status[comb$AHUS=="notexpressed"]),
+						expressed=table(comb$status[comb$AHUS=="expressed"]))
+tab = cbind(tab, sum=rowSums(tab))
+perctab = round(tab/rowSums(tab) * 100 * 2, 0)
+x = paste(tab,paste("(", perctab, "%)", sep=""), sep=" ")
+nicetab = matrix(x, nrow=nrow(perctab), ncol=ncol(perctab), dimnames=dimnames(perctab))
+
+print( xtable(nicetab, caption="", digits=0), 
       comment = FALSE,
       type = "html",
       html.table.attributes="CELLPADDING=5",
       include.rownames = TRUE)
 
-#table(expressedmatched %in% notexpressedmatched)
+write.table(comb, file="temp/microRNAwithstatus.txt",
+            quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE, na="")
+
+
+# comb = data.frame(uniqueID=unfilteredcommonMIMAT)
+# comb$lookupID = unlist(lapply(unfilteredcommonMIMAT, FUN=function(x)strsplit(x, "_")[[1]][1]))
+# comb$status = curatedtab[match(comb$lookupID, curatedtab$MIMAT), "status"]
+# comb$name = curatedtab[match(comb$lookupID, curatedtab$MIMAT), "miRNA"]
+# comb$AHUS = "unknown"
+# comb$AHUS[(comb$uniqueID %in% unfilteredAHUSMIMAT)]="notexpressed"
+# comb$AHUS[(comb$uniqueID %in% filteredAHUSMIMAT)]="expressed"
+# comb$UCAM = "unknown"
+# comb$UCAM[(comb$uniqueID %in% unfilteredUCAMMIMAT)]="notexpressed"
+# comb$UCAM[(comb$uniqueID %in% filteredUCAMMIMAT)]="expressed"
+# comb=comb[!is.na(comb$status),]
+#table(comb[comb$status=="purple", c("AHUS", "UCAM")])
+
 ```
 
-The above table might count a microRNA two times. Several different microRNA names from the array might end up link to the same microRNA listed in Bastian´s file. Both arms of the miroRNA can be printed, and sometimes one is expressed, while the other is not. This is difficult to count in an easy understandable way. If I counted unique microRNA´s, some will be both expressed and non-expressed.
+The two data sets differ quite a bit in what types of microRNA that are filtered out. It might be an error somewhere in the counting, but I was unable to find it. From the numbers it is also clear that the filtering of the two data sets differ. More microRNAs are lost in the AHUS filtering, and this might explain the loss of almost all the purples.
 
 
 
