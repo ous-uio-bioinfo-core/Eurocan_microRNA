@@ -54,7 +54,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="overlap-between-our-results-and-volinia-et-al." class="section level1">
 <h1>Overlap between our results and Volinia et al.</h1>
-<p>2015-01-12 16:03:28</p>
+<p>2015-01-15 17:50:47</p>
 <p><br /> <br /></p>
 <p>We will check for</p>
 <ul>
@@ -102,7 +102,7 @@ fdrCO = 0.05</code></pre>
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jan 12 16:03:48 2015 -->
+<!-- Thu Jan 15 17:51:07 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> 
@@ -151,7 +151,7 @@ UCAM
       include.rownames = TRUE)
 }</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jan 12 16:03:48 2015 -->
+<!-- Thu Jan 15 17:51:07 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 AHUS
@@ -201,7 +201,7 @@ invasive
 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jan 12 16:03:48 2015 -->
+<!-- Thu Jan 15 17:51:07 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 UCAM
@@ -263,7 +263,7 @@ invasive
       include.rownames = TRUE)
 }</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jan 12 16:03:48 2015 -->
+<!-- Thu Jan 15 17:51:07 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 AHUS
@@ -333,7 +333,7 @@ normal
 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jan 12 16:03:48 2015 -->
+<!-- Thu Jan 15 17:51:07 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 UCAM
@@ -406,7 +406,8 @@ normal
 <p>Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded for those. The comparisons made, were between DCIS samples and the different IHC diagnoses of invasive samples. Benign and normal samples were not used in these comparisons either.</p>
 <p><br /> <br /></p>
 <p>Read in our results from files.</p>
-<pre class="r"><code>metafilefolder = &quot;not_in_github/lilianas&quot;
+<pre class="r"><code>#metafilefolder = &quot;not_in_github/lilianas&quot;
+metafilefolder = &quot;output-analysis/difflists_meta&quot;
 mergedfilefolder = &quot;output-analysis/difflists_merged&quot;
 
 meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), comparisontype=character(0), stringsAsFactors=FALSE)
@@ -450,12 +451,12 @@ for(i in 1:nrow(meta2merged))
   #summarytab[thiscomp, &quot;metafile&quot;] = rownames(thisrows)[1]
   #summarytab[thiscomp, &quot;mergedfile&quot;] = thisrows[1, &quot;mergedfn&quot;]
 
-    
-  summarytab[thiscomp, &quot;found_meta&quot;] = nrow(thismetatab)
+  a = thismetatab$adj.P.Val &lt;= 0.05
+  summarytab[thiscomp, &quot;found_meta&quot;] =sum(a)
   b = thismergedtab$adj.P.Val &lt;= 0.05
   summarytab[thiscomp, &quot;found_merged&quot;] = sum(b)
   
-  commonMIMATID = intersect( rownames(thismetatab),  rownames(thismergedtab)[b])
+  commonMIMATID = intersect( rownames(thismetatab)[a],  rownames(thismergedtab)[b])
   summarytab[thiscomp, &quot;found_both&quot;] = sum( thismetatab[commonMIMATID, &quot;logFC&quot;] * thismergedtab[commonMIMATID, &quot;logFC&quot;] &gt; 0) 
   summarytab[thiscomp, &quot;wrong_direction&quot;] = sum( thismetatab[commonMIMATID, &quot;logFC&quot;] * thismergedtab[commonMIMATID, &quot;logFC&quot;] &lt; 0) 
   rm(commonMIMATID)
@@ -463,18 +464,14 @@ for(i in 1:nrow(meta2merged))
   mergedtables[[thiscomp]] = thismergedtab
   
   x = mergedtables[[thiscomp]][, c(&quot;logFC&quot;, &quot;adj.P.Val&quot;)]
-  y = metatables[[thiscomp]][, c(&quot;logFC&quot;), drop = F]
-  y = cbind(y, data.frame( adj.P.Val=numeric(nrow(y)))  )
+  y = metatables[[thiscomp]][, c(&quot;logFC&quot;, &quot;adj.P.Val&quot;)]
  
     thistable = merge(x, y, by.x = &quot;row.names&quot;, by.y=&quot;row.names&quot;, suffixes=c(&quot;.merged&quot;, &quot;.meta&quot;), all.x=TRUE)
   row.names(thistable) = thistable$Row.names
   thistable = cbind(MIMAT = thistable$Row.names, name=unfilteredcommonname[thistable$Row.names], thistable[,-1])
-  thistable$adj.P.Val.meta = 1
-  thistable$adj.P.Val.meta[!is.na(thistable$logFC.meta)] = 0.05
-  thistable$logFC.meta[is.na(thistable$logFC.meta)] =0
   thistable$same_dir =  (thistable$logFC.merged * thistable$logFC.meta ) &gt; 0
   thistable$consensus = thistable$adj.P.Val.merged &lt;= 0.05 &amp; 
-  thistable$adj.P.Val.meta &lt;= 0.05 &amp; thistable$same_dir
+    thistable$adj.P.Val.meta &lt;= 0.05 &amp; thistable$same_dir
   consensustables[[thiscomp]] = thistable[order(thistable$consensus, -thistable$adj.P.Val.merged, decreasing=TRUE),]
 }
 
@@ -488,7 +485,7 @@ if(sum(summarytab$wrong_direction)&gt;0)
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jan 12 16:03:51 2015 -->
+<!-- Thu Jan 15 17:51:08 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 Overlap between meta and merged
@@ -503,11 +500,11 @@ found_both
   <tr> <td align="right"> 
 DCIS-normal
 </td> <td align="right">  
-113
+116
 </td> <td align="right">   
 86
 </td> <td align="right">   
-83
+82
 </td> </tr>
   <tr> <td align="right"> 
 invasive-DCIS
@@ -539,7 +536,7 @@ LumA-DCIS
   <tr> <td align="right"> 
 LumB-DCIS
 </td> <td align="right">   
-33
+30
 </td> <td align="right">   
 37
 </td> <td align="right">   
@@ -575,7 +572,7 @@ HER2neg_ERneg_PGRneg-DCIS
   <tr> <td align="right"> 
 HER2neg_ERpos-DCIS
 </td> <td align="right">    
-1
+2
 </td> <td align="right">   
 13
 </td> <td align="right">    
@@ -655,7 +652,7 @@ print(xtable(correlationmatrix1,
       html.table.attributes=&quot;CELLPADDING=5&quot;,
       include.rownames = TRUE)</code></pre>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jan 12 16:03:51 2015 -->
+<!-- Thu Jan 15 17:51:08 2015 -->
 <table CELLPADDING="5">
 <caption align="bottom"> 
 Count of significant microRNAs found going in the same direction for the subtypes
@@ -1006,9 +1003,9 @@ for(contrast in names(voliniatab))
     overlaptab$validated[x %in% c(0,3)] = TRUE
     overlaptab$validated[x %in% c(1,2)] = FALSE
     overlaptab$validated = overlaptab$validated &amp; (overlaptab$adj.P.Val.merged&lt;=fdrCO &amp; overlaptab$adj.P.Val.meta&lt;=fdrCO)
-    
-    volinia_overlap[[contrast]] = overlaptab
+
     overlaptab = overlaptab[ order(overlaptab$adj.P.Val.merged) , ]
+    volinia_overlap[[contrast]] = overlaptab
     write.table(overlaptab, 
             file=paste(outputdir, &quot;/Volinia_validation_&quot;, contrast, &quot;.txt&quot;, sep=&quot;&quot;),
             quote=FALSE, sep=&quot;\t&quot;, row.names=TRUE, col.names=NA)
@@ -1045,42 +1042,6 @@ adj.P.Val.meta
 validated
 </th>  </tr>
   <tr> <td> 
-miR-361-5p
-</td> <td> 
-MIMAT0000703
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.114
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-let-7b
-</td> <td> 
-MI0000063_MIMAT0000063
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
 miR-21
 </td> <td> 
 MIMAT0000076
@@ -1095,195 +1056,7 @@ UP
 </td> <td> 
 UP
 </td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-127-3p
-</td> <td> 
-MIMAT0000446
-</td> <td> 
-DOWN
-</td> <td align="right"> 
 0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.200
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-374a
-</td> <td> 
-MIMAT0000727
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.195
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-let-7c
-</td> <td> 
-MI0000064_MIMAT0000064
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-96
-</td> <td> 
-MIMAT0000095
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-652
-</td> <td> 
-MIMAT0003322
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.041
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-378
-</td> <td> 
-MIMAT0000731_MIMAT0000732
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-143*
-</td> <td> 
-MIMAT0004599
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-183
-</td> <td> 
-MIMAT0000261
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-374b
-</td> <td> 
-MIMAT0004955
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.051
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-99a
-</td> <td> 
-MIMAT0000097
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
 </td> <td> 
 TRUE
 </td> </tr>
@@ -1302,26 +1075,7 @@ DOWN
 </td> <td> 
 DOWN
 </td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-142-5p
-</td> <td> 
-MIMAT0000433
-</td> <td> 
-UP
-</td> <td align="right"> 
 0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
 </td> <td> 
 TRUE
 </td> </tr>
@@ -1340,50 +1094,18 @@ DOWN
 </td> <td> 
 DOWN
 </td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> </tr>
   <tr> <td> 
-miR-574-3p
+miR-193a-5p
 </td> <td> 
-MIMAT0003239
+MIMAT0004614
 </td> <td> 
 DOWN
 </td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.378
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-429
-</td> <td> 
-MIMAT0001536
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-193b
-</td> <td> 
-MIMAT0002819
+0.002
 </td> <td> 
 DOWN
 </td> <td align="right"> 
@@ -1391,39 +1113,14 @@ DOWN
 </td> <td> 
 DOWN
 </td> <td align="right"> 
-0.003
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> </tr>
   <tr> <td> 
-miR-221
+miR-378
 </td> <td> 
-MIMAT0000278
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.112
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-140-3p
-</td> <td> 
-MIMAT0004597
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
+MIMAT0000731_MIMAT0000732
 </td> <td> 
 DOWN
 </td> <td align="right"> 
@@ -1431,90 +1128,30 @@ DOWN
 </td> <td> 
 DOWN
 </td> <td align="right"> 
-0.050
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
 </td> <td> 
 TRUE
 </td> </tr>
   <tr> <td> 
-miR-182
+miR-155
 </td> <td> 
-MIMAT0000259
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.001
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
-  <tr> <td> 
-miR-15b
-</td> <td> 
-MIMAT0000417
+MIMAT0000646
 </td> <td> 
 UP
 </td> <td align="right"> 
-0.001
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.945
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-100
-</td> <td> 
-MIMAT0000098
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.008
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-22
-</td> <td> 
-MIMAT0000077
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.001
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.024
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-106b
-</td> <td> 
-MIMAT0000680
+0.005
 </td> <td> 
 UP
 </td> <td align="right"> 
-0.001
+0.000
 </td> <td> 
 UP
 </td> <td align="right"> 
-0.004
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> </tr>
@@ -1533,52 +1170,275 @@ UP
 </td> <td> 
 UP
 </td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> </tr>
   <tr> <td> 
-miR-107
+miR-425
 </td> <td> 
-MIMAT0000104
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.001
+MIMAT0001343_MIMAT0003393
 </td> <td> 
 UP
 </td> <td align="right"> 
-0.468
-</td> <td>  </td> <td align="right"> 
-1.000
+0.012
 </td> <td> 
-FALSE
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
 </td> </tr>
   <tr> <td> 
-miR-423-3p
+miR-183
 </td> <td> 
-MIMAT0001340
+MIMAT0000261
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-200b
+</td> <td> 
+MIMAT0000318
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.004
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-429
+</td> <td> 
+MIMAT0001536
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-96
+</td> <td> 
+MIMAT0000095
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-142-3p
+</td> <td> 
+MIMAT0000434
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-143*
+</td> <td> 
+MIMAT0004599
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
 </td> <td> 
 DOWN
 </td> <td align="right"> 
 0.001
-</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
-  <tr> <td> 
-let-7d
 </td> <td> 
-MI0000065_MIMAT0000065
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-140-3p
+</td> <td> 
+MIMAT0004597
 </td> <td> 
 DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-142-5p
+</td> <td> 
+MIMAT0000433
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-99a
+</td> <td> 
+MIMAT0000097
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+let-7b
+</td> <td> 
+MI0000063_MIMAT0000063
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+let-7c
+</td> <td> 
+MI0000064_MIMAT0000064
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-193b
+</td> <td> 
+MIMAT0002819
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.003
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-106b
+</td> <td> 
+MIMAT0000680
+</td> <td> 
+UP
 </td> <td align="right"> 
 0.001
 </td> <td> 
 UP
 </td> <td align="right"> 
-0.887
-</td> <td>  </td> <td align="right"> 
-1.000
+0.004
 </td> <td> 
-FALSE
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
 </td> </tr>
   <tr> <td> 
 miR-145*
@@ -1595,10 +1455,503 @@ DOWN
 </td> <td> 
 DOWN
 </td> <td align="right"> 
-0.050
+0.002
 </td> <td> 
 TRUE
 </td> </tr>
+  <tr> <td> 
+miR-342
+</td> <td> 
+MIMAT0000753
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-100
+</td> <td> 
+MIMAT0000098
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.008
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-210
+</td> <td> 
+MIMAT0000267
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.009
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.022
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-22
+</td> <td> 
+MIMAT0000077
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.024
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.049
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-652
+</td> <td> 
+MIMAT0003322
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.041
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td> 
+TRUE
+</td> </tr>
+  <tr> <td> 
+miR-374b
+</td> <td> 
+MIMAT0004955
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.051
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-19a
+</td> <td> 
+MIMAT0000073
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.008
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.073
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-376c
+</td> <td> 
+MIMAT0000720
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.088
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.324
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-221
+</td> <td> 
+MIMAT0000278
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.112
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.092
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-361-5p
+</td> <td> 
+MIMAT0000703
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.114
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.041
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-30d
+</td> <td> 
+MIMAT0000245
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.003
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.116
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.034
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-223
+</td> <td> 
+MIMAT0000280
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.003
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.124
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.079
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-185
+</td> <td> 
+MIMAT0000455
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.005
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.130
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.183
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-374a
+</td> <td> 
+MIMAT0000727
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.195
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.000
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-127-3p
+</td> <td> 
+MIMAT0000446
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.200
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.084
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-26b
+</td> <td> 
+MIMAT0000083
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.002
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.377
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.265
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-574-3p
+</td> <td> 
+MIMAT0003239
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.378
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.271
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-20a
+</td> <td> 
+MIMAT0000075
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.007
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.446
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.350
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-107
+</td> <td> 
+MIMAT0000104
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.468
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.583
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-125a
+</td> <td> 
+MIMAT0000443
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.782
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.628
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-423-5p
+</td> <td> 
+MIMAT0004748
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.002
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.852
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.756
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+let-7d
+</td> <td> 
+MI0000065_MIMAT0000065
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.887
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.731
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-15b
+</td> <td> 
+MIMAT0000417
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.945
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.641
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-29c
+</td> <td> 
+MIMAT0000681
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.006
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.951
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.639
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-15a
+</td> <td> 
+MIMAT0000068
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.013
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.972
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.981
+</td> <td> 
+FALSE
+</td> </tr>
+  <tr> <td> 
+miR-182
+</td> <td> 
+MIMAT0000259
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.001
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
+  <tr> <td> 
+miR-423-3p
+</td> <td> 
+MIMAT0001340
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.001
+</td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
   <tr> <td> 
 miR-106b*
 </td> <td> 
@@ -1618,93 +1971,6 @@ UP
 0.002
 </td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
   <tr> <td> 
-miR-193a-5p
-</td> <td> 
-MIMAT0004614
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.002
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.000
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-423-5p
-</td> <td> 
-MIMAT0004748
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.002
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.852
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-26b
-</td> <td> 
-MIMAT0000083
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.002
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.377
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-223
-</td> <td> 
-MIMAT0000280
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.003
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.124
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-30d
-</td> <td> 
-MIMAT0000245
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.003
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.116
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
 miR-28-3p
 </td> <td> 
 MIMAT0004502
@@ -1713,44 +1979,6 @@ DOWN
 </td> <td align="right"> 
 0.004
 </td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
-  <tr> <td> 
-miR-200b
-</td> <td> 
-MIMAT0000318
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.004
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-342
-</td> <td> 
-MIMAT0000753
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.005
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.006
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
   <tr> <td> 
 miR-340
 </td> <td> 
@@ -1761,78 +1989,6 @@ UP
 0.005
 </td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
   <tr> <td> 
-miR-376c
-</td> <td> 
-MIMAT0000720
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.005
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.088
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-155
-</td> <td> 
-MIMAT0000646
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.005
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-142-3p
-</td> <td> 
-MIMAT0000434
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.005
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-185
-</td> <td> 
-MIMAT0000455
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.005
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.130
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
 miR-452
 </td> <td> 
 MIMAT0001635
@@ -1841,133 +1997,6 @@ DOWN
 </td> <td align="right"> 
 0.005
 </td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
-  <tr> <td> 
-miR-125a
-</td> <td> 
-MIMAT0000443
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.006
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.782
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-29c
-</td> <td> 
-MIMAT0000681
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.006
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.951
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-20a
-</td> <td> 
-MIMAT0000075
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.007
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.446
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-19a
-</td> <td> 
-MIMAT0000073
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.008
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.073
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-210
-</td> <td> 
-MIMAT0000267
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.009
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.022
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-FALSE
-</td> </tr>
-  <tr> <td> 
-miR-425
-</td> <td> 
-MIMAT0001343_MIMAT0003393
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.012
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.000
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.050
-</td> <td> 
-TRUE
-</td> </tr>
-  <tr> <td> 
-miR-15a
-</td> <td> 
-MIMAT0000068
-</td> <td> 
-UP
-</td> <td align="right"> 
-0.013
-</td> <td> 
-DOWN
-</td> <td align="right"> 
-0.972
-</td> <td>  </td> <td align="right"> 
-1.000
-</td> <td> 
-FALSE
-</td> </tr>
   <tr> <td> 
 miR-17*
 </td> <td> 
@@ -2021,8 +2050,10 @@ UP
 UP
 </td> <td align="right"> 
 0.057
-</td> <td>  </td> <td align="right"> 
-1.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.713
 </td> <td> 
 FALSE
 </td> </tr>
@@ -2038,8 +2069,10 @@ UP
 UP
 </td> <td align="right"> 
 0.300
-</td> <td>  </td> <td align="right"> 
-1.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.932
 </td> <td> 
 FALSE
 </td> </tr>
@@ -2055,8 +2088,10 @@ UP
 DOWN
 </td> <td align="right"> 
 0.307
-</td> <td>  </td> <td align="right"> 
-1.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.713
 </td> <td> 
 FALSE
 </td> </tr>
@@ -2072,8 +2107,10 @@ DOWN
 DOWN
 </td> <td align="right"> 
 0.361
-</td> <td>  </td> <td align="right"> 
-1.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.824
 </td> <td> 
 FALSE
 </td> </tr>
@@ -2089,8 +2126,10 @@ DOWN
 DOWN
 </td> <td align="right"> 
 0.499
-</td> <td>  </td> <td align="right"> 
-1.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.958
 </td> <td> 
 FALSE
 </td> </tr>
@@ -2106,8 +2145,10 @@ DOWN
 DOWN
 </td> <td align="right"> 
 0.616
-</td> <td>  </td> <td align="right"> 
-1.000
+</td> <td> 
+DOWN
+</td> <td align="right"> 
+0.958
 </td> <td> 
 FALSE
 </td> </tr>
@@ -2123,8 +2164,10 @@ DOWN
 UP
 </td> <td align="right"> 
 0.991
-</td> <td>  </td> <td align="right"> 
-1.000
+</td> <td> 
+UP
+</td> <td align="right"> 
+0.958
 </td> <td> 
 FALSE
 </td> </tr>
@@ -2223,9 +2266,9 @@ hsa-miR-1305
 </td> <td align="right"> 
 0.000
 </td> <td align="right"> 
-5.534
+6.121
 </td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> <td> 
@@ -2244,9 +2287,9 @@ hsa-miR-1288
 </td> <td align="right"> 
 0.000
 </td> <td align="right"> 
-4.638
+5.097
 </td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> <td> 
@@ -2265,9 +2308,9 @@ hsa-miR-21
 </td> <td align="right"> 
 0.000
 </td> <td align="right"> 
-8.379
+8.676
 </td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> <td> 
@@ -2286,9 +2329,9 @@ hsa-miR-139-5p
 </td> <td align="right"> 
 0.000
 </td> <td align="right"> 
--8.186
+-8.167
 </td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> <td> 
@@ -2307,9 +2350,9 @@ hsa-miR-1274b
 </td> <td align="right"> 
 0.000
 </td> <td align="right"> 
-6.498
+6.308
 </td> <td align="right"> 
-0.050
+0.000
 </td> <td> 
 TRUE
 </td> <td> 
@@ -2350,7 +2393,7 @@ NA
   <tr> <td align="right"> 
 DCIS-normal
 </td> <td align="right">   
-69
+68
 </td> <td align="right">    
 1
 </td> <td align="right">    
@@ -2552,28 +2595,14 @@ significant
 </td> <td align="right">    
 9
 </td> <td align="right">   
-69
+68
 </td> <td align="right">    
 1
 </td> </tr>
    </table>
 
 <p>In the above table, <em>nonexpressed</em> is the number of micorRNAs that were filtered out in one or both of the platforms. The filter was mainly based on some expression threshold in a minimum amount of samples. For short these can be considered non-expressed. The <em>expressed</em> class consists of the microRNAs that passed the filter criteria in both platforms. The <em>significant</em> class is here the microRNAs that were found as significant in the “normal to DCIS”-comparison for the combined UCAM and AHUS data sets.</p>
-<p><br /> <br /> <br /> MIMAT ids that do not map to the list of curated</p>
-<pre class="r"><code>expressed = filt1[!filt1 %in% curatedtab$MIMAT]
-nonexpressed=   unfilt1[!unfilt1 %in% filt1]
-nonexpressed =  nonexpressed[!nonexpressed %in% curatedtab$MIMAT]
-
-print(&quot;&lt;br/&gt;&lt;br/&gt;**expressed**&lt;br/&gt;&quot;)</code></pre>
-<p>[1] “<br /><br /><strong>expressed</strong><br />”</p>
-<pre class="r"><code>print( paste( &quot;[&quot;, expressed ,&quot;]&quot;, &quot;(http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=&quot;,expressed,&quot;) &quot;,
-                            unfilteredcommonname[expressed] , &quot;&lt;br/&gt;&quot;, sep=&quot;&quot;) )</code></pre>
-<p>[1] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005954">MIMAT0005954</a> hsa-miR-720<br />”<br />[2] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005927">MIMAT0005927</a> hsa-miR-1274a<br />” [3] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005938">MIMAT0005938</a> hsa-miR-1274b<br />”</p>
-<pre class="r"><code>print(&quot;&lt;br/&gt;&lt;br/&gt;**nonexpressed**&lt;br/&gt;&quot;)</code></pre>
-<p>[1] “<br /><br /><strong>nonexpressed</strong><br />”</p>
-<pre class="r"><code>print( paste( &quot;[&quot;, nonexpressed ,&quot;]&quot;, &quot;(http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=&quot;,nonexpressed,&quot;)&quot;,
-                            unfilteredcommonname[nonexpressed] , &quot;&lt;br/&gt;&quot;,sep=&quot;&quot;) )</code></pre>
-<p>[1] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0009150">MIMAT0009150</a>bkv-miR-B1-3p<br />”<br /> [2] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0009149">MIMAT0009149</a>bkv-miR-B1-5p<br />”<br /> [3] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003390">MIMAT0003390</a>ebv-miR-BART1-3p<br />”<br /> [4] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000999">MIMAT0000999</a>ebv-miR-BART1-5p<br />”<br /> [5] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003420">MIMAT0003420</a>ebv-miR-BART10<br />”<br /> [6] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004817">MIMAT0004817</a>ebv-miR-BART10*<br />&quot;<br /> [7] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003422">MIMAT0003422</a>ebv-miR-BART11-3p<br />” [8] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003421">MIMAT0003421</a>ebv-miR-BART11-5p<br />” [9] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003423">MIMAT0003423</a>ebv-miR-BART12<br />”<br /> [10] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003424">MIMAT0003424</a>ebv-miR-BART13<br />”<br /> [11] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004818">MIMAT0004818</a>ebv-miR-BART13*<br />&quot;<br /> [12] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003426">MIMAT0003426</a>ebv-miR-BART14<br />”<br /> [13] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003425">MIMAT0003425</a>ebv-miR-BART14*<br />&quot;<br /> [14] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003713">MIMAT0003713</a>ebv-miR-BART15<br />”<br /> [15] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003714">MIMAT0003714</a>ebv-miR-BART16<br />”<br /> [16] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003716">MIMAT0003716</a>ebv-miR-BART17-3p<br />” [17] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003715">MIMAT0003715</a>ebv-miR-BART17-5p<br />” [18] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004835">MIMAT0004835</a>ebv-miR-BART18-3p<br />” [19] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003717">MIMAT0003717</a>ebv-miR-BART18-5p<br />” [20] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003718">MIMAT0003718</a>ebv-miR-BART19-3p<br />” [21] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004836">MIMAT0004836</a>ebv-miR-BART19-5p<br />” [22] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004744">MIMAT0004744</a>ebv-miR-BART2-3p<br />”<br /> [23] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001000">MIMAT0001000</a>ebv-miR-BART2-5p<br />”<br /> [24] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003720">MIMAT0003720</a>ebv-miR-BART20-3p<br />” [25] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003719">MIMAT0003719</a>ebv-miR-BART20-5p<br />” [26] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003411">MIMAT0003411</a>ebv-miR-BART3<br />”<br /> [27] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003410">MIMAT0003410</a>ebv-miR-BART3*<br />&quot;<br /> [28] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003412">MIMAT0003412</a>ebv-miR-BART4<br />”<br /> [29] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003413">MIMAT0003413</a>ebv-miR-BART5<br />”<br /> [30] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003415">MIMAT0003415</a>ebv-miR-BART6-3p<br />”<br /> [31] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003414">MIMAT0003414</a>ebv-miR-BART6-5p<br />”<br /> [32] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003416">MIMAT0003416</a>ebv-miR-BART7<br />”<br /> [33] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004815">MIMAT0004815</a>ebv-miR-BART7*<br />&quot;<br /> [34] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003417">MIMAT0003417</a>ebv-miR-BART8<br />”<br /> [35] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003418">MIMAT0003418</a>ebv-miR-BART8*<br />&quot;<br /> [36] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003419">MIMAT0003419</a>ebv-miR-BART9<br />”<br /> [37] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004816">MIMAT0004816</a>ebv-miR-BART9*<br />&quot;<br /> [38] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000995">MIMAT0000995</a>ebv-miR-BHRF1-1<br />”<br /> [39] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000997">MIMAT0000997</a>ebv-miR-BHRF1-2<br />”<br /> [40] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000996">MIMAT0000996</a>ebv-miR-BHRF1-2*<br />&quot;<br /> [41] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0000998">MIMAT0000998</a>ebv-miR-BHRF1-3<br />”<br /> [42] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001577">MIMAT0001577</a>hcmv-miR-UL112<br />”<br /> [43] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001578">MIMAT0001578</a>hcmv-miR-UL148D<br />”<br /> [44] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001574">MIMAT0001574</a>hcmv-miR-UL22A<br />”<br /> [45] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001575">MIMAT0001575</a>hcmv-miR-UL22A*<br />&quot;<br /> [46] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001576">MIMAT0001576</a>hcmv-miR-UL36<br />”<br /> [47] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004754">MIMAT0004754</a>hcmv-miR-UL36*<br />&quot;<br /> [48] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003343">MIMAT0003343</a>hcmv-miR-UL70-3p<br />”<br /> [49] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003342">MIMAT0003342</a>hcmv-miR-UL70-5p<br />”<br /> [50] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001581">MIMAT0001581</a>hcmv-miR-US25-1<br />”<br /> [51] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004755">MIMAT0004755</a>hcmv-miR-US25-1*<br />&quot;<br /> [52] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001583">MIMAT0001583</a>hcmv-miR-US25-2-3p<br />” [53] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001582">MIMAT0001582</a>hcmv-miR-US25-2-5p<br />” [54] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004756">MIMAT0004756</a>hcmv-miR-US33-3p<br />”<br /> [55] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001584">MIMAT0001584</a>hcmv-miR-US33-5p<br />”<br /> [56] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003341">MIMAT0003341</a>hcmv-miR-US4<br />”<br /> [57] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001579">MIMAT0001579</a>hcmv-miR-US5-1<br />”<br /> [58] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001580">MIMAT0001580</a>hcmv-miR-US5-2<br />”<br /> [59] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004480">MIMAT0004480</a>hiv1-miR-H1<br />”<br /> [60] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004478">MIMAT0004478</a>hiv1-miR-N367<br />”<br /> [61] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0006017">MIMAT0006017</a>hiv1-miR-TAR-3p<br />”<br /> [62] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0006016">MIMAT0006016</a>hiv1-miR-TAR-5p<br />”<br /> [63] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004483">MIMAT0004483</a>hsa-let-7c*<br />&quot;<br /> [64] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0007402">MIMAT0007402</a>hsa-miR-103-as<br />”<br /> [65] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005897">MIMAT0005897</a>hsa-miR-1245<br />”<br /> [66] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005946">MIMAT0005946</a>hsa-miR-1280<br />”<br /> [67] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003251">MIMAT0003251</a>hsa-miR-548a-3p<br />”<br /> [68] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004803">MIMAT0004803</a>hsa-miR-548a-5p<br />”<br /> [69] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003254">MIMAT0003254</a>hsa-miR-548b-3p<br />”<br /> [70] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004798">MIMAT0004798</a>hsa-miR-548b-5p<br />”<br /> [71] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003285">MIMAT0003285</a>hsa-miR-548c-3p<br />”<br /> [72] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004806">MIMAT0004806</a>hsa-miR-548c-5p<br />”<br /> [73] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003323">MIMAT0003323</a>hsa-miR-548d-3p<br />”<br /> [74] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004812">MIMAT0004812</a>hsa-miR-548d-5p<br />”<br /> [75] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005874">MIMAT0005874</a>hsa-miR-548e<br />”<br /> [76] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005895">MIMAT0005895</a>hsa-miR-548f<br />”<br /> [77] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005912">MIMAT0005912</a>hsa-miR-548g<br />”<br /> [78] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005928">MIMAT0005928</a>hsa-miR-548h<br />”<br /> [79] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005935">MIMAT0005935</a>hsa-miR-548i<br />”<br /> [80] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005875">MIMAT0005875</a>hsa-miR-548j<br />”<br /> [81] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005882">MIMAT0005882</a>hsa-miR-548k<br />”<br /> [82] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005889">MIMAT0005889</a>hsa-miR-548l<br />”<br /> [83] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005917">MIMAT0005917</a>hsa-miR-548m<br />”<br /> [84] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005916">MIMAT0005916</a>hsa-miR-548n<br />”<br /> [85] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005919">MIMAT0005919</a>hsa-miR-548o<br />”<br /> [86] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0005934">MIMAT0005934</a>hsa-miR-548p<br />”<br /> [87] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008399">MIMAT0008399</a>hsv1-miR-H2<br />”<br /> [88] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008398">MIMAT0008398</a>hsv1-miR-H2*<br />&quot;<br /> [89] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008401">MIMAT0008401</a>hsv1-miR-H4<br />”<br /> [90] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008402">MIMAT0008402</a>hsv1-miR-H4*<br />&quot;<br /> [91] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008403">MIMAT0008403</a>hsv1-miR-H5-3p<br />”<br /> [92] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0008404">MIMAT0008404</a>hsv1-miR-H6-3p<br />”<br /> [93] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0009148">MIMAT0009148</a>jcv-miR-J1-3p<br />”<br /> [94] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0009147">MIMAT0009147</a>jcv-miR-J1-5p<br />”<br /> [95] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002182">MIMAT0002182</a>kshv-miR-K12-1<br />”<br /> [96] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002180">MIMAT0002180</a>kshv-miR-K12-10b<br />”<br /> [97] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002181">MIMAT0002181</a>kshv-miR-K12-11<br />”<br /> [98] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003712">MIMAT0003712</a>NA<br />”<br /> [99] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MI0002476">MI0002476</a>NA<br />”<br />[100] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002193">MIMAT0002193</a>kshv-miR-K12-3<br />”<br />[101] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002194">MIMAT0002194</a>kshv-miR-K12-3*<br />&quot;<br />[102] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002192">MIMAT0002192</a>kshv-miR-K12-4-3p<br />” [103] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002191">MIMAT0002191</a>kshv-miR-K12-4-5p<br />” [104] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002189">MIMAT0002189</a>kshv-miR-K12-6-3p<br />” [105] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002188">MIMAT0002188</a>kshv-miR-K12-6-5p<br />” [106] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002185">MIMAT0002185</a>kshv-miR-K12-9<br />”<br />[107] “<a href="http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002184">MIMAT0002184</a>kshv-miR-K12-9*<br />&quot;</p>
+<p><br /> <br /></p>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.1.1 (2014-07-10)
 Platform: x86_64-apple-darwin10.8.0 (64-bit)
@@ -2641,7 +2670,7 @@ loaded via a namespace (and not attached):
 [91] tools_3.1.1               VariantAnnotation_1.10.5 
 [93] XML_3.98-1.1              XVector_0.4.0            
 [95] zlibbioc_1.10.0          </code></pre>
-<p>generation ended 2015-01-12 16:03:52. Time spent 0 minutes .</p>
+<p>generation ended 2015-01-15 17:51:08. Time spent 0 minutes .</p>
 </div>
 </div>
 

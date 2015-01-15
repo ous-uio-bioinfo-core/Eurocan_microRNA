@@ -111,7 +111,8 @@ Read in our results from files.
 
 ```{r}
 
-metafilefolder = "not_in_github/lilianas"
+#metafilefolder = "not_in_github/lilianas"
+metafilefolder = "output-analysis/difflists_meta"
 mergedfilefolder = "output-analysis/difflists_merged"
 
 meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), comparisontype=character(0), stringsAsFactors=FALSE)
@@ -155,12 +156,12 @@ for(i in 1:nrow(meta2merged))
   #summarytab[thiscomp, "metafile"] = rownames(thisrows)[1]
   #summarytab[thiscomp, "mergedfile"] = thisrows[1, "mergedfn"]
 
-  	
-  summarytab[thiscomp, "found_meta"] = nrow(thismetatab)
+  a = thismetatab$adj.P.Val <= 0.05
+  summarytab[thiscomp, "found_meta"] =sum(a)
   b = thismergedtab$adj.P.Val <= 0.05
   summarytab[thiscomp, "found_merged"] = sum(b)
   
-  commonMIMATID = intersect( rownames(thismetatab),  rownames(thismergedtab)[b])
+  commonMIMATID = intersect( rownames(thismetatab)[a],  rownames(thismergedtab)[b])
   summarytab[thiscomp, "found_both"] = sum( thismetatab[commonMIMATID, "logFC"] * thismergedtab[commonMIMATID, "logFC"] > 0) 
   summarytab[thiscomp, "wrong_direction"] = sum( thismetatab[commonMIMATID, "logFC"] * thismergedtab[commonMIMATID, "logFC"] < 0) 
   rm(commonMIMATID)
@@ -168,18 +169,14 @@ for(i in 1:nrow(meta2merged))
   mergedtables[[thiscomp]] = thismergedtab
   
   x = mergedtables[[thiscomp]][, c("logFC", "adj.P.Val")]
-  y = metatables[[thiscomp]][, c("logFC"), drop = F]
-  y = cbind(y, data.frame( adj.P.Val=numeric(nrow(y)))  )
+  y = metatables[[thiscomp]][, c("logFC", "adj.P.Val")]
  
  	thistable = merge(x, y, by.x = "row.names", by.y="row.names", suffixes=c(".merged", ".meta"), all.x=TRUE)
   row.names(thistable) = thistable$Row.names
   thistable = cbind(MIMAT = thistable$Row.names, name=unfilteredcommonname[thistable$Row.names], thistable[,-1])
-  thistable$adj.P.Val.meta = 1
-  thistable$adj.P.Val.meta[!is.na(thistable$logFC.meta)] = 0.05
-  thistable$logFC.meta[is.na(thistable$logFC.meta)] =0
   thistable$same_dir =  (thistable$logFC.merged * thistable$logFC.meta ) > 0
   thistable$consensus = thistable$adj.P.Val.merged <= 0.05 & 
-  thistable$adj.P.Val.meta <= 0.05 & thistable$same_dir
+  	thistable$adj.P.Val.meta <= 0.05 & thistable$same_dir
   consensustables[[thiscomp]] = thistable[order(thistable$consensus, -thistable$adj.P.Val.merged, decreasing=TRUE),]
 }
 
@@ -354,9 +351,9 @@ for(contrast in names(voliniatab))
 	overlaptab$validated[x %in% c(0,3)] = TRUE
 	overlaptab$validated[x %in% c(1,2)] = FALSE
 	overlaptab$validated = overlaptab$validated & (overlaptab$adj.P.Val.merged<=fdrCO & overlaptab$adj.P.Val.meta<=fdrCO)
-	
-	volinia_overlap[[contrast]] = overlaptab
+
 	overlaptab = overlaptab[ order(overlaptab$adj.P.Val.merged) , ]
+	volinia_overlap[[contrast]] = overlaptab
 	write.table(overlaptab, 
             file=paste(outputdir, "/Volinia_validation_", contrast, ".txt", sep=""),
             quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
@@ -525,20 +522,6 @@ In the above table, *nonexpressed* is the number of micorRNAs that were filtered
 
 <br/>
 <br/>
-<br/>
-MIMAT ids that do not map to the list of curated
-```{r results='asis'}
-expressed =	filt1[!filt1 %in% curatedtab$MIMAT]
-nonexpressed=	unfilt1[!unfilt1 %in% filt1]
-nonexpressed =	nonexpressed[!nonexpressed %in% curatedtab$MIMAT]
-
-print("<br/><br/>**expressed**<br/>")
-print( paste( "[", expressed ,"]", "(http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=",expressed,") ",
-							unfilteredcommonname[expressed] , "<br/>", sep="") )
-print("<br/><br/>**nonexpressed**<br/>")
-print( paste( "[", nonexpressed ,"]", "(http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=",nonexpressed,")",
-							unfilteredcommonname[nonexpressed] , "<br/>",sep="") )
-```
 
 ```{r sessionInfo, comment=""}
 sessionInfo()

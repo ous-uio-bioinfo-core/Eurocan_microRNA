@@ -56,7 +56,6 @@ MIMAT0005793	hsa-miR-320c	DOWN
 MIMAT0004557	hsa-miR-34a*	UP										
 MIMAT0004601	hsa-miR-145*	DOWN										
 MIMAT0000753	hsa-miR-342-3p	UP				UP						
-MIMAT0000447	hsa-miR-134	DOWN										
 MIMAT0000759	hsa-miR-148b	UP										
 MIMAT0000098	hsa-miR-100	DOWN										
 MIMAT0000449	hsa-miR-146a	UP										
@@ -83,6 +82,7 @@ MIMAT0000733	hsa-miR-379	DOWN
 MIMAT0000418	hsa-miR-23b	DOWN										
 MIMAT0004780	hsa-miR-532-3p	UP										
 MIMAT0003237	hsa-miR-572											
+MIMAT0000447	hsa-miR-134											
 MIMAT0000765	hsa-miR-335											
 MIMAT0000436	hsa-miR-144						DOWN					
 MIMAT0000086	hsa-miR-29a											
