@@ -32,8 +32,8 @@ MIMAT0000243	hsa-miR-148a	UP
 MIMAT0004597	hsa-miR-140-3p	DOWN				DOWN						
 MIMAT0000433	hsa-miR-142-5p	UP										
 MIMAT0000097	hsa-miR-99a	DOWN		UP		DOWN						
-MI0000063_MIMAT0000063	hsa-let-7b	DOWN										
-MI0000064_MIMAT0000064	hsa-let-7c	DOWN										
+MIMAT0000063	hsa-let-7b	DOWN										
+MIMAT0000064	hsa-let-7c	DOWN										
 MIMAT0000682	hsa-miR-200a	UP										
 MIMAT0000736	hsa-miR-381	DOWN				DOWN						
 MIMAT0005901	hsa-miR-1249	DOWN										
@@ -116,11 +116,11 @@ MIMAT0001080	hsa-miR-196b
 MIMAT0000254	hsa-miR-10b											
 MIMAT0002821	hsa-miR-181d											
 MIMAT0000072	hsa-miR-18a							UP				
-MIMAT0000278	hsa-miR-221						DOWN				DOWN	
+MIMAT0000278	hsa-miR-221					DOWN	DOWN				DOWN	
 MIMAT0000703	hsa-miR-361-5p											
 MIMAT0000226	hsa-miR-196a											
 MIMAT0000245	hsa-miR-30d											
-MIMAT0000687	hsa-miR-299-3p											
+MIMAT0000687	hsa-miR-299-3p					DOWN						
 MIMAT0000729	hsa-miR-376a					DOWN						
 MIMAT0000280	hsa-miR-223					DOWN						
 MIMAT0000081	hsa-miR-25											
@@ -143,7 +143,7 @@ MIMAT0002813	hsa-miR-493*
 MIMAT0004674	hsa-miR-30c-1*											
 MIMAT0000727	hsa-miR-374a											
 MIMAT0000446	hsa-miR-127-3p											
-MI0000433_MIMAT0000414	hsa-let-7g											
+MIMAT0000414	hsa-let-7g											
 MIMAT0004945	hsa-miR-744											
 MIMAT0001341	hsa-miR-424											
 MIMAT0002871	hsa-miR-500a*											
@@ -231,7 +231,7 @@ MIMAT0004748	hsa-miR-423-5p
 MIMAT0000693	hsa-miR-30e*										DOWN	
 MIMAT0000707	hsa-miR-363											
 MIMAT0001638	hsa-miR-409-5p											
-MI0000065_MIMAT0000065	hsa-let-7d											
+MIMAT0000065	hsa-let-7d											
 MIMAT0000258	hsa-miR-181c											
 MIMAT0000450	hsa-miR-149					UP						
 MIMAT0000770	hsa-miR-133b											
@@ -239,9 +239,9 @@ MIMAT0003879	hsa-miR-758
 MIMAT0004595	hsa-miR-135a*											
 MIMAT0004602	hsa-miR-125a-3p											
 MIMAT0000269	hsa-miR-212											
-MI0000066_MIMAT0000066	hsa-let-7e											
+MIMAT0000066	hsa-let-7e											
 MIMAT0001639	hsa-miR-409-3p											
-MI0000434_MIMAT0000415	hsa-let-7i											
+MIMAT0000415	hsa-let-7i											
 MIMAT0000266	hsa-miR-205											
 MIMAT0000757	hsa-miR-151-3p											
 MIMAT0000756	hsa-miR-326											

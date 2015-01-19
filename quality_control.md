@@ -3,7 +3,7 @@ Quality control plots of AHUS and UCAM microRNA data used in Volinia check
 
 
 
-2014-12-10 16:24:41  
+2015-01-19 18:24:47  
 <br/>
 <br/>
 
@@ -25,6 +25,27 @@ if(!exists("inputisread"))
 	source("read_input.r")
 ```
 
+```
+## Warning: package 'RSQLite' was built under R version 3.1.2
+```
+
+```
+## FILTERING PROBES BY FLAGS 
+## 
+## 
+## FILTERING BY ControlType 
+## 
+##    FEATURES BEFORE FILTERING:  961 
+##  	FEATURES AFTER ControlType FILTERING:  939 
+## ------------------------------------------------------ 
+## FILTERING BY IsGeneDetected FLAG 
+## 
+## 	FLAG FILTERING OPTIONS - FLAG OK = 1 - limIsGeneDetected:  75 % 
+## 	FEATURES AFTER IsGeneDetected FILTERING:  288 
+## 	NON Gene Detected : 651 
+## ------------------------------------------------------
+```
+
 The data matrix has 1573 samples and 266 microRNAs.
 
 
@@ -39,7 +60,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Dec 10 16:24:42 2014 -->
+<!-- Mon Jan 19 18:25:29 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -96,34 +117,6 @@ legend("topright", legend=c("AHUS", "UCAM"), text.col=c("red", "blue"))
 
 The density plot also reveals the difference and the data from the different providers seems to have been processed differently. 
 
-
-
-```r
-#common_matrix_qnorm = normalizeBetweenArrays(common_matrix, method="quantile")
-#common_matrix_qnorm = common_matrix
-
-
-# x = rowMeans(common_matrix[, sampleannotation$provider=="AHUS"])
-# y = unlist(apply(common_matrix[, sampleannotation$provider=="AHUS"], MARGIN=1, FUN=sd))
-# plot( smooth(y[order(x)]), col="red", type="l")
-# 
-# x = rowMeans(common_matrix[, sampleannotation$provider=="UCAM"])
-# y = unlist(apply(common_matrix[, sampleannotation$provider=="UCAM"], MARGIN=1, FUN=sd))
-# lines( smooth(y[order(x)]), col="blue")
-# 
-# 
-# for (i in 3:48)
-# {
-#   qqnorm (data[,i]); qqline(data[,i], col = 2)
-# }
-# qqnorm (common_matrix[,3]); common_matrix(data[,3], col = 2)
-# hist(data[,13])
-# 
-# index = index+1
-# a = sampleannotation$provider=="AHUS" & sampleannotation$tissue_type=="invasive"
-# qqnorm (common_matrix[index, a])
-# qqline(common_matrix[index, a], col = 2)
-```
 
 
 Next we will see how the samples cluster.
@@ -221,7 +214,7 @@ table(sampleannotation[,c("tissue_type", "IHC")], useNA="ifany")
 ##    invasive                  199           940            87            93
 ##    normal                      0             0             0             0
 ##            IHC
-## tissue_type Unknown
+## tissue_type unknown
 ##    benign        24
 ##    DCIS           8
 ##    invasive      19
@@ -247,29 +240,6 @@ The IHC labels do not seem to cluster.
 <br/>
 <br/>
 
-## References
-
-Breast cancer signatures for invasiveness and prognosis defined by deep sequencing of microRNA.  
-Volinia S, Galasso M, Sana ME, Wise TF, Palatini J, Huebner K, Croce CM.  
-Proc Natl Acad Sci U S A. 2012 Feb 21;109(8):3024-9. doi: 10.1073/pnas.1200010109. Epub 2012 Feb 6.
-
-The shaping and functional consequences of the microRNA landscape in breast cancer.
-Dvinge H, Git A, Gräf S, Salmon-Divon M, Curtis C, Sottoriva A, Zhao Y, Hirst M, Armisen J, Miska EA, Chin SF, Provenzano E, Turashvili G, Green A, Ellis I, Aparicio S, Caldas C.
-Nature. 2013 May 16;497(7449):378-82. doi: 10.1038/nature12108. Epub 2013 May 5.
-
-  
-  R Core Team (2013). R: A language and environment for statistical computing. R Foundation for Statistical Computing,
-  Vienna, Austria. URL http://www.R-project.org/
-
-  Yihui Xie (2013). knitr: A general-purpose package for dynamic report generation in R. R package version 1.5.
-
-  Yihui Xie (2013) Dynamic Documents with R and knitr. Chapman and Hall/CRC. ISBN 978-1482203530
-
-  Yihui Xie (2013) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and
-  Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
-  
-  RStudio Team (2012). RStudio: Integrated Development for R. RStudio, Inc., Boston, MA URL http://www.rstudio.com/.
-
 
 
 ```r
@@ -288,13 +258,13 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] sva_3.10.0            mgcv_1.8-3            nlme_3.1-118         
- [4] corpcor_1.6.7         RColorBrewer_1.0-5    knitr_1.8            
- [7] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0         
-[10] RSQLite_1.0.0         DBI_0.3.1             AnnotationDbi_1.26.1 
-[13] GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3          
-[16] limma_3.20.9          Biobase_2.24.0        BiocGenerics_0.10.0  
-[19] xtable_1.7-4         
+ [1] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0         
+ [4] RSQLite_1.0.0         DBI_0.3.1             AnnotationDbi_1.26.1 
+ [7] GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3          
+[10] limma_3.20.9          Biobase_2.24.0        BiocGenerics_0.10.0  
+[13] data.table_1.9.2      plyr_1.8.1            sva_3.10.0           
+[16] mgcv_1.8-3            nlme_3.1-118          corpcor_1.6.7        
+[19] xtable_1.7-4          RColorBrewer_1.0-5    knitr_1.8            
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.32.0            
@@ -323,28 +293,25 @@ loaded via a namespace (and not attached):
 [47] grid_3.1.1                gridExtra_0.9.1          
 [49] GSEABase_1.26.0           gtable_0.1.2             
 [51] gtools_3.4.1              Hmisc_3.14-5             
-[53] htmltools_0.2.6           hwriter_1.3.2            
-[55] IRanges_1.22.10           iterators_1.0.7          
-[57] KernSmooth_2.23-13        lattice_0.20-29          
-[59] latticeExtra_0.6-26       locfit_1.5-9.1           
-[61] markdown_0.7.4            MASS_7.3-35              
-[63] Matrix_1.1-4              mime_0.2                 
-[65] munsell_0.4.2             nnet_7.3-8               
-[67] oligoClasses_1.26.0       PFAM.db_2.14.0           
-[69] plyr_1.8.1                proto_0.3-10             
-[71] R.methodsS3_1.6.1         R.oo_1.18.0              
-[73] R.utils_1.34.0            R2HTML_2.3.1             
-[75] RBGL_1.40.1               Rcpp_0.11.3              
-[77] RcppArmadillo_0.4.450.1.0 RCurl_1.95-4.3           
-[79] ReportingTools_2.4.0      reshape2_1.4             
-[81] rmarkdown_0.3.3           rpart_4.1-8              
-[83] Rsamtools_1.16.1          rtracklayer_1.24.2       
-[85] scales_0.2.4              sendmailR_1.2-1          
-[87] splines_3.1.1             stats4_3.1.1             
-[89] stringr_0.6.2             survival_2.37-7          
-[91] tools_3.1.1               VariantAnnotation_1.10.5 
-[93] XML_3.98-1.1              XVector_0.4.0            
-[95] zlibbioc_1.10.0          
+[53] hwriter_1.3.2             IRanges_1.22.10          
+[55] iterators_1.0.7           KernSmooth_2.23-13       
+[57] lattice_0.20-29           latticeExtra_0.6-26      
+[59] locfit_1.5-9.1            MASS_7.3-35              
+[61] Matrix_1.1-4              munsell_0.4.2            
+[63] nnet_7.3-8                oligoClasses_1.26.0      
+[65] PFAM.db_2.14.0            proto_0.3-10             
+[67] R.methodsS3_1.6.1         R.oo_1.18.0              
+[69] R.utils_1.34.0            R2HTML_2.3.1             
+[71] RBGL_1.40.1               Rcpp_0.11.3              
+[73] RcppArmadillo_0.4.450.1.0 RCurl_1.95-4.3           
+[75] ReportingTools_2.4.0      reshape2_1.4             
+[77] rpart_4.1-8               Rsamtools_1.16.1         
+[79] rtracklayer_1.24.2        scales_0.2.4             
+[81] sendmailR_1.2-1           splines_3.1.1            
+[83] stats4_3.1.1              stringr_0.6.2            
+[85] survival_2.37-7           tools_3.1.1              
+[87] VariantAnnotation_1.10.5  XML_3.98-1.1             
+[89] XVector_0.4.0             zlibbioc_1.10.0          
 ```
 
-generation ended 2014-12-10 16:24:46. Time spent 0 minutes .
+generation ended 2015-01-19 18:25:34. Time spent 1 minutes .

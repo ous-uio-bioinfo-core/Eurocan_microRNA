@@ -9,10 +9,51 @@ The  dataset  consists of :
 * UCAM dataset consists of  8 benign, 1283 invasive, 116 normal and 10 DICS
 
 AHUS outputs comes from Agilents Feature Extraction Software (AFE). UCAM data  has been received  as a preprocessed matrix as described in the Nature paper (Nature. 2013 May 16;497(7449):378-82). 
-```{r, eval=TRUE}
+
+```r
 library(AgiMicroRna)
 library(Biobase)
 library(MAMA)
+```
+
+```
+## Loading required package: genefilter
+## 
+## Attaching package: 'genefilter'
+## 
+## The following object is masked from 'package:base':
+## 
+##     anyNA
+## 
+## Loading required package: metaMA
+## Loading required package: SMVar
+## 
+## Attaching package: 'metaMA'
+## 
+## The following object is masked from 'package:genefilter':
+## 
+##     rowVars
+## 
+## Loading required package: multtest
+## Loading required package: gtools
+## 
+## Attaching package: 'gtools'
+## 
+## The following object is masked from 'package:mgcv':
+## 
+##     scat
+## 
+## Loading required package: grid
+## Loading required package: GeneMeta
+## 
+## Attaching package: 'MAMA'
+## 
+## The following objects are masked from 'package:GeneMeta':
+## 
+##     multExpFDR, zScoreFDR, zScorePermuted, zScores
+```
+
+```r
 library(plyr)
 #load("AHUS_agiMicroRNAdata.rdata")
 if(!exists("inputisread"))
@@ -23,7 +64,8 @@ if(!exists("inputisread"))
 First we load  and preprocess the AHUS data. The use only one of the AHUS dataset which has DCIS samples. We choose to use  RMA summarisation of  the signal without background correction as described in BMC Research Notes 2010, 3:18.We also read the processed and already normalized UCAM data and the annotation file. 
 We further annotate the samples using the annotation file and check if the data is paired. Only 5 samples from the AHUS Agilent
 v2 and 31 samples Agilent v3 is paired.  No information on matched samples from UCAM.  Since we are interested in DCIS comparisons ( where there is no paired data available) we will not use paired data design.
-```{r , eval = TRUE}
+
+```r
 annot <- sampleannotation # wich is read in read_input.r
 
 ## read the UCAM data
@@ -39,7 +81,8 @@ ucam = ucam[, colnames(ucam) %in% sampleannotation$sample_id]
 ```
 ## Create the target files
 We further annotate the samples using the annotation file.  No information on matched samples from UCAM.  
-```{r , eval = TRUE}
+
+```r
 ## create ahus 3 target file 
 ahus_v3_targets <- ahus_uRNAList$targets
 ahus_3 <- as.matrix(ahus_v3_targets$FileName)
@@ -91,8 +134,19 @@ targets_ucam$ihc <- as.factor(targets_ucam$ihc)
 
 ## Creating the expression sets 
 We then create the expression sets and later make sure the all datasets have common feature names in the exact order
-```{r, eval = TRUE}
+
+```r
 ahus_v3_eset =esetMicroRna(ahus_v3_filtered ,targets_ahus_v3 ,makePLOT=FALSE,verbose=TRUE)
+```
+
+```
+## outPUT DATA: esetPROC 
+## Features  Samples 
+##      288      156 
+## ------------------------------------------------------
+```
+
+```r
 ucam_data <- targets_ucam
 rownames(ucam_data) <- targets_ucam$FileName
 pd <- new("AnnotatedDataFrame", data = ucam_data)
@@ -100,7 +154,8 @@ ucam_eset <- new("ExpressionSet", exprs = as.matrix(ucam) , phenoData = pd)
 ```
 ##  Conversion of   miRNA names to miRbase accession numbers
 A microRNA to MIMATID mapping was made earlier (in read_input.r) and is used to harmonize and easier comparisons between datasets.
-```{r, eval = TRUE}
+
+```r
 df = data.frame(V1=names(mimatmapping), ID=mimatmapping) # use MIMATmapping read in read_input.r
 rownames(df) <-1:length(mimatmapping)
 
@@ -131,7 +186,8 @@ d[389] <- "MIMAT0003257*"
 featureNames(ucam_eset) <- d
 ```
 ## Find common features for both datasets
-```{r, eval = TRUE}
+
+```r
 ahus_v3_features <- featureNames(ahus_v3_eset) ## 266
 ucam_features <- featureNames(ucam_eset)
 all_features <- intersect(ahus_v3_features, ucam_features) ## ahus_v2 does not have DCIS data
@@ -143,7 +199,8 @@ ucam_common_features <- ucam_common_features[order( featureNames(ucam_common_fea
 ## Perform meta analysis
 We use the combined p value meta analysis using limma implemented in the MAMA package 
 ## First, prepare the ahus sub-dataseta for meta analysis
-```{r, eval = TRUE}
+
+```r
 ahus_v3_dcis_lumA <- ahus_v3_common_features[ , ahus_v3_common_features$var2 %in%  c("DCIS", "LumA")]
 ahus_v3_dcis_lumA <- ahus_v3_dcis_lumA[ , ahus_v3_dcis_lumA$status %in%  c("invasive", "DCIS")]
 pData(phenoData(ahus_v3_dcis_lumA))$var2 <- factor( pData(phenoData(ahus_v3_dcis_lumA))$var2) 
@@ -201,7 +258,8 @@ pData(phenoData(ahus3_dcis_HER2pos_ERpos ))$status <- factor( pData(phenoData(ah
 ```
 ## Prepare ucam sub-datasets for meta analysis
 
-```{r, eval = TRUE}
+
+```r
 ucam_normalDCIS<- ucam_common_features[, ucam_common_features$status %in% c("normal", "DCIS") ]   
 pData(phenoData(ucam_normalDCIS))$status  <- factor(pData(phenoData(ucam_normalDCIS))$status )
 pData(phenoData(ucam_normalDCIS))$FileName  <- factor(pData(phenoData(ucam_normalDCIS))$FileName )
@@ -260,7 +318,8 @@ pData(phenoData(ucam_dcis_HER2pos_ERpos ))$status <- factor( pData(phenoData(uca
 
 ## Prepare the combined sub-datatests
 
-```{r, eval = TRUE}
+
+```r
 all_normal_DCIS <- new("MetaArray", GEDM = list( exprs(ahus_v3_normal_DCIS), exprs(ucam_normalDCIS)), clinical = list(pData(phenoData(ahus_v3_normal_DCIS)), pData(phenoData(ucam_normalDCIS) )) , datanames = c( "ahus_v3_4470C_normal_DCIS", "ucam_normal_DCIS"))
 all_invasive_DCIS <- new("MetaArray", GEDM = list( exprs(ahus_v3_invasive_DCIS), exprs(ucam_invasiveDCIS )), clinical = list(pData(phenoData(ahus_v3_invasive_DCIS)), pData(phenoData(ucam_invasiveDCIS ) )) , datanames = c( "ahus_v3_4470C_invasive_DCIS", "ucam_invasive_DCIS"))
 all_normnal_to_benign <- new("MetaArray", GEDM = list( exprs(ahus_v3_normaltobenign), exprs(ucam_normalTobenign )), clinical = list(pData(phenoData(ahus_v3_normaltobenign)), pData(phenoData(ucam_normalTobenign ) )) , datanames = c( "ahus_v3_4470C_invasive_DCIS", "ucam_normalTobenign"))
@@ -276,8 +335,8 @@ all_dcis_HER2neg_ERpos<- new("MetaArray", GEDM = list(exprs(ahus3_dcis_HER2neg_E
 ```
 ## Meta analysis using limma
 
-```{r, eval = TRUE}
 
+```r
 outputdir = "output-analysis"
 if(!file.exists(outputdir))
 	dir.create(outputdir)
@@ -286,6 +345,14 @@ if(!file.exists(difflistdir))
 		dir.create(difflistdir)
 
 results_pval1 <- metaMA(all_normal_DCIS, varname = "status", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -299,6 +366,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/DCIS_to_normal_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(all_invasive_DCIS, varname = "status", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -312,6 +387,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/DCIS_to_invasive_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(all_normnal_to_benign, varname = "status", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -325,6 +408,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/benign_to_normal_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(all_dcis_LumA, varname = "var2", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -338,6 +429,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/dcis_to_lumA_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(all_dcis_LumB, varname = "var2", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -351,6 +450,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/dcis_to_lumB_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(all_dcis_Her2, varname = "var2", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -364,6 +471,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/dcis_to_her2_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(all_dcis_Normal, varname = "var2", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -377,6 +492,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/dcis_to_normallike_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(all_dcis_Basal, varname = "var2", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -390,6 +513,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/basallike_to_dcis_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(  all_dcis_HER2neg_ERneg_PGRneg, varname = "ihc", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -403,6 +534,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/dcis_to_HER2neg_ERneg_PGRneg_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(  all_dcis_HER2neg_ERpos, varname = "ihc", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -416,6 +555,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/dcis_to_HER2neg_ERpos_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(  all_dcis_HER2pos_ERneg, varname = "ihc", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]
@@ -429,6 +576,14 @@ test$adj.P.Val=p.adjust(test$pval, method="BH")
 test = test[order(test$pval),]
 write.table(test, "output-analysis/difflists_meta/dcis_to_HER2pos_ERneg_limma.txt", sep = "\t", quote = FALSE, row.names=FALSE)
 results_pval1 <- metaMA(  all_dcis_HER2pos_ERpos, varname = "ihc", moderated = "limma",   which = "pval", BHth = 1) 
+```
+
+```
+##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+```
+
+```r
 test <- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE <- results_pval1$gene.names[i]

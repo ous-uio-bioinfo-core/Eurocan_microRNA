@@ -98,8 +98,11 @@ sympy-plots-for-*.tex/
 *.xdy
 .Rproj.user
 *.Rproj
+.Rapp.history
+.Rhistory
 
 .DS_Store
 not_in_github/
-figure/
-temp/
+figure
+temp
+old

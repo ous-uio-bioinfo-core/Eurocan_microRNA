@@ -11,7 +11,7 @@
 #
 # The microRNA names are mapped to MIMATIDs in order to combine results.
 
-
+library(plyr)
 annotdir = "input"
 datadir = "not_in_github"
 #library(AgiMicroRna)
@@ -22,26 +22,26 @@ sampleannotation_file="sampleannotation_validatingvolinia.txt"
 mimatmapping_file = "MIMATID_conversion.txt"
 
 
-# make MIMAT mapping
-mimattab= read.table(file=paste(annotdir, "/", mimatmapping_file, sep=""),
-                     sep="\t", check.names=TRUE, comment.char="",
-                     stringsAsFactors=FALSE, header=TRUE)
-mimatmapping = mimattab[,2]
-names(mimatmapping)= mimattab[,1]
-rm(mimattab)
+# make MIMAT mapping  # old
+# mimattab= read.table(file=paste(annotdir, "/", mimatmapping_file, sep=""),
+#                      sep="\t", check.names=TRUE, comment.char="",
+#                      stringsAsFactors=FALSE, header=TRUE)
+# mimatmapping = mimattab[,2]
+# names(mimatmapping)= mimattab[,1]
+# rm(mimattab)
 
-## make mapping from micorRNA name to MIMAT id, when several MIMAT matches, only the first alphabetically will be used.
-# aliases <- read.delim(paste(annotdir ,"/aliases.txt", sep=""), header = FALSE, sep = "") ## file from miRbase
-# colnames(aliases) <- c("MIMAT", "name")
-# library(data.table)
-# df <- data.table(aliases, key="MIMAT")
-# df <- df[, list(name = unlist(strsplit(as.character(name), ";"))), by=MIMAT]
-# df = as.data.frame(as.matrix(df), stringsAsFactors=FALSE)
-# df = df[ grepl("MIMAT", df$MIMAT), ]
-# df = df[order(df$name, df$MIMAT),]
-# df = df[!duplicated(df$name),]
-# mimatmapping = df$MIMAT
-# names(mimatmapping)= df$name
+aliases <- read.delim(paste(annotdir, "/aliases.txt", sep=""), header = FALSE, sep = "") ## file from miRbase
+
+# aliases = aliases[grepl("hsa-", aliases$V2), ]# only use human microRNA
+aliases = aliases[grepl("MIMAT", aliases$V1), ]# only use MIMAT id and not MI
+library(data.table)
+df <- data.table(aliases, key="V1")
+df <- df[, list(V2 = unlist(strsplit(as.character(V2), ";"))), by=V1]
+df <- as.matrix(df)
+df <- as.data.frame(df)
+df <- ddply(df, "V2", summarize, ID = paste(V1, collapse="_")) 
+mimatmapping = df[,2]
+names(mimatmapping)= df[,1]
 
 # read sampleannotation table
 sampleannotation=read.table(paste(annotdir,  "/", sampleannotation_file, sep=""),
@@ -54,8 +54,11 @@ sampleannotation$IHC[sampleannotation$IHC==""] = "unknown"
 #save(ahus_uRNAList, file="inputdata/AHUS_rma_uRNAList.rdata")
 
 # load the AHUS data as a uRNAlist object. Prepared earlier from Agilent Feature Extraction Result Files
+# We then filter out the ahus data from control spots,  miRNA whose gMeanSignal is close to the 
+# expression of the negative controls(25\% limit) and  miRNA which are not expressed. 
+# We set up a limit of 75\% of the miRNA which must remain in at least one experimental condition. 
+# 288 features for ahus_v3 dataset are left  out of 961.
 load(paste(datadir, "/AHUS_rma_uRNAList.rdata", sep=""))
-# Format and filter to take out weak/unreliable/unmappable probes
 a =match(ahus_uRNAList$targets$FileName, sampleannotation$datafile)
 filtertargets = sampleannotation[a , c("sample_id", "tissue_type")]
 names(filtertargets) = c("FileName", "Treatment")
@@ -74,7 +77,9 @@ rownames(ahus_matrix) = mimatmapping[rownames(ahus_matrix)]
 ucam_matrix = read.table(paste(datadir, "/", UCAM_data_file, sep=""), header = TRUE, sep="\t", stringsAsFactors=FALSE)
 ucam_matrix = ucam_matrix[ucam_matrix[,2] %in%  names(mimatmapping),]
 
-# some microRNA are measured with several different probes, use only one probe per microRNA, chose the one with highest sd across samples.
+# UCAM data has been already filtered - 823 features.
+# But some microRNA are measured with several different probes, use only one probe per microRNA,
+# chose the one with highest sd across samples.
 rowsd = apply(ucam_matrix[,-c(1,2)], MARGIN=1, FUN=sd)
 ucam_matrix = ucam_matrix[order(rowsd, decreasing=TRUE), ]
 ucam_matrix = ucam_matrix[!duplicated(ucam_matrix[,2]), ]
@@ -86,9 +91,9 @@ ucam_matrix = ucam_matrix[!duplicated(ucam_matrix[,2]), ]
 ucam_microrna_names_filtered=ucam_matrix[,2]
 rownames(ucam_matrix) = mimatmapping[ucam_matrix[,2]]
 ucam_matrix = as.matrix(ucam_matrix[, -c(1,2)])
-colnames(ucam_matrix) = paste("UCAM_", colnames(ucam_matrix), sep="") # another naming scheme is used in the annotation I made.
+colnames(ucam_matrix) = paste("UCAM_", colnames(ucam_matrix), sep="") # another naming scheme is used in the annotation used here.
 
-# A few of the samples are without sample annotation, probably some kind of control samples. I filter them out.
+# A few of the samples are without sample annotation, probably some kind of control samples. We filter them out.
 ucam_matrix = ucam_matrix[, colnames(ucam_matrix) %in% sampleannotation$sample_id]
 
 # Make a vecor of all common MIMAT before filtering.

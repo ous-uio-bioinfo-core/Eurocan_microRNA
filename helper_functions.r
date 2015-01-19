@@ -81,7 +81,7 @@ plotonepca = function(name, thisannot, thisplatform, thisprcomp, plotdirname="",
 
 
 
-makegeneannotation = function(startnames)
+xxxold_makegeneannotation = function(startnames)
 {	
   ret = data.frame(Symbol=startnames, stringsAsFactors=FALSE)
   dimnames(ret)[[1]] = startnames
@@ -100,7 +100,7 @@ makegeneannotation = function(startnames)
 
 # small function to find best probable match between ids.
 #thisid="let-7b"
-getbestprobematch = function(thisid, ga)
+xxxold_getbestprobematch = function(thisid, ga)
 {
   a = ga$modID1 == thisid # direct match
   if(sum(a)==1)
@@ -131,7 +131,7 @@ getbestprobematch = function(thisid, ga)
 }
 
 
-find_diff_genes = function(datamatrix, labels, tissue1, tissue2, mimatnames)
+xxxold_find_diff_genes = function(datamatrix, labels, tissue1, tissue2, mimatnames)
 {  
 
   t1 = labels==tissue1
@@ -153,7 +153,7 @@ find_diff_genes = function(datamatrix, labels, tissue1, tissue2, mimatnames)
   return(fulltab)
 }
 
-compare_with_volinia = function(voliniatab, ourtab, geneannotation, mimatnames, validationFDR=0.05)
+xxxold_compare_with_volinia = function(voliniatab, ourtab, geneannotation, mimatnames, validationFDR=0.05)
 {
   
   arraytab= ourtab[, c("logFC", "adj.P.Val")]  

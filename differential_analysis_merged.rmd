@@ -47,20 +47,11 @@ if(!exists("inputisread"))
 	source("read_input.r")
 
 outputdir = paste( "output-analysis", sep="")
-if(file.exists(outputdir))
-{
-	# move old results and add a datastring
-	datestr = strsplit( as.character(file.info(outputdir)$ctime), " ")[[1]][1]
-  backupname = paste("not_in_github/", outputdir, "_", datestr, sep="")
-	if(file.exists(backupname))
-	{
-		unlink(backupname, recursive=TRUE)
-	}
-  x=file.rename(outputdir,backupname)	
-}
+if(!file.exists(outputdir))
+	dir.create(outputdir)
 difflistdir = paste(outputdir, "/difflists_merged", sep="")
-dir.create(outputdir)
-dir.create(difflistdir)
+if(!file.exists(difflistdir))
+	dir.create(difflistdir)
 postfix = ".txt"
 
 ```
@@ -169,20 +160,11 @@ pam50labels = pam50labels[!pam50labels %in% c("unknown", "DCIS")]
 The diff test,
 ```{r find_diff_genes_pam50labels}
 
-#signchangetab = matrix( nrow=nrow(common_matrix_batchnorm), ncol=length(pam50labels),
-#                       dimnames=list(rownames(common_matrix_batchnorm), pam50labels))
-dcis_invasive = sampleannotation$tissue_type %in% c("DCIS", "invasive")
-
-#signchangetab = as.data.frame(matrix( nrow=nrow(common_matrix), ncol=length(pam50labels)+2), stringsAsFactors=FALSE)
-#colnames(signchangetab) = c("microRNA", "MIMATID", pam50labels)
-#rownames(signchangetab) = rownames(common_matrix)
-#signchangetab[,"MIMATID"] = rownames(common_matrix)
-
 pam50contrasts = paste(pam50labels, "-DCIS", sep="")
+to_be_used = sampleannotation$tissue_type %in% c("DCIS", "invasive") & (pam50 != "unknown") # do not use samples without clinical info!
 
-
-group = factor(pam50[dcis_invasive])
-batch = factor(sampleannotation$provider[dcis_invasive])
+group = factor(pam50[to_be_used])
+batch = factor(sampleannotation$provider[to_be_used])
 
 # simple permutation sanity check
 #a = batch=="AHUS" & group %in% c("DCIS", pam50labels)
@@ -192,7 +174,7 @@ batch = factor(sampleannotation$provider[dcis_invasive])
 
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub("group", "", colnames(design))
-fit = lmFit(common_matrix[,dcis_invasive], design)
+fit = lmFit(common_matrix[,to_be_used], design)
 fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
 cont.matrix = makeContrasts ( contrasts=pam50contrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
@@ -212,34 +194,8 @@ for(thiscontrast in pam50contrasts)
   print( paste("Diff genes with fdr<0.05 for ", thislabel, " vs DCIS: ",
                sum(thisres$adj.P.Val < 0.05), sep=""))
   
-  #signchangetab[rownames(thisres)[thisres$adj.P.Val<0.05], thislabel] = "UP"
-  #signchangetab[rownames(thisres)[thisres$adj.P.Val<0.05], thislabel][thisres$logFC[thisres$adj.P.Val<0.05]<0] = "DOWN" 
 }
 
-#write.table(signchangetab, file=paste(difflistdir, "/signchangetab-pam50subgroups", 
-#                     "-vs-DCIS", postfix, sep=""),
-#            quote=FALSE, sep="\t", row.names=TRUE, col.names=NA, na="")
-
-# correlationmatrix1 = matrix(nrow=length(pam50labels), ncol=length(pam50labels),dimnames=list(pam50labels,pam50labels))
-# correlationmatrix2 = correlationmatrix1
-# for(i in 1:(length(pam50labels)-1))
-# {
-#   for(j in (i+1):length(pam50labels))
-#   {
-#     correlationmatrix1[i,j] = sum(signchangetab[, pam50labels[i]]==signchangetab[, pam50labels[j]], na.rm=TRUE)
-#     correlationmatrix1[j,i] = correlationmatrix1[i,j]
-#     
-#     correlationmatrix2[i,j] = sum(signchangetab[, pam50labels[i]]!=signchangetab[, pam50labels[j]], na.rm=TRUE)
-#     correlationmatrix2[j,i] = correlationmatrix2[i,j]
-#   }
-# 
-# }
-# 
-# fn = paste(difflistdir, "/subtypecorrelation", postfix, sep="")
-# write("Count of significant genes found going in the same direction for the pam50 subtypes", file=fn)
-# write.table(correlationmatrix1, file=fn,quote=FALSE, sep="\t", col.names=NA, na="X", append=TRUE)
-# write("\n\n\nCount of significant genes found going in the opposite direction for the pam50 subtypes", file=fn, append=TRUE)
-# write.table(correlationmatrix2, file=fn,quote=FALSE, sep="\t", col.names=NA,  na="X", append=TRUE)
 ```
 
 This is diff genes between all the DCIS (which is a small and diverse group) and each of the pam50 classes for the invasive samples.
@@ -256,7 +212,6 @@ We would like too look for microRNA that are changed between all the DCIS and th
 
 ```{r}
 IHC = sampleannotation$IHC
-IHC[IHC==""] = "Unknown"
 IHC[sampleannotation$tissue_type=="DCIS"] = "DCIS"
 table(sampleannotation[,"tissue_type"], IHC, useNA="ifany")
 ```
@@ -265,12 +220,12 @@ table(sampleannotation[,"tissue_type"], IHC, useNA="ifany")
 The diff test,
 ```{r find_diff_genes_IHClabels}
 
-IHClabels = unique(IHC[!IHC %in% c("", "Unknown", "DCIS")])
+IHClabels = unique(IHC[!IHC %in% c("", "unknown", "DCIS")])
 IHCcontrasts = paste(IHClabels, "-DCIS", sep="")
+to_be_used =  sampleannotation$tissue_type %in% c("DCIS", "invasive") & (IHC != "unknown") # do not use samples without clinical info!
 
-
-group = factor(IHC[dcis_invasive])
-batch = factor(sampleannotation$provider[dcis_invasive])
+group = factor(IHC[to_be_used])
+batch = factor(sampleannotation$provider[to_be_used])
 
 #simple permutation sanity check
 # a = batch=="AHUS" & group %in% c("DCIS", IHClabels)
@@ -280,7 +235,7 @@ batch = factor(sampleannotation$provider[dcis_invasive])
 
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub("group", "", colnames(design))
-fit = lmFit(common_matrix[,dcis_invasive], design)
+fit = lmFit(common_matrix[,to_be_used], design)
 fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
 cont.matrix = makeContrasts ( contrasts=IHCcontrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
@@ -313,29 +268,8 @@ For the diff-tests I ran a few sanity checks where I permuted the group labels w
 
 
 
-## References
-
-Breast cancer signatures for invasiveness and prognosis defined by deep sequencing of microRNA.  
-Volinia S, Galasso M, Sana ME, Wise TF, Palatini J, Huebner K, Croce CM.  
-Proc Natl Acad Sci U S A. 2012 Feb 21;109(8):3024-9. doi: 10.1073/pnas.1200010109. Epub 2012 Feb 6.
-
-The shaping and functional consequences of the microRNA landscape in breast cancer.
-Dvinge H, Git A, Gräf S, Salmon-Divon M, Curtis C, Sottoriva A, Zhao Y, Hirst M, Armisen J, Miska EA, Chin SF, Provenzano E, Turashvili G, Green A, Ellis I, Aparicio S, Caldas C.
-Nature. 2013 May 16;497(7449):378-82. doi: 10.1038/nature12108. Epub 2013 May 5.
-
-  
-  R Core Team (2013). R: A language and environment for statistical computing. R Foundation for Statistical Computing,
-  Vienna, Austria. URL http://www.R-project.org/
-
-  Yihui Xie (2013). knitr: A general-purpose package for dynamic report generation in R. R package version 1.5.
-
-  Yihui Xie (2013) Dynamic Documents with R and knitr. Chapman and Hall/CRC. ISBN 978-1482203530
-
-  Yihui Xie (2013) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and
-  Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
-  
-  RStudio Team (2012). RStudio: Integrated Development for R. RStudio, Inc., Boston, MA URL http://www.rstudio.com/.
-
+<br>
+<br>
 
 ```{r sessionInfo, comment=""}
 sessionInfo()

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Meta analysis on AHUS and UCAM miRNA microarrays datasets</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Meta analysis on AHUS and UCAM miRNA microarrays datasets</h1>
+
+<h2>Liliana Greger</h2>
+
+<h2>Data description</h2>
+
+<p>The  dataset  consists of :</p>
+
+<ul>
+<li>The AHUS datasets are Agilent_miRNA_v2_4470B consisting of  4 benign, 15 invasive, 18 normal, no DICS samples</li>
+<li>Agilent_miRNA_v3_4470C consists of  23 benign, 55 invasive, 70 normal and  8 DICS</li>
+<li>UCAM dataset consists of  8 benign, 1283 invasive, 116 normal and 10 DICS</li>
+</ul>
+
+<p>AHUS outputs comes from Agilents Feature Extraction Software (AFE). UCAM data  has been received  as a preprocessed matrix as described in the Nature paper (Nature. 2013 May 16;497(7449):378-82). </p>
+
+<pre><code class="r">library(AgiMicroRna)
+library(Biobase)
+library(MAMA)
+</code></pre>
+
+<pre><code>## Loading required package: genefilter
+## 
+## Attaching package: &#39;genefilter&#39;
+## 
+## The following object is masked from &#39;package:base&#39;:
+## 
+##     anyNA
+## 
+## Loading required package: metaMA
+## Loading required package: SMVar
+## 
+## Attaching package: &#39;metaMA&#39;
+## 
+## The following object is masked from &#39;package:genefilter&#39;:
+## 
+##     rowVars
+## 
+## Loading required package: multtest
+## Loading required package: gtools
+## 
+## Attaching package: &#39;gtools&#39;
+## 
+## The following object is masked from &#39;package:mgcv&#39;:
+## 
+##     scat
+## 
+## Loading required package: grid
+## Loading required package: GeneMeta
+## 
+## Attaching package: &#39;MAMA&#39;
+## 
+## The following objects are masked from &#39;package:GeneMeta&#39;:
+## 
+##     multExpFDR, zScoreFDR, zScorePermuted, zScores
+</code></pre>
+
+<pre><code class="r">library(plyr)
+#load(&quot;AHUS_agiMicroRNAdata.rdata&quot;)
+if(!exists(&quot;inputisread&quot;))
+    source(&quot;read_input.r&quot;)
+</code></pre>
+
+<h2>Preprocessing -  summarization</h2>
+
+<p>First we load  and preprocess the AHUS data. The use only one of the AHUS dataset which has DCIS samples. We choose to use  RMA summarisation of  the signal without background correction as described in BMC Research Notes 2010, 3:18.We also read the processed and already normalized UCAM data and the annotation file. 
+We further annotate the samples using the annotation file and check if the data is paired. Only 5 samples from the AHUS Agilent
+v2 and 31 samples Agilent v3 is paired.  No information on matched samples from UCAM.  Since we are interested in DCIS comparisons ( where there is no paired data available) we will not use paired data design.</p>
+
+<pre><code class="r">annot &lt;- sampleannotation # wich is read in read_input.r
+
+## read the UCAM data
+ucam = read.table(paste(datadir, &quot;/Agilent_ncRNA_60k_normalised_miRNA_expression_ORIGINAL.txt&quot;, sep=&quot;&quot;), header = TRUE, sep = &quot;&quot;)
+rowsd = apply(ucam[,-c(1,2)], MARGIN=1, FUN=sd)
+ucam = ucam[order(rowsd, decreasing=TRUE), ]
+ucam = ucam[!duplicated(ucam[,2]), ]
+ucam_rownames  &lt;- ucam$miRNA
+rownames(ucam) &lt;- ucam_rownames
+ucam = as.matrix(ucam[, -c(1,2)])
+colnames(ucam) = paste(&quot;UCAM_&quot;, colnames(ucam), sep=&quot;&quot;) 
+ucam = ucam[, colnames(ucam) %in% sampleannotation$sample_id]
+</code></pre>
+
+<h2>Create the target files</h2>
+
+<p>We further annotate the samples using the annotation file.  No information on matched samples from UCAM.  </p>
+
+<pre><code class="r">## create ahus 3 target file 
+ahus_v3_targets &lt;- ahus_uRNAList$targets
+ahus_3 &lt;- as.matrix(ahus_v3_targets$FileName)
+status &lt;- c()
+ for ( i in 1: length(ahus_v3_targets$FileName)) {
+status = c(status, as.vector(annot[which(annot$datafile %in% ahus_3[i]), &quot;tissue_type&quot;]))}
+var2 &lt;- c()
+for ( i in 1: length(ahus_v3_targets$FileName)) {
+var2 = c(var2, as.vector(annot[which(annot$datafile %in% ahus_3[i]), &quot;pam50_est&quot;]))}
+ihc &lt;- c()
+for ( i in 1: length(ahus_v3_targets$FileName)) {
+ihc = c(ihc, as.vector(annot[which(annot$datafile %in% ahus_3[i]), &quot;IHC&quot;]))}
+GErep &lt;- gsub(&quot;benign&quot;, &quot;1&quot;, status)
+GErep &lt;- gsub(&quot;DCIS&quot;, &quot;2&quot;, GErep)
+GErep &lt;- gsub(&quot;invasive&quot;, &quot;3&quot;, GErep)
+GErep &lt;- gsub(&quot;normal&quot;, &quot;4&quot;, GErep)
+ahus_v3_targets &lt;- lapply(ahus_v3_targets, function(x) gsub(&quot;microRNA/AHUS/data/Agilent_miRNA_v3_4470C/&quot;, &quot;&quot;, x))
+ahus_v3_targets  &lt;- sapply(ahus_v3_targets , function(x) sub(&quot;_.*&quot;, &quot;&quot;, x))
+ahus_v3_targets &lt;- as.data.frame(ahus_v3_targets)
+targets_ahus_v3 &lt;- cbind(ahus_v3_targets ,status,  var2,ihc,  GErep) 
+targets_ahus_v3$var2 = as.character(targets_ahus_v3$var2)
+targets_ahus_v3$var2[which(targets_ahus_v3$status == &quot;DCIS&quot;) ] = &quot;DCIS&quot; #set all DCIS to &quot;DCIS&quot; for the pam50 score since there are so few DCIS samples with pam50 score.
+targets_ahus_v3$var2 = factor(targets_ahus_v3$var2)
+targets_ahus_v3$ihc &lt;- as.character.factor(targets_ahus_v3$ihc)
+targets_ahus_v3$ihc[which(targets_ahus_v3$var2 == &quot;DCIS&quot;) ] = &quot;DCIS&quot;
+targets_ahus_v3$ihc &lt;- as.factor(targets_ahus_v3$ihc)
+##  create  ucam target file
+status &lt;- c()
+for ( i in 1 : length(colnames(ucam))) {
+status &lt;- c(status, as.vector(annot[ annot$sample_id %in% grep( colnames(ucam)[i],annot$sample_id, value = &quot;TRUE&quot;), &quot;tissue_type&quot;]))}
+GErep &lt;- gsub(&quot;benign&quot;, &quot;1&quot;, status)
+GErep &lt;- gsub(&quot;DCIS&quot;, &quot;2&quot;, GErep)
+GErep &lt;- gsub(&quot;invasive&quot;, &quot;3&quot;, GErep)
+GErep &lt;- gsub(&quot;normal&quot;, &quot;4&quot;, GErep)
+var2&lt;- c()
+for ( i in 1 : length(colnames(ucam))) {
+var2&lt;- c(var2, as.vector(annot[ annot$sample_id %in% grep( colnames(ucam)[i],annot$sample_id, value = &quot;TRUE&quot;), &quot;pam50_est&quot;]))}
+ihc &lt;- c()
+for ( i in 1 : length(colnames(ucam))) {
+ihc &lt;- c(ihc, as.vector(annot[ annot$sample_id %in% grep( colnames(ucam)[i],annot$sample_id, value = &quot;TRUE&quot;), &quot;IHC&quot;]))}
+targets_ucam = as.data.frame(cbind(FileName = colnames(ucam), status, var2,ihc,  GErep))
+targets_ucam$var2 = as.character(targets_ucam$var2)
+targets_ucam$var2[which(targets_ucam$status == &quot;DCIS&quot;) ] = &quot;DCIS&quot; #set all DCIS to &quot;DCIS&quot; for the pam50 score since there are so few DCIS samples with pam50 score.
+targets_ucam$var2 = factor(targets_ucam$var2)
+targets_ucam$ihc &lt;- as.character.factor(targets_ucam$ihc)
+targets_ucam$ihc[which(targets_ucam$var2 == &quot;DCIS&quot;) ] = &quot;DCIS&quot;
+targets_ucam$ihc &lt;- as.factor(targets_ucam$ihc)
+</code></pre>
+
+<h2>Creating the expression sets</h2>
+
+<p>We then create the expression sets and later make sure the all datasets have common feature names in the exact order</p>
+
+<pre><code class="r">ahus_v3_eset =esetMicroRna(ahus_v3_filtered ,targets_ahus_v3 ,makePLOT=FALSE,verbose=TRUE)
+</code></pre>
+
+<pre><code>## outPUT DATA: esetPROC 
+## Features  Samples 
+##      288      156 
+## ------------------------------------------------------
+</code></pre>
+
+<pre><code class="r">ucam_data &lt;- targets_ucam
+rownames(ucam_data) &lt;- targets_ucam$FileName
+pd &lt;- new(&quot;AnnotatedDataFrame&quot;, data = ucam_data)
+ucam_eset &lt;- new(&quot;ExpressionSet&quot;, exprs = as.matrix(ucam) , phenoData = pd)
+</code></pre>
+
+<h2>Conversion of   miRNA names to miRbase accession numbers</h2>
+
+<p>A microRNA to MIMATID mapping was made earlier (in read_input.r) and is used to harmonize and easier comparisons between datasets.</p>
+
+<pre><code class="r">df = data.frame(V1=names(mimatmapping), ID=mimatmapping) # use MIMATmapping read in read_input.r
+rownames(df) &lt;-1:length(mimatmapping)
+
+featureNames(ahus_v3_eset) &lt;- gsub(&quot;_v.*&quot;, &quot;&quot;, featureNames(ahus_v3_eset))## remove the version attached to the names
+miRnabase_ID2 &lt;- data.frame(miRNA = c(), mirbase_an = c())
+for (i in 1: length( featureNames(ahus_v3_eset ))) { 
+miRBase_feature &lt;- df[ which(df[,1] == featureNames(ahus_v3_eset)[i]),2]
+tem_ID &lt;- data.frame(miRNA   = featureNames(ahus_v3_eset)[i],  mirbase_an =  as.character(miRBase_feature)   )
+miRnabase_ID2  &lt;- rbind( miRnabase_ID2, tem_ID)}
+miRnabase_id&lt;- miRnabase_ID2[!duplicated(miRnabase_ID2), ]
+featureNames(ahus_v3_eset) &lt;- miRnabase_id[,2]
+ind &lt;- grep(&quot;put.*&quot;, featureNames(ucam_eset))
+ucam_eset&lt;- ucam_eset[-ind, ]
+ind &lt;- grep(&quot;DQ.*&quot;, featureNames(ucam_eset))
+ucam_eset&lt;- ucam_eset[-ind, ]
+ind &lt;- grep(&quot;FANTOM.*&quot;, featureNames(ucam_eset))
+ucam_eset&lt;- ucam_eset[-ind, ]
+miRnabase_ID3 &lt;- data.frame(miRNA = c(), mirbase_an = c())
+for (i in 1: length( featureNames(ucam_eset ))) { 
+miRBase_feature &lt;- df[ which(df[,1] == featureNames(ucam_eset)[i]),2 ]
+tem_ID &lt;- data.frame(miRNA   = featureNames(ucam_eset)[i],  mirbase_an =  as.character(miRBase_feature)   )
+miRnabase_ID3  &lt;- rbind( miRnabase_ID3, tem_ID)
+}
+miRnabase_id&lt;- miRnabase_ID3[!duplicated(miRnabase_ID3), ]
+rownames(miRnabase_id) &lt;- 1:nrow(miRnabase_id)
+d &lt;- as.character(miRnabase_id$mirbase_an)
+d[389] &lt;- &quot;MIMAT0003257*&quot;
+featureNames(ucam_eset) &lt;- d
+</code></pre>
+
+<h2>Find common features for both datasets</h2>
+
+<pre><code class="r">ahus_v3_features &lt;- featureNames(ahus_v3_eset) ## 266
+ucam_features &lt;- featureNames(ucam_eset)
+all_features &lt;- intersect(ahus_v3_features, ucam_features) ## ahus_v2 does not have DCIS data
+ahus_v3_common_features &lt;- ahus_v3_eset[featureNames(ahus_v3_eset)  %in% all_features , ]
+ahus_v3_common_features &lt;- ahus_v3_common_features[order( featureNames(ahus_v3_common_features)),]
+ucam_common_features &lt;- ucam_eset[featureNames(ucam_eset)  %in% all_features , ]
+ucam_common_features &lt;- ucam_common_features[order( featureNames(ucam_common_features)),]
+</code></pre>
+
+<h2>Perform meta analysis</h2>
+
+<p>We use the combined p value meta analysis using limma implemented in the MAMA package </p>
+
+<h2>First, prepare the ahus sub-dataseta for meta analysis</h2>
+
+<pre><code class="r">ahus_v3_dcis_lumA &lt;- ahus_v3_common_features[ , ahus_v3_common_features$var2 %in%  c(&quot;DCIS&quot;, &quot;LumA&quot;)]
+ahus_v3_dcis_lumA &lt;- ahus_v3_dcis_lumA[ , ahus_v3_dcis_lumA$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ahus_v3_dcis_lumA))$var2 &lt;- factor( pData(phenoData(ahus_v3_dcis_lumA))$var2) 
+pData(phenoData(ahus_v3_dcis_lumA))$FileName &lt;- factor( pData(phenoData(ahus_v3_dcis_lumA))$FileName)
+pData(phenoData(ahus_v3_dcis_lumA))$status &lt;- factor( pData(phenoData(ahus_v3_dcis_lumA))$status) 
+ahus_v3_dcis_lumB &lt;- ahus_v3_common_features[ , ahus_v3_common_features$var2 %in%  c(&quot;DCIS&quot;, &quot;LumB&quot;)]
+ahus_v3_dcis_lumB &lt;- ahus_v3_dcis_lumB[ , ahus_v3_dcis_lumB$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ahus_v3_dcis_lumB))$var2 &lt;- factor( pData(phenoData(ahus_v3_dcis_lumB))$var2) 
+pData(phenoData(ahus_v3_dcis_lumB))$FileName &lt;- factor( pData(phenoData(ahus_v3_dcis_lumB))$FileName) 
+pData(phenoData(ahus_v3_dcis_lumB))$status &lt;- factor( pData(phenoData(ahus_v3_dcis_lumB))$status) 
+ahus_v3_dcis_Basal &lt;- ahus_v3_common_features[ , ahus_v3_common_features$var2 %in% c(&quot;DCIS&quot;, &quot;Basallike&quot;)]
+ahus_v3_dcis_Basal&lt;- ahus_v3_dcis_Basal[ , ahus_v3_dcis_Basal$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ahus_v3_dcis_Basal))$var2 &lt;- factor(pData(phenoData(ahus_v3_dcis_Basal))$var2) 
+pData(phenoData(ahus_v3_dcis_Basal))$FileName &lt;- factor(pData(phenoData(ahus_v3_dcis_Basal))$FileName)
+pData(phenoData(ahus_v3_dcis_Basal))$status &lt;- factor(pData(phenoData(ahus_v3_dcis_Basal))$status)
+ahus_v3_dcis_Normal &lt;- ahus_v3_common_features[ , ahus_v3_common_features$var2 %in%  c(&quot;DCIS&quot;, &quot;Normallike&quot;)]
+ahus_v3_dcis_Normal &lt;- ahus_v3_dcis_Normal[ , ahus_v3_dcis_Normal$status %in% c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ahus_v3_dcis_Normal))$var2 &lt;- factor(pData(phenoData(ahus_v3_dcis_Normal))$var2) 
+pData(phenoData(ahus_v3_dcis_Normal))$FileName &lt;- factor(pData(phenoData(ahus_v3_dcis_Normal))$FileName) 
+pData(phenoData(ahus_v3_dcis_Normal))$status &lt;- factor(pData(phenoData(ahus_v3_dcis_Normal))$status) 
+ahus_v3_dcis_Her2 &lt;- ahus_v3_common_features[ , ahus_v3_common_features$var2 %in%  c(&quot;DCIS&quot;, &quot;Her2&quot;)]
+ahus_v3_normal_Her2&lt;- ahus_v3_dcis_Her2[ , ahus_v3_dcis_Her2$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ahus_v3_dcis_Her2))$var2 &lt;-factor( pData(phenoData(ahus_v3_dcis_Her2))$var2)  
+pData(phenoData(ahus_v3_dcis_Her2))$FileName &lt;- factor( pData(phenoData(ahus_v3_dcis_Her2))$FileName) 
+pData(phenoData(ahus_v3_dcis_Her2))$status &lt;- factor( pData(phenoData(ahus_v3_dcis_Her2))$status) 
+ahus_v3_normal_DCIS &lt;- ahus_v3_common_features[ , ahus_v3_common_features$status %in%  c(&quot;normal&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ahus_v3_normal_DCIS))$status &lt;- factor( pData(phenoData(ahus_v3_normal_DCIS))$status)# drop previous factor levels
+pData(phenoData(ahus_v3_normal_DCIS))$FileName &lt;- factor( pData(phenoData(ahus_v3_normal_DCIS))$FileName)# 
+ahus_v3_normaltobenign &lt;-  ahus_v3_common_features[ , ahus_v3_common_features$status %in%  c(&quot;normal&quot;, &quot;benign&quot;)]
+pData(phenoData(ahus_v3_normaltobenign ))$status &lt;- factor( pData(phenoData(ahus_v3_normaltobenign ))$status)# drop previous factor levels
+pData(phenoData(ahus_v3_normaltobenign ))$FileName &lt;- factor( pData(phenoData(ahus_v3_normaltobenign ))$FileName)# 
+ahus_v3_invasive_DCIS &lt;- ahus_v3_common_features[ , ahus_v3_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ahus_v3_invasive_DCIS))$status &lt;- factor( pData(phenoData(ahus_v3_invasive_DCIS))$status)# drop previous factor levels
+pData(phenoData(ahus_v3_invasive_DCIS))$FileName &lt;- factor( pData(phenoData(ahus_v3_invasive_DCIS))$FileName)# 
+ahus3_dcis_HER2neg_ERneg_PGRneg  &lt;- ahus_v3_common_features[ , ahus_v3_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+ahus3_dcis_HER2neg_ERneg_PGRneg &lt;- ahus3_dcis_HER2neg_ERneg_PGRneg[, ahus3_dcis_HER2neg_ERneg_PGRneg$ihc %in% c(&quot;DCIS&quot;, &quot;HER2neg_ERneg_PGRneg&quot;)]
+pData(phenoData(ahus3_dcis_HER2neg_ERneg_PGRneg))$ihc &lt;- factor( pData(phenoData(ahus3_dcis_HER2neg_ERneg_PGRneg))$ihc) 
+pData(phenoData(ahus3_dcis_HER2neg_ERneg_PGRneg))$FileName &lt;- factor( pData(phenoData(ahus3_dcis_HER2neg_ERneg_PGRneg))$FileName) 
+pData(phenoData(ahus3_dcis_HER2neg_ERneg_PGRneg))$status &lt;- factor( pData(phenoData(ahus3_dcis_HER2neg_ERneg_PGRneg))$status) 
+ahus3_dcis_HER2neg_ERpos  &lt;- ahus_v3_common_features[ , ahus_v3_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+ahus3_dcis_HER2neg_ERpos &lt;- ahus3_dcis_HER2neg_ERpos[, ahus3_dcis_HER2neg_ERpos$ihc %in% c(&quot;DCIS&quot;, &quot;HER2neg_ERpos&quot;)]
+pData(phenoData(ahus3_dcis_HER2neg_ERpos))$ihc &lt;- factor( pData(phenoData(ahus3_dcis_HER2neg_ERpos))$ihc) 
+pData(phenoData(ahus3_dcis_HER2neg_ERpos))$FileName &lt;- factor( pData(phenoData(ahus3_dcis_HER2neg_ERpos))$FileName) 
+pData(phenoData(ahus3_dcis_HER2neg_ERpos))$status &lt;- factor( pData(phenoData(ahus3_dcis_HER2neg_ERpos))$status) 
+ahus3_dcis_HER2pos_ERneg   &lt;- ahus_v3_common_features[ , ahus_v3_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+ahus3_dcis_HER2pos_ERneg  &lt;- ahus3_dcis_HER2pos_ERneg [, ahus3_dcis_HER2pos_ERneg $ihc %in% c(&quot;DCIS&quot;, &quot;HER2pos_ERneg&quot;)]
+pData(phenoData(ahus3_dcis_HER2pos_ERneg ))$ihc &lt;- factor( pData(phenoData(ahus3_dcis_HER2pos_ERneg ))$ihc) 
+pData(phenoData(ahus3_dcis_HER2pos_ERneg ))$FileName &lt;- factor( pData(phenoData(ahus3_dcis_HER2pos_ERneg ))$FileName) 
+pData(phenoData(ahus3_dcis_HER2pos_ERneg ))$status &lt;- factor( pData(phenoData(ahus3_dcis_HER2pos_ERneg ))$status) 
+ahus3_dcis_HER2pos_ERpos   &lt;- ahus_v3_common_features[ , ahus_v3_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+ahus3_dcis_HER2pos_ERpos  &lt;- ahus3_dcis_HER2pos_ERpos [, ahus3_dcis_HER2pos_ERpos $ihc %in% c(&quot;DCIS&quot;, &quot;HER2pos_ERpos&quot;)]
+pData(phenoData(ahus3_dcis_HER2pos_ERpos ))$ihc &lt;- factor( pData(phenoData(ahus3_dcis_HER2pos_ERpos ))$ihc) 
+pData(phenoData(ahus3_dcis_HER2pos_ERpos ))$FileName &lt;- factor( pData(phenoData(ahus3_dcis_HER2pos_ERpos ))$FileName) 
+pData(phenoData(ahus3_dcis_HER2pos_ERpos ))$status &lt;- factor( pData(phenoData(ahus3_dcis_HER2pos_ERpos ))$status)
+</code></pre>
+
+<h2>Prepare ucam sub-datasets for meta analysis</h2>
+
+<pre><code class="r">ucam_normalDCIS&lt;- ucam_common_features[, ucam_common_features$status %in% c(&quot;normal&quot;, &quot;DCIS&quot;) ]   
+pData(phenoData(ucam_normalDCIS))$status  &lt;- factor(pData(phenoData(ucam_normalDCIS))$status )
+pData(phenoData(ucam_normalDCIS))$FileName  &lt;- factor(pData(phenoData(ucam_normalDCIS))$FileName )
+ucam_invasiveDCIS&lt;- ucam_common_features[, ucam_common_features$status %in% c(&quot;invasive&quot;, &quot;DCIS&quot;) ]
+pData(phenoData(ucam_invasiveDCIS))$status  &lt;- factor(pData(phenoData(ucam_invasiveDCIS))$status )               
+pData(phenoData(ucam_invasiveDCIS))$FileName  &lt;- factor(pData(phenoData(ucam_invasiveDCIS))$FileName )  
+ucam_normalTobenign&lt;- ucam_common_features[, ucam_common_features$status %in% c(&quot;benign&quot;, &quot;normal&quot;) ]
+pData(phenoData(ucam_normalTobenign))$status  &lt;- factor(pData(phenoData(ucam_normalTobenign))$status )               
+pData(phenoData(ucam_normalTobenign))$FileName  &lt;- factor(pData(phenoData(ucam_normalTobenign))$FileName )
+ucam_dcis_lumA &lt;- ucam_common_features[, ucam_common_features$var2 %in% c(&quot;DCIS&quot;, &quot;LumA&quot;) ]
+ucam_dcis_lumA &lt;- ucam_dcis_lumA[ , ucam_dcis_lumA$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ucam_dcis_lumA))$var2  &lt;- factor(pData(phenoData(ucam_dcis_lumA))$var2 )               
+pData(phenoData(ucam_dcis_lumA))$FileName  &lt;- factor(pData(phenoData(ucam_dcis_lumA))$FileName )
+pData(phenoData(ucam_dcis_lumA))$status &lt;- factor(pData(phenoData(ucam_dcis_lumA))$status)
+ucam_dcis_lumB &lt;- ucam_common_features[, ucam_common_features$var2 %in% c(&quot;DCIS&quot;, &quot;LumB&quot;) ]
+ucam_dcis_lumB &lt;- ucam_dcis_lumB[ , ucam_dcis_lumB$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ucam_dcis_lumB))$var2  &lt;- factor(pData(phenoData(ucam_dcis_lumB))$var2 )               
+pData(phenoData(ucam_dcis_lumB))$FileName  &lt;- factor(pData(phenoData(ucam_dcis_lumB))$FileName )
+pData(phenoData(ucam_dcis_lumB))$status &lt;- factor(pData(phenoData(ucam_dcis_lumB))$status)
+ucam_dcis_Her2 &lt;- ucam_common_features[, ucam_common_features$var2 %in% c(&quot;DCIS&quot;, &quot;Her2&quot;) ]
+ucam_dcis_Her2 &lt;- ucam_dcis_Her2[ , ucam_dcis_Her2$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ucam_dcis_Her2))$var2  &lt;- factor(pData(phenoData(ucam_dcis_Her2))$var2 )               
+pData(phenoData(ucam_dcis_Her2))$FileName  &lt;- factor(pData(phenoData(ucam_dcis_Her2))$FileName )
+pData(phenoData(ucam_dcis_Her2))$status  &lt;- factor(pData(phenoData(ucam_dcis_Her2))$status )
+ucam_dcis_Basal &lt;- ucam_common_features[ , ucam_common_features$var2 %in% c(&quot;DCIS&quot;, &quot;Basallike&quot;)]
+ucam_dcis_Basal&lt;- ucam_dcis_Basal[ , ucam_dcis_Basal$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ucam_dcis_Basal))$var2 &lt;- factor(pData(phenoData(ucam_dcis_Basal))$var2) 
+pData(phenoData(ucam_dcis_Basal))$FileName &lt;- factor(pData(phenoData(ucam_dcis_Basal))$FileName)
+pData(phenoData(ucam_dcis_Basal))$status &lt;- factor(pData(phenoData(ucam_dcis_Basal))$status)
+ucam_dcis_Normal &lt;- ucam_common_features[ , ucam_common_features$var2 %in%  c(&quot;DCIS&quot;, &quot;Normallike&quot;)]
+ucam_dcis_Normal &lt;- ucam_dcis_Normal[ , ucam_dcis_Normal$status %in% c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+pData(phenoData(ucam_dcis_Normal))$var2 &lt;- factor(pData(phenoData(ucam_dcis_Normal))$var2) 
+pData(phenoData(ucam_dcis_Normal))$FileName &lt;- factor(pData(phenoData(ucam_dcis_Normal))$FileName) 
+pData(phenoData(ucam_dcis_Normal))$status &lt;- factor(pData(phenoData(ucam_dcis_Normal))$status) 
+ucam_dcis_HER2neg_ERneg_PGRneg  &lt;- ucam_common_features[ , ucam_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+ucam_dcis_HER2neg_ERneg_PGRneg &lt;- ucam_dcis_HER2neg_ERneg_PGRneg[, ucam_dcis_HER2neg_ERneg_PGRneg$ihc %in% c(&quot;DCIS&quot;, &quot;HER2neg_ERneg_PGRneg&quot;)]
+pData(phenoData(ucam_dcis_HER2neg_ERneg_PGRneg))$ihc &lt;- factor( pData(phenoData(ucam_dcis_HER2neg_ERneg_PGRneg))$ihc) 
+pData(phenoData(ucam_dcis_HER2neg_ERneg_PGRneg))$FileName &lt;- factor( pData(phenoData(ucam_dcis_HER2neg_ERneg_PGRneg))$FileName) 
+pData(phenoData(ucam_dcis_HER2neg_ERneg_PGRneg))$status &lt;- factor( pData(phenoData(ucam_dcis_HER2neg_ERneg_PGRneg))$status) 
+ucam_dcis_HER2neg_ERpos  &lt;- ucam_common_features[ , ucam_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+ucam_dcis_HER2neg_ERpos &lt;- ucam_dcis_HER2neg_ERpos[, ucam_dcis_HER2neg_ERpos$ihc %in% c(&quot;DCIS&quot;, &quot;HER2neg_ERpos&quot;)]
+pData(phenoData(ucam_dcis_HER2neg_ERpos))$ihc &lt;- factor( pData(phenoData(ucam_dcis_HER2neg_ERpos))$ihc) 
+pData(phenoData(ucam_dcis_HER2neg_ERpos))$FileName &lt;- factor( pData(phenoData(ucam_dcis_HER2neg_ERpos))$FileName) 
+pData(phenoData(ucam_dcis_HER2neg_ERpos))$status &lt;- factor( pData(phenoData(ucam_dcis_HER2neg_ERpos))$status) 
+ucam_dcis_HER2pos_ERneg   &lt;- ucam_common_features[ , ucam_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+ucam_dcis_HER2pos_ERneg  &lt;- ucam_dcis_HER2pos_ERneg [, ucam_dcis_HER2pos_ERneg $ihc %in% c(&quot;DCIS&quot;, &quot;HER2pos_ERneg&quot;)]
+pData(phenoData(ucam_dcis_HER2pos_ERneg ))$ihc &lt;- factor( pData(phenoData(ucam_dcis_HER2pos_ERneg ))$ihc) 
+pData(phenoData(ucam_dcis_HER2pos_ERneg ))$FileName &lt;- factor( pData(phenoData(ucam_dcis_HER2pos_ERneg ))$FileName) 
+pData(phenoData(ucam_dcis_HER2pos_ERneg ))$status &lt;- factor( pData(phenoData(ucam_dcis_HER2pos_ERneg ))$status) 
+ucam_dcis_HER2pos_ERpos   &lt;- ucam_common_features[ , ucam_common_features$status %in%  c(&quot;invasive&quot;, &quot;DCIS&quot;)]
+ucam_dcis_HER2pos_ERpos  &lt;- ucam_dcis_HER2pos_ERpos [, ucam_dcis_HER2pos_ERpos $ihc %in% c(&quot;DCIS&quot;, &quot;HER2pos_ERpos&quot;)]
+pData(phenoData(ucam_dcis_HER2pos_ERpos ))$ihc &lt;- factor( pData(phenoData(ucam_dcis_HER2pos_ERpos ))$ihc) 
+pData(phenoData(ucam_dcis_HER2pos_ERpos ))$FileName &lt;- factor( pData(phenoData(ucam_dcis_HER2pos_ERpos ))$FileName) 
+pData(phenoData(ucam_dcis_HER2pos_ERpos ))$status &lt;- factor( pData(phenoData(ucam_dcis_HER2pos_ERpos ))$status)
+</code></pre>
+
+<h2>Prepare the combined sub-datatests</h2>
+
+<pre><code class="r">all_normal_DCIS &lt;- new(&quot;MetaArray&quot;, GEDM = list( exprs(ahus_v3_normal_DCIS), exprs(ucam_normalDCIS)), clinical = list(pData(phenoData(ahus_v3_normal_DCIS)), pData(phenoData(ucam_normalDCIS) )) , datanames = c( &quot;ahus_v3_4470C_normal_DCIS&quot;, &quot;ucam_normal_DCIS&quot;))
+all_invasive_DCIS &lt;- new(&quot;MetaArray&quot;, GEDM = list( exprs(ahus_v3_invasive_DCIS), exprs(ucam_invasiveDCIS )), clinical = list(pData(phenoData(ahus_v3_invasive_DCIS)), pData(phenoData(ucam_invasiveDCIS ) )) , datanames = c( &quot;ahus_v3_4470C_invasive_DCIS&quot;, &quot;ucam_invasive_DCIS&quot;))
+all_normnal_to_benign &lt;- new(&quot;MetaArray&quot;, GEDM = list( exprs(ahus_v3_normaltobenign), exprs(ucam_normalTobenign )), clinical = list(pData(phenoData(ahus_v3_normaltobenign)), pData(phenoData(ucam_normalTobenign ) )) , datanames = c( &quot;ahus_v3_4470C_invasive_DCIS&quot;, &quot;ucam_normalTobenign&quot;))
+all_dcis_LumA  &lt;- new(&quot;MetaArray&quot;, GEDM = list( exprs(ahus_v3_dcis_lumA), exprs(ucam_dcis_lumA )), clinical = list(pData(phenoData(ahus_v3_dcis_lumA)), pData(phenoData(ucam_dcis_lumA ) )) , datanames = c( &quot;ahus_v3_dcis_lumA&quot;, &quot;ucam_dcis_lumA&quot;))
+all_dcis_LumB  &lt;- new(&quot;MetaArray&quot;, GEDM = list( exprs(ahus_v3_dcis_lumB), exprs(ucam_dcis_lumB )), clinical = list(pData(phenoData(ahus_v3_dcis_lumB)), pData(phenoData(ucam_dcis_lumB ) )) , datanames = c( &quot;ahus_v3_dcis_lumB&quot;, &quot;ucam_dcis_lumB&quot;))
+all_dcis_Her2  &lt;- new(&quot;MetaArray&quot;, GEDM = list( exprs(ahus_v3_dcis_Her2), exprs(ucam_dcis_Her2 )), clinical = list(pData(phenoData(ahus_v3_dcis_Her2)), pData(phenoData(ucam_dcis_Her2 ) )) , datanames = c( &quot;ahus_v3_dcis_lumB&quot;, &quot;ucam_dcis_Her2&quot;))
+all_dcis_Normal  &lt;- new(&quot;MetaArray&quot;, GEDM = list( exprs(ahus_v3_dcis_Normal),exprs(ucam_dcis_Normal )), clinical =list(pData(phenoData(ahus_v3_dcis_Normal)), pData(phenoData(ucam_dcis_Normal ))) , datanames = c( &quot;ahus_v3_dcis_Normal&quot;, &quot;ucam_dcis_Normal&quot;))
+all_dcis_Basal  &lt;- new(&quot;MetaArray&quot;, GEDM = list( exprs(ahus_v3_dcis_Basal),exprs(ucam_dcis_Basal )), clinical = list(pData(phenoData(ahus_v3_dcis_Basal)),pData(phenoData(ucam_dcis_Basal) )) , datanames = c( &quot;ahus_v3_dcis_Basal&quot;, &quot;ucam_dcis_Basal&quot;))
+all_dcis_HER2neg_ERneg_PGRneg &lt;- new(&quot;MetaArray&quot;, GEDM = list(exprs(ahus3_dcis_HER2neg_ERneg_PGRneg),exprs(ucam_dcis_HER2neg_ERneg_PGRneg )), clinical =list(pData(phenoData(ahus3_dcis_HER2neg_ERneg_PGRneg)), pData(phenoData(ucam_dcis_HER2neg_ERneg_PGRneg ))) , datanames = c( &quot;ahus3_dcis_HER2neg_ERneg_PGRneg&quot;, &quot;ucam_dcis_HER2neg_ERneg_PGRneg&quot;))
+all_dcis_HER2pos_ERpos&lt;- new(&quot;MetaArray&quot;, GEDM = list(exprs(ahus3_dcis_HER2pos_ERpos),exprs(ucam_dcis_HER2pos_ERpos )), clinical = list(pData(phenoData(ahus3_dcis_HER2pos_ERpos)), pData(phenoData(ucam_dcis_HER2pos_ERpos))) , datanames = c( &quot;ahus3_dcis_HER2pos_ERpos&quot;, &quot;ucam_dcis_HER2pos_ERpos&quot;))
+all_dcis_HER2pos_ERneg&lt;- new(&quot;MetaArray&quot;, GEDM = list(exprs(ahus3_dcis_HER2pos_ERneg),exprs(ucam_dcis_HER2pos_ERneg )), clinical = list(pData(phenoData(ahus3_dcis_HER2pos_ERneg)), pData(phenoData(ucam_dcis_HER2pos_ERneg))) , datanames = c( &quot;ahus3_dcis_HER2pos_ERneg&quot;, &quot;ucam_dcis_HER2pos_ERneg&quot;))
+all_dcis_HER2neg_ERpos&lt;- new(&quot;MetaArray&quot;, GEDM = list(exprs(ahus3_dcis_HER2neg_ERpos),exprs(ucam_dcis_HER2neg_ERpos )), clinical = list(pData(phenoData(ahus3_dcis_HER2neg_ERpos)), pData(phenoData(ucam_dcis_HER2neg_ERpos))) , datanames = c( &quot;ahus3_dcis_HER2neg_ERpos&quot;, &quot;ucam_dcis_HER2neg_ERpos&quot;))
+</code></pre>
+
+<h2>Meta analysis using limma</h2>
+
+<pre><code class="r">outputdir = &quot;output-analysis&quot;
+if(!file.exists(outputdir))
+    dir.create(outputdir)
+difflistdir = paste(outputdir, &quot;/difflists_meta&quot;, sep=&quot;&quot;)
+if(!file.exists(difflistdir))
+        dir.create(difflistdir)
+
+results_pval1 &lt;- metaMA(all_normal_DCIS, varname = &quot;status&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/DCIS_to_normal_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(all_invasive_DCIS, varname = &quot;status&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/DCIS_to_invasive_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(all_normnal_to_benign, varname = &quot;status&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/benign_to_normal_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(all_dcis_LumA, varname = &quot;var2&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/dcis_to_lumA_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(all_dcis_LumB, varname = &quot;var2&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/dcis_to_lumB_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(all_dcis_Her2, varname = &quot;var2&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/dcis_to_her2_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(all_dcis_Normal, varname = &quot;var2&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/dcis_to_normallike_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(all_dcis_Basal, varname = &quot;var2&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/basallike_to_dcis_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(  all_dcis_HER2neg_ERneg_PGRneg, varname = &quot;ihc&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/dcis_to_HER2neg_ERneg_PGRneg_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(  all_dcis_HER2neg_ERpos, varname = &quot;ihc&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/dcis_to_HER2neg_ERpos_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(  all_dcis_HER2pos_ERneg, varname = &quot;ihc&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/dcis_to_HER2pos_ERneg_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+results_pval1 &lt;- metaMA(  all_dcis_HER2pos_ERpos, varname = &quot;ihc&quot;, moderated = &quot;limma&quot;,   which = &quot;pval&quot;, BHth = 1) 
+</code></pre>
+
+<pre><code>##   DE  IDD Loss  IDR  IRR 
+##  266    0    0    0    0
+</code></pre>
+
+<pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
+for (i in c(results_pval1$Meta) ){
+DE &lt;- results_pval1$gene.names[i]
+feature &lt;-  df[ which(df$ID ==  DE) , 1]
+test_st &lt;-  results_pval1$TestStatistic[i]
+pval &lt;- 2*(1-pnorm(abs(test_st)))
+test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
+test &lt;- rbind(test, test2)
+}
+test$adj.P.Val=p.adjust(test$pval, method=&quot;BH&quot;)
+test = test[order(test$pval),]
+write.table(test, &quot;output-analysis/difflists_meta/dcis_to_HER2pos_ERpos_limma.txt&quot;, sep = &quot;\t&quot;, quote = FALSE, row.names=FALSE)
+</code></pre>
+
+</body>
+
+</html>

@@ -118,7 +118,7 @@ mergedfilefolder = "output-analysis/difflists_merged"
 meta2merged = data.frame(metafn=character(0), mergedfn=character(0), direction=numeric(0), comparisontype=character(0), stringsAsFactors=FALSE)
 meta2merged["DCIS-normal",] = list("DCIS_to_normal_limma.txt", "difflist-DCIS-vs-normal.txt",-1, "tissue")
 meta2merged["invasive-DCIS",] = list("DCIS_to_invasive_limma.txt", "difflist-invasive-vs-DCIS.txt",1, "tissue")
-meta2merged["Normallike-DCIS",] = list("dcis_to_normal_like(invasive)_limma.txt", "difflist-pam50-Normallike-vs-DCIS.txt",1, "pam50")
+meta2merged["Normallike-DCIS",] = list("dcis_to_normallike_limma.txt", "difflist-pam50-Normallike-vs-DCIS.txt",1, "pam50")
 meta2merged["LumA-DCIS",] = list("dcis_to_lumA_limma.txt", "difflist-pam50-LumA-vs-DCIS.txt",1, "pam50")
 meta2merged["LumB-DCIS",] = list("dcis_to_lumB_limma.txt", "difflist-pam50-LumB-vs-DCIS.txt",1, "pam50")
 meta2merged["Her2-DCIS",] = list("dcis_to_her2_limma.txt", "difflist-pam50-Her2-vs-DCIS.txt",1, "pam50")
@@ -150,9 +150,8 @@ for(i in 1:nrow(meta2merged))
                                      strip.white=TRUE, comment.char ="", row.names=1)
     
     #harmonizing a little
-    colnames(thismetatab)[colnames(thismetatab)=="FC"] = "logFC"
     rownames(thismetatab) = thismetatab$MIMAT
-    thismetatab$logFC = thismetatab$logFC * meta2merged[thiscomp, "direction"]
+    thismetatab$TestStatistic = thismetatab$TestStatistic * meta2merged[thiscomp, "direction"]
   #summarytab[thiscomp, "metafile"] = rownames(thisrows)[1]
   #summarytab[thiscomp, "mergedfile"] = thisrows[1, "mergedfn"]
 
@@ -162,19 +161,21 @@ for(i in 1:nrow(meta2merged))
   summarytab[thiscomp, "found_merged"] = sum(b)
   
   commonMIMATID = intersect( rownames(thismetatab)[a],  rownames(thismergedtab)[b])
-  summarytab[thiscomp, "found_both"] = sum( thismetatab[commonMIMATID, "logFC"] * thismergedtab[commonMIMATID, "logFC"] > 0) 
-  summarytab[thiscomp, "wrong_direction"] = sum( thismetatab[commonMIMATID, "logFC"] * thismergedtab[commonMIMATID, "logFC"] < 0) 
+  summarytab[thiscomp, "found_both"] = sum( thismetatab[commonMIMATID, "TestStatistic"] * thismergedtab[commonMIMATID, "logFC"] > 0) 
+  summarytab[thiscomp, "wrong_direction"] = sum( thismetatab[commonMIMATID, "TestStatistic"] * thismergedtab[commonMIMATID, "logFC"] < 0) 
   rm(commonMIMATID)
   metatables[[thiscomp]] = thismetatab
   mergedtables[[thiscomp]] = thismergedtab
   
   x = mergedtables[[thiscomp]][, c("logFC", "adj.P.Val")]
-  y = metatables[[thiscomp]][, c("logFC", "adj.P.Val")]
- 
- 	thistable = merge(x, y, by.x = "row.names", by.y="row.names", suffixes=c(".merged", ".meta"), all.x=TRUE)
+  y = metatables[[thiscomp]][, c("TestStatistic", "adj.P.Val")]
+  names(x) = paste(names(x), ".merged", sep="")
+  names(y) = paste(names(y), ".meta", sep="")
+  
+ 	thistable = merge(x, y, by.x = "row.names", by.y="row.names",  all.x=TRUE)
   row.names(thistable) = thistable$Row.names
   thistable = cbind(MIMAT = thistable$Row.names, name=unfilteredcommonname[thistable$Row.names], thistable[,-1])
-  thistable$same_dir =  (thistable$logFC.merged * thistable$logFC.meta ) > 0
+  thistable$same_dir =  (thistable$logFC.merged * thistable$TestStatistic.meta ) > 0
   thistable$consensus = thistable$adj.P.Val.merged <= 0.05 & 
   	thistable$adj.P.Val.meta <= 0.05 & thistable$same_dir
   consensustables[[thiscomp]] = thistable[order(thistable$consensus, -thistable$adj.P.Val.merged, decreasing=TRUE),]
@@ -339,7 +340,7 @@ for(contrast in names(voliniatab))
 	overlaptab[a, "Direction_merged"] = ifelse(tab[a, "logFC.merged"] > 0,  "UP", "DOWN")
 	overlaptab[a, "adj.P.Val.merged"] = tab[a, "adj.P.Val.merged"]
 	overlaptab$Direction_meta = NA
-	overlaptab[a, "Direction_meta"] = tab[a, "logFC.meta"]
+	overlaptab[a, "Direction_meta"] = tab[a, "TestStatistic.meta"]
 	overlaptab[is.na(overlaptab$Direction_meta), "Direction_meta"] =  0	
 	overlaptab[overlaptab$Direction_meta>0, "Direction_meta"] =  "UP"
 	overlaptab[overlaptab$Direction_meta<0, "Direction_meta"] =  "DOWN"
@@ -355,7 +356,7 @@ for(contrast in names(voliniatab))
 	overlaptab = overlaptab[ order(overlaptab$adj.P.Val.merged) , ]
 	volinia_overlap[[contrast]] = overlaptab
 	write.table(overlaptab, 
-            file=paste(outputdir, "/Volinia_validation_", contrast, ".txt", sep=""),
+            file=paste(outputdir, "/Volinia_validation_", contrast, postfix, sep=""),
             quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
 	
 	rm(x, overlaptab, contrast)
@@ -401,7 +402,7 @@ A list of human microRNAs and their curation classification is provided:
 
 ```{r}
 	curatedfn = "curated_microRNA_MIMAT.csv"
-  orgcuratedtab  = read.table(paste("not_in_github", "/", curatedfn, sep=""), sep="\t", 
+  orgcuratedtab  = read.table(paste(annotdir, "/", curatedfn, sep=""), sep="\t", 
   												 header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                                      strip.white=TRUE, comment.char ="")
 	orgcuratedtab$miRNA = paste("hsa-", orgcuratedtab$miRNA, sep="")
@@ -434,23 +435,29 @@ The status labels explained:
 
 We want to check the curation status of our findings. Are our significant microRNAs real microRNAs? In addition as a quality control, it is useful to see the proportion of the statuses in the microRNAs that are filtered out and the ones retained.
 
-Adding the curated status to the results
+Adding the curated status to the results, first the microRNAs found in Volinia et al.
 
-```{r results='asis'}
+```{r results='hold'}
 
 for(n in names(volinia_overlap))
 {
 	x = unlist(lapply(rownames(volinia_overlap[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1]))
 	volinia_overlap[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), "status"]
-	#voliniatab[[n]]$curated = curatedtab[ match( as.character(voliniatab[[n]]$MIMATID), curatedtab$MIMAT ), "status"]
+	print( paste( n , names(table(volinia_overlap[[n]]$curated)), table(volinia_overlap[[n]]$curated)))
 }
+```
+The microRNAs reported by Volinia et al. are all in the "for sure microRNA" list in Fromm et al.
+<br/>
+<br/>
+And now the same assignment and summary for our results from the AHUS and UCAM data sets.
 
+```{r results='asis'}
 for(n in names(consensustables))
 {
 	x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1]))
 	consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), "status"]
 	write.table( format( consensustables[[n]], digits=4), 
-            file=paste(consensusdir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, ".txt", sep=""),
+            file=paste(consensusdir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, postfix, sep=""),
             quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
 }
 

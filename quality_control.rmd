@@ -93,35 +93,6 @@ legend("topright", legend=c("AHUS", "UCAM"), text.col=c("red", "blue"))
 The density plot also reveals the difference and the data from the different providers seems to have been processed differently. 
 
 
-```{r qnorm}
-#common_matrix_qnorm = normalizeBetweenArrays(common_matrix, method="quantile")
-#common_matrix_qnorm = common_matrix
-
-
-# x = rowMeans(common_matrix[, sampleannotation$provider=="AHUS"])
-# y = unlist(apply(common_matrix[, sampleannotation$provider=="AHUS"], MARGIN=1, FUN=sd))
-# plot( smooth(y[order(x)]), col="red", type="l")
-# 
-# x = rowMeans(common_matrix[, sampleannotation$provider=="UCAM"])
-# y = unlist(apply(common_matrix[, sampleannotation$provider=="UCAM"], MARGIN=1, FUN=sd))
-# lines( smooth(y[order(x)]), col="blue")
-# 
-# 
-# for (i in 3:48)
-# {
-#   qqnorm (data[,i]); qqline(data[,i], col = 2)
-# }
-# qqnorm (common_matrix[,3]); common_matrix(data[,3], col = 2)
-# hist(data[,13])
-# 
-# index = index+1
-# a = sampleannotation$provider=="AHUS" & sampleannotation$tissue_type=="invasive"
-# qqnorm (common_matrix[index, a])
-# qqline(common_matrix[index, a], col = 2)
-
-
-```
-
 
 Next we will see how the samples cluster.
 ```{r fig.width=12, fig.height=12}
@@ -192,29 +163,6 @@ The IHC labels do not seem to cluster.
 <br/>
 <br/>
 <br/>
-
-## References
-
-Breast cancer signatures for invasiveness and prognosis defined by deep sequencing of microRNA.  
-Volinia S, Galasso M, Sana ME, Wise TF, Palatini J, Huebner K, Croce CM.  
-Proc Natl Acad Sci U S A. 2012 Feb 21;109(8):3024-9. doi: 10.1073/pnas.1200010109. Epub 2012 Feb 6.
-
-The shaping and functional consequences of the microRNA landscape in breast cancer.
-Dvinge H, Git A, Gräf S, Salmon-Divon M, Curtis C, Sottoriva A, Zhao Y, Hirst M, Armisen J, Miska EA, Chin SF, Provenzano E, Turashvili G, Green A, Ellis I, Aparicio S, Caldas C.
-Nature. 2013 May 16;497(7449):378-82. doi: 10.1038/nature12108. Epub 2013 May 5.
-
-  
-  R Core Team (2013). R: A language and environment for statistical computing. R Foundation for Statistical Computing,
-  Vienna, Austria. URL http://www.R-project.org/
-
-  Yihui Xie (2013). knitr: A general-purpose package for dynamic report generation in R. R package version 1.5.
-
-  Yihui Xie (2013) Dynamic Documents with R and knitr. Chapman and Hall/CRC. ISBN 978-1482203530
-
-  Yihui Xie (2013) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and
-  Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
-  
-  RStudio Team (2012). RStudio: Integrated Development for R. RStudio, Inc., Boston, MA URL http://www.rstudio.com/.
 
 
 ```{r sessionInfo, comment=""}
