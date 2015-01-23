@@ -35,8 +35,13 @@ Neither the Agilent Feature Extraction Files for the AHUS experiment or the proc
  
 ### not_in_github/
 - *Agilent_ncRNA_60k_normalised_miRNA_expression_ORIGINAL.txt*, the processed data file made by Dvinge et al. (UCAM) obtainable from ...
-- *AHUS_AFE/*, the raw agilent feature extraction files from AHUS obtainable from ....
+- *AHUS_AFE/*, the raw Agilent feature extraction files from AHUS obtainable from ....
  
+ 
+### Pam50 classification not included
+The pam50 classifications we use. are based on mRNA microarray data from the same cohorts. Neither the data or script to do this classification are provided here. The pam50 labels are presented and used as any other clinical label. Be aware that the pam50 classification we made for the UCAM data, differ somewhat from the classification in Dvinge et al.
+
+
 ### Commands to reproduce the reports and results
 Several libraries might be needed to be installed. 
 

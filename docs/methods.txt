@@ -1,0 +1,30 @@
+
+The numer in parenthesis are pmids, except the FDR paper that i did not find in pubmed.
+
+Missing:
+
+The accession info for the data sets are missing. Where did we get the UCAM from? GEO or somewhere else? And is the AHSU data in GEO? if not we should put it there.
+
+I did not add references to the methods used in the meta approach. Liliana will do this.
+
+I assume we will have a table or similar listing the number of samples from the data sets with phenotypes. I will make this.
+
+Methods
+
+Data processing
+Two microRNA expression data sets were acquired, "AHUS" provided by ? and downloaded from ? and "UCAM" presented in Dvinge et al(23644459) (But I could not find download info). The number of samples and their phenotypes are listed in table X. For the DCIS to Invasive comparison based on pam50 and IHC classification, all the DCIS samples were combined to a "DCIS" group due to low sample size. The UCAM samples were hybridized on a custom Agilent micro array, and the data was provided in a processed format, all described in Dvinge et al. The AHUS samples were hybridized on Agilent´s Human miRNA Microarray v3(G4470C), and were provided as Agilent Feature Extraction result files. These were read in using the the R library AgiMicroRna(21269452) and then normalized using rma(12925520) without background subtraction. MicroRNAs detected in less than 75% of the samples were removed. Using a mapping file downloaded from mirBASE(12592000), the microRNA names were converted to MIMAT IDs in order to facilitate comparison between the datasets,  and to the microRNAs reported by Volinia et al(22315424) and Fromm et al(). MicroRNAs that did not map to a MIMAT ID or were not found in both data sets, were dropped.
+
+Analyses
+A clear batch effect was observed between the two data sets. To mitigate this, two analysis approaches were used, both using the limma(16646809) package to detect differentially expressed genes between the groups. In the "meta" approach, the data sets were analysed individually and combined using the p-values in a meta analysis . In the "merged" approach the two data sets were combined and then analysed with the data set labels included as a blocking factor. A microRNA was reported as differentially expressed if it had a FDR(x1) less than 0.05 in both analysis. Thereafter, we compared our findings with the findings listed in supplementary tables S1 and S2 by Volinia et al.
+
+Reproducible research
+The level of detail in our method description might not be sufficient for a reproduction of our results. In addition, we acknowledge that analyses of high throughput data in the field of molecular biology is error prone. In order to increase the chance for readers and reviewers to detect mistakes in our calculations or methodology, we make most of the scripts used in this work accessible through a github repository at https://github.com/ous-uio-bioinfo-core/Eurocan_microRNA. The repository contain r-scripts, r-markdown, QC-plots and additional descriptions, but not the data which is accesible here(UCAM) and here (AHUS).
+
+
+
+x1:
+Benjamini, Y. and Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. Journal of the Royal Statistical Society: Series B 57, 289–300.
+
+
+
+
