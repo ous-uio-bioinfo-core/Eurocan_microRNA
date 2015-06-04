@@ -48,7 +48,7 @@ fdrCO = 0.05
 
 ## Meta vs Merged results.
 
-Our data sets came from two providers, "**AHUS**" and "**UCAM**", using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor ("**merged**" approach), and  analyzing the two sets independently with Limma and combine based on the p-values ("**meta**" approach).
+Our data sets came from two providers, "**AHUS**" and "**METABRIC**" (sometimes called "UCAM"), using two different Agilent microRNA platforms. Batch effects were present as visualized in the QC report. We tested for differentially expressed genes using two approaches, combining all data in Limma using provider as a blocking factor ("**merged**" approach), and  analyzing the two sets independently with Limma and combine based on the p-values ("**meta**" approach).
 
 Here we will list the agreement between the two approaches.
 
@@ -106,6 +106,20 @@ Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded
 
 <br/>
 <br/>
+```{r results='asis'}
+# creating table1 our in article.
+notbenign = !sampleannotation$tissue_type=="benign"
+invasiveonly = sampleannotation$tissue_type=="invasive"
+a=table(sampleannotation[notbenign, c("tissue_type", "provider")])
+b=table(sampleannotation[invasiveonly, c("pam50_est", "provider")])
+c=table(sampleannotation[invasiveonly, c("IHC", "provider")])
+table1 = rbind(a[c("normal", "DCIS", "invasive"),], 
+							 b[c("LumA", "LumB", "Her2", "Basallike", "Normallike"),],
+							 c[c("HER2neg_ERpos", "HER2pos_ERpos", "HER2pos_ERneg", "HER2neg_ERneg_PGRneg"),],
+							 total=colSums(a))
+write.table(table1, file=paste(outputdir, "/table1.txt", sep=""), sep="\t", col.names=NA, quote=FALSE)
+
+```
 
 Read in our results from files.
 
@@ -183,6 +197,8 @@ for(i in 1:nrow(meta2merged))
 
 if(sum(summarytab$wrong_direction)>0)
 	warning("Some common microRNAs were found that did not have the same dirrection of change!!")
+					
+
 
 ```
 The above tables are written to [files](output-analysis/consensus) later.
@@ -281,7 +297,7 @@ volinia_DCIS_vs_normal_file = "volinia-DCIS-vs-normal.txt"
 volinia_invasive_vs_DCIS_file = "volinia-invasive-vs-DCIS.txt"
 ```
 
-`r volinia_DCIS_vs_normal_file` and  `r volinia_invasive_vs_DCIS_file` are copy-pasted from Volinia et al.s [supplementary tables S1 and S2](http://www.pnas.org/content/suppl/2012/02/02/1200010109.DCSupplemental/pnas.201200010SI.pdf). The tables were reformatted from the pdf file into a more practical tabular text format. This is the results we aim to validate with the AHUS and UCAM data sets.
+`r volinia_DCIS_vs_normal_file` and  `r volinia_invasive_vs_DCIS_file` are copy-pasted from Volinia et al.s [supplementary tables S1 and S2](http://www.pnas.org/content/suppl/2012/02/02/1200010109.DCSupplemental/pnas.201200010SI.pdf). The tables were reformatted from the pdf file into a more practical tabular text format. This is the results we aim to validate with the AHUS and METABRIC data sets.
 
 Read in Volinia results, and do a minor re-formatting.
 
@@ -358,9 +374,18 @@ for(contrast in names(voliniatab))
 	write.table(overlaptab, 
             file=paste(outputdir, "/Volinia_validation_", contrast, postfix, sep=""),
             quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
-	
+
 	rm(x, overlaptab, contrast)
 }
+
+# write table2 in our article
+table2 = consensustables[["DCIS-normal"]]
+table2 = table2[table2$consensus,]
+table2 = table2[table2$MIMAT %in% rownames( volinia_overlap[["DCIS-normal"]])[volinia_overlap[["DCIS-normal"]]$validated], ]
+table2 = table2[order(table2$logFC.merged),2:6]
+table2[,c(2,4)] = round(table2[,c(2,4)], 2)
+write.table(table2, file=paste(outputdir, "/table2.txt", sep=""), sep="\t", col.names=NA, quote=FALSE)
+
 
 ```
 
@@ -449,9 +474,10 @@ for(n in names(volinia_overlap))
 The microRNAs reported by Volinia et al. are all in the "for sure microRNA" list in Fromm et al.
 <br/>
 <br/>
-And now the same assignment and summary for our results from the AHUS and UCAM data sets.
+And now the same assignment and summary for our results from the AHUS and METABRIC data sets.
 
 ```{r results='asis'}
+namelists = list()
 for(n in names(consensustables))
 {
 	x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1]))
@@ -459,7 +485,36 @@ for(n in names(consensustables))
 	write.table( format( consensustables[[n]], digits=4), 
             file=paste(consensusdir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, postfix, sep=""),
             quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
+	
+	# for table3 and 4.
+	dd = consensustables[[n]]
+	dd = dd[dd$consensus & !is.na(dd$curated),]
+	dd = dd[order(dd$logFC.merged, decreasing=TRUE), ]
+	v = as.character(dd$name)
+	v[dd$curated!="white"] = paste("(", v[dd$curated!="white"], ")", sep="")
+	v[dd$logFC.merged>0] = paste( v[dd$logFC.merged>0], " +", sep="")
+	v[dd$logFC.merged<0] = paste( v[dd$logFC.merged<0], " -", sep="")
+	namelists[[n]]=v
+	
 }
+
+# write table3 and table4 in our article
+tableclasses = c("LumA-DCIS", "LumB-DCIS", "Her2-DCIS", "Basallike-DCIS", "Normallike-DCIS")
+nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
+table3 = matrix("",ncol=length(tableclasses), nrow=nrows)
+colnames(table3)=tableclasses
+for(n in tableclasses)
+	table3[1:length(namelists[[n]]), n] = namelists[[n]]
+write.table(table3, file=paste(outputdir, "/table3.txt", sep=""), sep="\t", row.names=FALSE, quote=FALSE)
+
+tableclasses = c("HER2pos_ERpos-DCIS", "HER2neg_ERpos-DCIS", "HER2pos_ERneg-DCIS", "HER2neg_ERneg_PGRneg-DCIS")
+nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
+table4 = matrix("",ncol=length(tableclasses), nrow=nrows)
+colnames(table4)=tableclasses
+for(n in tableclasses)
+	if(length(namelists[[n]])>0)
+		table4[1:length(namelists[[n]]), n] = namelists[[n]]
+write.table(table4, file=paste(outputdir, "/table4.txt", sep=""), sep="\t", row.names=FALSE, quote=FALSE)
 
 ```
 
@@ -525,7 +580,7 @@ print( xtable( rbind(nonexpressed,expressed,significant), caption="", digits=3),
 
 ```
 
-In the above table, *nonexpressed* is the number of micorRNAs that were filtered out in one or both of the platforms. The filter was mainly based on some expression threshold in a minimum amount of samples. For short these can be considered non-expressed. The *expressed* class consists of the microRNAs that passed the filter criteria in both platforms. The *significant* class is here the microRNAs that were found as significant in the "normal to DCIS"-comparison for the combined UCAM and AHUS data sets.
+In the above table, *nonexpressed* is the number of micorRNAs that were filtered out in one or both of the platforms. The filter was mainly based on some expression threshold in a minimum amount of samples. For short these can be considered non-expressed. The *expressed* class consists of the microRNAs that passed the filter criteria in both platforms. The *significant* class is here the microRNAs that were found as significant in the "normal to DCIS"-comparison for the combined METABRIC and AHUS data sets.
 
 <br/>
 <br/>
