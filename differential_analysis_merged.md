@@ -1,6 +1,6 @@
 Finding differentially expressed microRNA in the  AHUS and UCAM data sets
 ========================================================
-2015-06-03 17:44:21
+2015-06-10 13:09:01
 
 
 <br/>
@@ -60,7 +60,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun  3 17:44:21 2015 -->
+<!-- Wed Jun 10 13:09:02 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -401,7 +401,7 @@ loaded via a namespace (and not attached):
 [65] nnet_7.3-9                oligoClasses_1.26.0      
 [67] PFAM.db_2.14.0            proto_0.3-10             
 [69] R.methodsS3_1.7.0         R.oo_1.19.0              
-[71] R.utils_1.34.0            R2HTML_2.3.1             
+[71] R.utils_2.0.2             R2HTML_2.3.1             
 [73] RBGL_1.40.1               Rcpp_0.11.4              
 [75] RcppArmadillo_0.4.650.1.1 RCurl_1.95-4.5           
 [77] ReportingTools_2.4.0      reshape2_1.4.1           
@@ -414,4 +414,4 @@ loaded via a namespace (and not attached):
 [91] XVector_0.4.0             zlibbioc_1.10.0          
 ```
 
-generation ended 2015-06-03 17:44:22. Time spent 0 minutes .
+generation ended 2015-06-10 13:09:02. Time spent 0 minutes .
