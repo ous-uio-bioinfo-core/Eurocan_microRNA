@@ -22,26 +22,22 @@ sampleannotation_file="sampleannotation_validatingvolinia.txt"
 mimatmapping_file = "MIMATID_conversion.txt"
 
 
-# make MIMAT mapping  # old
-# mimattab= read.table(file=paste(annotdir, "/", mimatmapping_file, sep=""),
-#                      sep="\t", check.names=TRUE, comment.char="",
-#                      stringsAsFactors=FALSE, header=TRUE)
-# mimatmapping = mimattab[,2]
-# names(mimatmapping)= mimattab[,1]
-# rm(mimattab)
+
+# Mapping the microrna between the platforms is done via MIMAT.
+# In addition the microRNA names are translated to use the arm (-5p, -3p )if found in mirbase
+# 3 microRNA names mapped to several MIMATID. Based on Agilent annotation, one whas chosen.
 
 aliases <- read.delim(paste(annotdir, "/aliases.txt", sep=""), header = FALSE, sep = "") ## file from miRbase
-
-# aliases = aliases[grepl("hsa-", aliases$V2), ]# only use human microRNA
 aliases = aliases[grepl("MIMAT", aliases$V1), ]# only use MIMAT id and not MI
 library(data.table)
-df <- data.table(aliases, key="V1")
-df <- df[, list(V2 = unlist(strsplit(as.character(V2), ";"))), by=V1]
-df <- as.matrix(df)
-df <- as.data.frame(df)
-df <- ddply(df, "V2", summarize, ID = paste(V1, collapse="_")) 
-mimatmapping = df[,2]
-names(mimatmapping)= df[,1]
+geneannot <- data.table(aliases, key="V1")
+geneannot <- geneannot[, list(V2 = unlist(strsplit(as.character(V2), ";"))), by=V1]
+geneannot <- as.matrix(geneannot)
+geneannot <- as.data.frame(geneannot)
+geneannot <- ddply(geneannot, "V2", summarize, ID = paste(V1, collapse="_")) 
+mimatmapping = geneannot[,2]
+names(mimatmapping)= geneannot[,1]
+geneannot[,1] = as.character(geneannot[,1])
 
 # read sampleannotation table
 sampleannotation=read.table(paste(annotdir,  "/", sampleannotation_file, sep=""),
@@ -118,10 +114,24 @@ unfilteredcommonMIMAT = intersect(unfilteredAHUSMIMAT, unfilteredUCAMMIMAT)
 # a = (commonanot$UCAMname == commonanot$AHUSname)
 # commonanot[!a,] # only 3 differed
 
-# make a mapping back to the microRNA name. only use AHUS names since thay were almost all the same
+# make a mapping back to the microRNA name. But use the arm name when availible.
 unfilteredcommonname = names(unfilteredAHUSMIMAT[unfilteredAHUSMIMAT %in% unfilteredcommonMIMAT])
 names(unfilteredcommonname) = mimatmapping[unfilteredcommonname]
-	
+
+for(i in 1:length(unfilteredcommonname))
+{
+	id = names(unfilteredcommonname)[i]
+	a = geneannot$ID %in% id
+	tmpnames = geneannot[a, 1]
+	b = grepl("-5p|-3p" , tmpnames)
+	if(sum(b)==1)
+		unfilteredcommonname[i] = tmpnames[b]	
+}
+
+# ad hoc fixes 
+# unfilteredcommonname["MIMAT0002813"] = "hsa-miR-493-5p"
+
+#sum( grepl("-5p|-3p", unfilteredcommonname ) )
 
 
 # filter data based on common MIMATS,

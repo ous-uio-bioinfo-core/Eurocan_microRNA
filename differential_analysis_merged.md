@@ -1,6 +1,6 @@
 Finding differentially expressed microRNA in the  AHUS and UCAM data sets
 ========================================================
-2015-06-10 13:09:01
+2015-06-15 18:05:18
 
 
 <br/>
@@ -60,7 +60,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun 10 13:09:02 2015 -->
+<!-- Mon Jun 15 18:05:18 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -124,8 +124,8 @@ print(xtable(head(DCIS_vs_normal_test), caption="Top of the result from the DCIS
 <caption align="bottom"> Top of the result from the DCIS vs normal test </caption>
 <tr> <th> name </th> <th> logFC </th> <th> AveExpr </th> <th> t </th> <th> P.Value </th> <th> adj.P.Val </th> <th> B </th>  </tr>
   <tr> <td> hsa-miR-1305 </td> <td align="right"> 0.681 </td> <td align="right"> 6.564 </td> <td align="right"> 13.003 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 72.627 </td> </tr>
-  <tr> <td> hsa-miR-1288 </td> <td align="right"> 0.342 </td> <td align="right"> 6.256 </td> <td align="right"> 12.176 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 63.205 </td> </tr>
-  <tr> <td> hsa-miR-21 </td> <td align="right"> 2.407 </td> <td align="right"> 14.925 </td> <td align="right"> 10.902 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 49.709 </td> </tr>
+  <tr> <td> hsa-miR-1288-3p </td> <td align="right"> 0.342 </td> <td align="right"> 6.256 </td> <td align="right"> 12.176 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 63.205 </td> </tr>
+  <tr> <td> hsa-miR-21-5p </td> <td align="right"> 2.407 </td> <td align="right"> 14.925 </td> <td align="right"> 10.902 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 49.709 </td> </tr>
   <tr> <td> hsa-miR-139-5p </td> <td align="right"> -1.276 </td> <td align="right"> 7.033 </td> <td align="right"> -9.693 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 38.083 </td> </tr>
   <tr> <td> hsa-miR-1274b </td> <td align="right"> 1.600 </td> <td align="right"> 11.862 </td> <td align="right"> 9.690 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 38.057 </td> </tr>
   <tr> <td> hsa-miR-486-5p </td> <td align="right"> -1.820 </td> <td align="right"> 7.517 </td> <td align="right"> -7.843 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 22.678 </td> </tr>
@@ -160,10 +160,10 @@ print(xtable(head(invasive_vs_DCIS_test), caption="Top of the result from the in
 <table CELLPADDING=5>
 <caption align="bottom"> Top of the result from the invasive vs DCIS test </caption>
 <tr> <th> name </th> <th> logFC </th> <th> AveExpr </th> <th> t </th> <th> P.Value </th> <th> adj.P.Val </th> <th> B </th>  </tr>
-  <tr> <td> hsa-miR-1288 </td> <td align="right"> -0.302 </td> <td align="right"> 6.256 </td> <td align="right"> -11.060 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 51.376 </td> </tr>
+  <tr> <td> hsa-miR-1288-3p </td> <td align="right"> -0.302 </td> <td align="right"> 6.256 </td> <td align="right"> -11.060 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 51.376 </td> </tr>
   <tr> <td> hsa-miR-1305 </td> <td align="right"> -0.546 </td> <td align="right"> 6.564 </td> <td align="right"> -10.704 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 47.793 </td> </tr>
   <tr> <td> hsa-miR-1274b </td> <td align="right"> -0.931 </td> <td align="right"> 11.862 </td> <td align="right"> -5.791 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 9.260 </td> </tr>
-  <tr> <td> hsa-miR-15b </td> <td align="right"> 0.715 </td> <td align="right"> 12.638 </td> <td align="right"> 4.750 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 3.893 </td> </tr>
+  <tr> <td> hsa-miR-15b-5p </td> <td align="right"> 0.715 </td> <td align="right"> 12.638 </td> <td align="right"> 4.750 </td> <td align="right"> 0.000 </td> <td align="right"> 0.000 </td> <td align="right"> 3.893 </td> </tr>
   <tr> <td> hsa-miR-720 </td> <td align="right"> -0.793 </td> <td align="right"> 14.486 </td> <td align="right"> -4.177 </td> <td align="right"> 0.000 </td> <td align="right"> 0.002 </td> <td align="right"> 1.376 </td> </tr>
   <tr> <td> hsa-miR-107 </td> <td align="right"> 0.588 </td> <td align="right"> 10.031 </td> <td align="right"> 3.963 </td> <td align="right"> 0.000 </td> <td align="right"> 0.003 </td> <td align="right"> 0.519 </td> </tr>
    </table>
@@ -353,17 +353,20 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] parallel  stats     graphics  grDevices utils     datasets  methods  
-[8] base     
+[1] grid      parallel  stats     graphics  grDevices utils     datasets 
+[8] methods   base     
 
 other attached packages:
  [1] sva_3.10.0            mgcv_1.8-4            nlme_3.1-120         
- [4] corpcor_1.6.7         xtable_1.7-4          RColorBrewer_1.1-2   
- [7] knitr_1.9             AgiMicroRna_2.14.0    affycoretools_1.36.1 
-[10] GO.db_2.14.0          RSQLite_1.0.0         DBI_0.3.1            
-[13] AnnotationDbi_1.26.1  GenomeInfoDb_1.0.2    preprocessCore_1.26.1
-[16] affy_1.42.3           limma_3.20.9          Biobase_2.24.0       
-[19] BiocGenerics_0.10.0   data.table_1.9.2      plyr_1.8.1           
+ [4] corpcor_1.6.7         RColorBrewer_1.1-2    MAMA_2.2.1           
+ [7] GeneMeta_1.36.0       gtools_3.4.1          multtest_2.20.0      
+[10] metaMA_2.1            SMVar_1.3.3           genefilter_1.46.1    
+[13] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0         
+[16] RSQLite_1.0.0         DBI_0.3.1             AnnotationDbi_1.26.1 
+[19] GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3          
+[22] Biobase_2.24.0        BiocGenerics_0.10.0   xtable_1.7-4         
+[25] limma_3.20.9          knitr_1.9             data.table_1.9.2     
+[28] plyr_1.8.1           
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.32.0            
@@ -384,34 +387,34 @@ loaded via a namespace (and not attached):
 [31] foreach_1.4.2             foreign_0.8-63           
 [33] formatR_1.0               Formula_1.2-0            
 [35] gcrma_2.36.0              gdata_2.13.3             
-[37] genefilter_1.46.1         geneplotter_1.42.0       
-[39] GenomicAlignments_1.0.6   GenomicFeatures_1.16.3   
-[41] GenomicRanges_1.16.4      ggbio_1.12.10            
-[43] ggplot2_1.0.0             GOstats_2.30.0           
-[45] gplots_2.16.0             graph_1.42.0             
-[47] grid_3.1.1                gridExtra_0.9.1          
-[49] GSEABase_1.26.0           gtable_0.1.2             
-[51] gtools_3.4.1              Hmisc_3.15-0             
-[53] hwriter_1.3.2             IRanges_1.22.10          
-[55] iterators_1.0.7           KernSmooth_2.23-14       
-[57] lattice_0.20-30           latticeExtra_0.6-26      
-[59] locfit_1.5-9.1            markdown_0.7.4           
-[61] MASS_7.3-39               Matrix_1.1-5             
-[63] mime_0.2                  munsell_0.4.2            
-[65] nnet_7.3-9                oligoClasses_1.26.0      
-[67] PFAM.db_2.14.0            proto_0.3-10             
-[69] R.methodsS3_1.7.0         R.oo_1.19.0              
-[71] R.utils_2.0.2             R2HTML_2.3.1             
-[73] RBGL_1.40.1               Rcpp_0.11.4              
-[75] RcppArmadillo_0.4.650.1.1 RCurl_1.95-4.5           
-[77] ReportingTools_2.4.0      reshape2_1.4.1           
-[79] rpart_4.1-9               Rsamtools_1.16.1         
-[81] rtracklayer_1.24.2        scales_0.2.4             
-[83] sendmailR_1.2-1           splines_3.1.1            
-[85] stats4_3.1.1              stringr_0.6.2            
-[87] survival_2.38-1           tools_3.1.1              
-[89] VariantAnnotation_1.10.5  XML_3.98-1.1             
-[91] XVector_0.4.0             zlibbioc_1.10.0          
+[37] geneplotter_1.42.0        GenomicAlignments_1.0.6  
+[39] GenomicFeatures_1.16.3    GenomicRanges_1.16.4     
+[41] ggbio_1.12.10             ggplot2_1.0.0            
+[43] GOstats_2.30.0            gplots_2.16.0            
+[45] graph_1.42.0              gridExtra_0.9.1          
+[47] GSEABase_1.26.0           gtable_0.1.2             
+[49] Hmisc_3.15-0              hwriter_1.3.2            
+[51] IRanges_1.22.10           iterators_1.0.7          
+[53] KernSmooth_2.23-14        lattice_0.20-30          
+[55] latticeExtra_0.6-26       locfit_1.5-9.1           
+[57] markdown_0.7.4            MASS_7.3-39              
+[59] Matrix_1.1-5              MergeMaid_2.36.0         
+[61] metaArray_1.42.0          mime_0.2                 
+[63] munsell_0.4.2             nnet_7.3-9               
+[65] oligoClasses_1.26.0       PFAM.db_2.14.0           
+[67] proto_0.3-10              R.methodsS3_1.7.0        
+[69] R.oo_1.19.0               R.utils_2.0.2            
+[71] R2HTML_2.3.1              RBGL_1.40.1              
+[73] Rcpp_0.11.4               RcppArmadillo_0.4.650.1.1
+[75] RCurl_1.95-4.5            ReportingTools_2.4.0     
+[77] reshape2_1.4.1            rpart_4.1-9              
+[79] Rsamtools_1.16.1          rtracklayer_1.24.2       
+[81] scales_0.2.4              sendmailR_1.2-1          
+[83] splines_3.1.1             stats4_3.1.1             
+[85] stringr_0.6.2             survival_2.38-1          
+[87] tools_3.1.1               VariantAnnotation_1.10.5 
+[89] XML_3.98-1.1              XVector_0.4.0            
+[91] zlibbioc_1.10.0          
 ```
 
-generation ended 2015-06-10 13:09:02. Time spent 0 minutes .
+generation ended 2015-06-15 18:05:19. Time spent 0 minutes .

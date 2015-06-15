@@ -1,6 +1,6 @@
 Overlap between our results and Volinia et al.
 ========================================================
-2015-06-10 14:08:54
+2015-06-15 18:06:00
 
 
 <br/>
@@ -53,7 +53,7 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun 10 14:08:54 2015 -->
+<!-- Mon Jun 15 18:06:00 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -81,7 +81,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun 10 14:08:54 2015 -->
+<!-- Mon Jun 15 18:06:00 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -89,7 +89,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> invasive </td> <td align="right">    5 </td> <td align="right">    0 </td> <td align="right">    8 </td> <td align="right">   16 </td> <td align="right">   15 </td> <td align="right">    7 </td> <td align="right">    4 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun 10 14:08:54 2015 -->
+<!-- Mon Jun 15 18:06:00 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -117,7 +117,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun 10 14:08:54 2015 -->
+<!-- Mon Jun 15 18:06:00 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -127,7 +127,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> normal </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">   70 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun 10 14:08:54 2015 -->
+<!-- Mon Jun 15 18:06:00 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -250,7 +250,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun 10 14:08:54 2015 -->
+<!-- Mon Jun 15 18:06:01 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
 <tr> <th>  </th> <th> found_meta </th> <th> found_merged </th> <th> found_both </th>  </tr>
@@ -337,7 +337,7 @@ print(xtable(correlationmatrix1,
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Jun 10 14:08:54 2015 -->
+<!-- Mon Jun 15 18:06:01 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
 <tr> <th>  </th> <th> DCIS-normal </th> <th> invasive-DCIS </th> <th> Normallike-DCIS </th> <th> LumA-DCIS </th> <th> LumB-DCIS </th> <th> Her2-DCIS </th> <th> Basallike-DCIS </th> <th> HER2neg_ERneg_PGRneg-DCIS </th> <th> HER2neg_ERpos-DCIS </th> <th> HER2pos_ERneg-DCIS </th> <th> HER2pos_ERpos-DCIS </th>  </tr>
@@ -697,8 +697,8 @@ print( xtable( consensustables[["DCIS-normal"]][1:5,], caption="", digits=3),
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> MIMAT </th> <th> name </th> <th> logFC.merged </th> <th> adj.P.Val.merged </th> <th> TestStatistic.meta </th> <th> adj.P.Val.meta </th> <th> same_dir </th> <th> consensus </th> <th> curated </th>  </tr>
   <tr> <td align="right"> MIMAT0005893 </td> <td> MIMAT0005893 </td> <td> hsa-miR-1305 </td> <td align="right"> 0.681 </td> <td align="right"> 0.000 </td> <td align="right"> 6.121 </td> <td align="right"> 0.000 </td> <td> TRUE </td> <td> TRUE </td> <td> purple </td> </tr>
-  <tr> <td align="right"> MIMAT0005942 </td> <td> MIMAT0005942 </td> <td> hsa-miR-1288 </td> <td align="right"> 0.342 </td> <td align="right"> 0.000 </td> <td align="right"> 5.097 </td> <td align="right"> 0.000 </td> <td> TRUE </td> <td> TRUE </td> <td> rejected </td> </tr>
-  <tr> <td align="right"> MIMAT0000076 </td> <td> MIMAT0000076 </td> <td> hsa-miR-21 </td> <td align="right"> 2.407 </td> <td align="right"> 0.000 </td> <td align="right"> 8.676 </td> <td align="right"> 0.000 </td> <td> TRUE </td> <td> TRUE </td> <td> white </td> </tr>
+  <tr> <td align="right"> MIMAT0005942 </td> <td> MIMAT0005942 </td> <td> hsa-miR-1288-3p </td> <td align="right"> 0.342 </td> <td align="right"> 0.000 </td> <td align="right"> 5.097 </td> <td align="right"> 0.000 </td> <td> TRUE </td> <td> TRUE </td> <td> rejected </td> </tr>
+  <tr> <td align="right"> MIMAT0000076 </td> <td> MIMAT0000076 </td> <td> hsa-miR-21-5p </td> <td align="right"> 2.407 </td> <td align="right"> 0.000 </td> <td align="right"> 8.676 </td> <td align="right"> 0.000 </td> <td> TRUE </td> <td> TRUE </td> <td> white </td> </tr>
   <tr> <td align="right"> MIMAT0000250 </td> <td> MIMAT0000250 </td> <td> hsa-miR-139-5p </td> <td align="right"> -1.276 </td> <td align="right"> 0.000 </td> <td align="right"> -8.167 </td> <td align="right"> 0.000 </td> <td> TRUE </td> <td> TRUE </td> <td> white </td> </tr>
   <tr> <td align="right"> MIMAT0005938 </td> <td> MIMAT0005938 </td> <td> hsa-miR-1274b </td> <td align="right"> 1.600 </td> <td align="right"> 0.000 </td> <td align="right"> 6.308 </td> <td align="right"> 0.000 </td> <td> TRUE </td> <td> TRUE </td> <td>  </td> </tr>
    </table>
@@ -800,15 +800,15 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] MAMA_2.2.1            GeneMeta_1.36.0       gtools_3.4.1         
- [4] multtest_2.20.0       metaMA_2.1            SMVar_1.3.3          
- [7] genefilter_1.46.1     sva_3.10.0            mgcv_1.8-4           
-[10] nlme_3.1-120          corpcor_1.6.7         xtable_1.7-4         
-[13] RColorBrewer_1.1-2    knitr_1.9             AgiMicroRna_2.14.0   
-[16] affycoretools_1.36.1  GO.db_2.14.0          RSQLite_1.0.0        
-[19] DBI_0.3.1             AnnotationDbi_1.26.1  GenomeInfoDb_1.0.2   
-[22] preprocessCore_1.26.1 affy_1.42.3           limma_3.20.9         
-[25] Biobase_2.24.0        BiocGenerics_0.10.0   data.table_1.9.2     
+ [1] sva_3.10.0            mgcv_1.8-4            nlme_3.1-120         
+ [4] corpcor_1.6.7         RColorBrewer_1.1-2    MAMA_2.2.1           
+ [7] GeneMeta_1.36.0       gtools_3.4.1          multtest_2.20.0      
+[10] metaMA_2.1            SMVar_1.3.3           genefilter_1.46.1    
+[13] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0         
+[16] RSQLite_1.0.0         DBI_0.3.1             AnnotationDbi_1.26.1 
+[19] GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3          
+[22] Biobase_2.24.0        BiocGenerics_0.10.0   xtable_1.7-4         
+[25] limma_3.20.9          knitr_1.9             data.table_1.9.2     
 [28] plyr_1.8.1           
 
 loaded via a namespace (and not attached):
@@ -860,6 +860,6 @@ loaded via a namespace (and not attached):
 [91] zlibbioc_1.10.0          
 ```
 
-generation ended 2015-06-10 14:08:55. Time spent 0 minutes .
+generation ended 2015-06-15 18:06:02. Time spent 0 minutes .
 
 
