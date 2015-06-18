@@ -3,7 +3,7 @@ Quality control plots of AHUS and UCAM microRNA data used in Volinia check
 
 
 
-2015-06-15 18:05:11  
+2015-06-18 17:00:33  
 <br/>
 <br/>
 
@@ -43,7 +43,7 @@ if(!exists("inputisread"))
 	source("read_input.r")
 ```
 
-The data matrix has 1573 samples and 266 microRNAs.
+The data matrix has 1573 samples and 265 microRNAs.
 
 
 
@@ -57,7 +57,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Jun 15 18:05:12 2015 -->
+<!-- Thu Jun 18 17:00:33 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -251,20 +251,17 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] grid      parallel  stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
  [1] sva_3.10.0            mgcv_1.8-4            nlme_3.1-120         
- [4] corpcor_1.6.7         RColorBrewer_1.1-2    MAMA_2.2.1           
- [7] GeneMeta_1.36.0       gtools_3.4.1          multtest_2.20.0      
-[10] metaMA_2.1            SMVar_1.3.3           genefilter_1.46.1    
-[13] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0         
-[16] RSQLite_1.0.0         DBI_0.3.1             AnnotationDbi_1.26.1 
-[19] GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3          
-[22] Biobase_2.24.0        BiocGenerics_0.10.0   xtable_1.7-4         
-[25] limma_3.20.9          knitr_1.9             data.table_1.9.2     
-[28] plyr_1.8.1           
+ [4] corpcor_1.6.7         xtable_1.7-4          RColorBrewer_1.1-2   
+ [7] knitr_1.9             AgiMicroRna_2.14.0    affycoretools_1.36.1 
+[10] GO.db_2.14.0          RSQLite_1.0.0         DBI_0.3.1            
+[13] AnnotationDbi_1.26.1  GenomeInfoDb_1.0.2    preprocessCore_1.26.1
+[16] affy_1.42.3           limma_3.20.9          Biobase_2.24.0       
+[19] BiocGenerics_0.10.0   plyr_1.8.1           
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.32.0            
@@ -285,19 +282,19 @@ loaded via a namespace (and not attached):
 [31] foreach_1.4.2             foreign_0.8-63           
 [33] formatR_1.0               Formula_1.2-0            
 [35] gcrma_2.36.0              gdata_2.13.3             
-[37] geneplotter_1.42.0        GenomicAlignments_1.0.6  
-[39] GenomicFeatures_1.16.3    GenomicRanges_1.16.4     
-[41] ggbio_1.12.10             ggplot2_1.0.0            
-[43] GOstats_2.30.0            gplots_2.16.0            
-[45] graph_1.42.0              gridExtra_0.9.1          
-[47] GSEABase_1.26.0           gtable_0.1.2             
-[49] Hmisc_3.15-0              hwriter_1.3.2            
-[51] IRanges_1.22.10           iterators_1.0.7          
-[53] KernSmooth_2.23-14        lattice_0.20-30          
-[55] latticeExtra_0.6-26       locfit_1.5-9.1           
-[57] markdown_0.7.4            MASS_7.3-39              
-[59] Matrix_1.1-5              MergeMaid_2.36.0         
-[61] metaArray_1.42.0          munsell_0.4.2            
+[37] genefilter_1.46.1         geneplotter_1.42.0       
+[39] GenomicAlignments_1.0.6   GenomicFeatures_1.16.3   
+[41] GenomicRanges_1.16.4      ggbio_1.12.10            
+[43] ggplot2_1.0.0             GOstats_2.30.0           
+[45] gplots_2.16.0             graph_1.42.0             
+[47] grid_3.1.1                gridExtra_0.9.1          
+[49] GSEABase_1.26.0           gtable_0.1.2             
+[51] gtools_3.4.1              Hmisc_3.15-0             
+[53] hwriter_1.3.2             IRanges_1.22.10          
+[55] iterators_1.0.7           KernSmooth_2.23-14       
+[57] lattice_0.20-30           latticeExtra_0.6-26      
+[59] locfit_1.5-9.1            MASS_7.3-39              
+[61] Matrix_1.1-5              munsell_0.4.2            
 [63] nnet_7.3-9                oligoClasses_1.26.0      
 [65] PFAM.db_2.14.0            proto_0.3-10             
 [67] R.methodsS3_1.7.0         R.oo_1.19.0              
@@ -314,4 +311,4 @@ loaded via a namespace (and not attached):
 [89] XVector_0.4.0             zlibbioc_1.10.0          
 ```
 
-generation ended 2015-06-15 18:05:18. Time spent 0 minutes .
+generation ended 2015-06-18 17:00:38. Time spent 0 minutes .

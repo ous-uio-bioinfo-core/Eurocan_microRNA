@@ -41,6 +41,7 @@ Setting some dependencies
 
 library(limma)
 library(xtable)
+library(knitr)
 
 set.seed(100)
 if(!exists("inputisread"))
@@ -94,7 +95,7 @@ batch = factor(sampleannotation$provider)
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub("group", "", colnames(design))
 fit = lmFit(common_matrix, design)
-fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
+fit$genes$name = miRNA2MIMAT[rownames(common_matrix), "preferredname"]
 cont.matrix = makeContrasts ( contrasts=c("DCIS-normal", "invasive-DCIS"), levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 <- eBayes(fit2)
@@ -175,7 +176,7 @@ batch = factor(sampleannotation$provider[to_be_used])
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub("group", "", colnames(design))
 fit = lmFit(common_matrix[,to_be_used], design)
-fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
+fit$genes$name = miRNA2MIMAT[rownames(common_matrix), "preferredname"]
 cont.matrix = makeContrasts ( contrasts=pam50contrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 <- eBayes(fit2)
@@ -236,7 +237,7 @@ batch = factor(sampleannotation$provider[to_be_used])
 design = model.matrix(~0+group+batch)
 colnames(design) = gsub("group", "", colnames(design))
 fit = lmFit(common_matrix[,to_be_used], design)
-fit$genes$name = unfilteredcommonname[rownames(common_matrix)]
+fit$genes$name = miRNA2MIMAT[rownames(common_matrix), "preferredname"]
 cont.matrix = makeContrasts ( contrasts=IHCcontrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 <- eBayes(fit2)

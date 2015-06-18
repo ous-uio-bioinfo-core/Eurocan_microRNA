@@ -188,7 +188,7 @@ for(i in 1:nrow(meta2merged))
   
  	thistable = merge(x, y, by.x = "row.names", by.y="row.names",  all.x=TRUE)
   row.names(thistable) = thistable$Row.names
-  thistable = cbind(MIMAT = thistable$Row.names, name=unfilteredcommonname[thistable$Row.names], thistable[,-1])
+  thistable = cbind(MIMAT = thistable$Row.names, name=miRNA2MIMAT[thistable$Row.names, "preferredname"], thistable[,-1])
   thistable$same_dir =  (thistable$logFC.merged * thistable$TestStatistic.meta ) > 0
   thistable$consensus = thistable$adj.P.Val.merged <= 0.05 & 
   	thistable$adj.P.Val.meta <= 0.05 & thistable$same_dir
@@ -230,7 +230,7 @@ signchangetab = as.data.frame(matrix( nrow=nrow(consensustables[[1]]),
 colnames(signchangetab) = c("MIMATID", "name", names(consensustables))
 rownames(signchangetab) = rownames(consensustables[[1]])
 signchangetab[,"MIMATID"] = consensustables[[1]]$MIMAT
-signchangetab[,"name"] = unfilteredcommonname[consensustables[[1]]$MIMAT]
+signchangetab[,"name"] = miRNA2MIMAT[consensustables[[1]]$MIMAT, "MIMAT"]
 
 for(n in names(consensustables))
 {
@@ -315,7 +315,7 @@ for(n in names(voliniatab))
 {
 	# add a MIMATID 
 	voliniatab[[n]] = as.data.frame(append(voliniatab[[n]], 
-                  list(MIMATID=mimatmapping[paste("hsa-", voliniatab[[n]]$miRNA, sep="")]), 
+                  list(MIMATID=miRNA2MIMAT$MIMAT[match(voliniatab[[n]]$miRNA, miRNA2MIMAT$volinia)]), 
                   after=1))
 	# use log2 for foldchange in this document.
 	voliniatab[[n]]$fc=log2(voliniatab[[n]]$fc)
@@ -559,6 +559,11 @@ The difference in curated status for the filtered out microRNAs and the ones kep
 
 
 ```{r results='asis'}
+
+filteredcommonMIMAT = consensustables[[1]]$MIMAT
+unfilteredcommonMIMAT = miRNA2MIMAT$MIMAT[ !is.na(miRNA2MIMAT$UCAM) &
+																		 !is.na(miRNA2MIMAT$AHUS) & 
+																		 !miRNA2MIMAT$MIMAT %in% filteredcommonMIMAT]
 
 filt1 = unlist(lapply(filteredcommonMIMAT, FUN=function(x)strsplit(x, "_")[[1]][1]))
 unfilt1 = unlist(lapply(unfilteredcommonMIMAT, FUN=function(x)strsplit(x, "_")[[1]][1]))

@@ -3,7 +3,7 @@ HER2pos_ERpos-DCIS	HER2neg_ERpos-DCIS	HER2pos_ERneg-DCIS	HER2neg_ERneg_PGRneg-DC
 		hsa-miR-139-5p -	hsa-miR-139-5p -
 		hsa-miR-221-3p -	
 		hsa-miR-30c-2-3p -	
-		hsa-miR-30e* -	
+		hsa-miR-30e-3p -	
 		hsa-miR-30c-5p -	
-		hsa-miR-30a -	
-		hsa-miR-30a* -	
+		hsa-miR-30a-5p -	
+		hsa-miR-30a-3p -	

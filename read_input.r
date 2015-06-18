@@ -21,23 +21,11 @@ UCAM_data_file = "Agilent_ncRNA_60k_normalised_miRNA_expression_ORIGINAL.txt"
 sampleannotation_file="sampleannotation_validatingvolinia.txt"
 mimatmapping_file = "MIMATID_conversion.txt"
 
-
-
-# Mapping the microrna between the platforms is done via MIMAT.
-# In addition the microRNA names are translated to use the arm (-5p, -3p )if found in mirbase
-# 3 microRNA names mapped to several MIMATID. Based on Agilent annotation, one whas chosen.
-
-aliases <- read.delim(paste(annotdir, "/aliases.txt", sep=""), header = FALSE, sep = "") ## file from miRbase
-aliases = aliases[grepl("MIMAT", aliases$V1), ]# only use MIMAT id and not MI
-library(data.table)
-geneannot <- data.table(aliases, key="V1")
-geneannot <- geneannot[, list(V2 = unlist(strsplit(as.character(V2), ";"))), by=V1]
-geneannot <- as.matrix(geneannot)
-geneannot <- as.data.frame(geneannot)
-geneannot <- ddply(geneannot, "V2", summarize, ID = paste(V1, collapse="_")) 
-mimatmapping = geneannot[,2]
-names(mimatmapping)= geneannot[,1]
-geneannot[,1] = as.character(geneannot[,1])
+# the miRNA to MIMAT mapping with preferred arm name if availible, else use AHUS version
+miRNA2MIMAT = read.table(file=paste(annotdir, "/miRNA2MIMAT.txt", sep=""), 	header=TRUE ,sep="\t", stringsAsFactors=FALSE)
+rownames(miRNA2MIMAT)=miRNA2MIMAT$MIMAT
+miRNA2MIMAT$preferredname=miRNA2MIMAT$arm
+miRNA2MIMAT$preferredname[is.na(miRNA2MIMAT$preferredname)]=miRNA2MIMAT$AHUS[is.na(miRNA2MIMAT$preferredname)]
 
 # read sampleannotation table
 sampleannotation=read.table(paste(annotdir,  "/", sampleannotation_file, sep=""),
@@ -45,11 +33,12 @@ sampleannotation=read.table(paste(annotdir,  "/", sampleannotation_file, sep="")
                             strip.white=TRUE, comment.char ="")
 row.names(sampleannotation) = sampleannotation$sample_id
 sampleannotation$IHC[sampleannotation$IHC==""] = "unknown"
-#load(paste(datadir, "/", AHUS_binary_data_file, sep=""))
-#ahus_uRNAList  = rmaMicroRna(AHUS_agiMicroRNAdata$Agilent_miRNA_v3_4470C, normalize = TRUE, background = FALSE)
-#save(ahus_uRNAList, file="inputdata/AHUS_rma_uRNAList.rdata")
 
-# load the AHUS data as a uRNAlist object. Prepared earlier from Agilent Feature Extraction Result Files
+## Preprocessing -  summarization
+#First we load  and preprocess the AHUS data. The use only one of the AHUS dataset which has DCIS samples. 
+#We choose to use  RMA summarisation of  the signal without background correction as described in BMC Research Notes 2010, 3:18.
+#We also read the processed and already normalized.
+#W# load the AHUS data as a uRNAlist object. Prepared earlier from Agilent Feature Extraction Result Files
 # We then filter out the ahus data from control spots,  miRNA whose gMeanSignal is close to the 
 # expression of the negative controls(25\% limit) and  miRNA which are not expressed. 
 # We set up a limit of 75\% of the miRNA which must remain in at least one experimental condition. 
@@ -65,13 +54,13 @@ ahus_v3_filtered =filterMicroRna(ahus_uRNAList , AHUS_agiMicroRNAdata$Agilent_mi
                                  verbose=TRUE,writeout=FALSE)
 ahus_matrix = exprs(esetMicroRna(ahus_v3_filtered, filtertargets))
 colnames(ahus_matrix) = filtertargets$FileName
-ahus_matrix = ahus_matrix[rownames(ahus_matrix) %in% names(mimatmapping), ]#mimatmapping
-rownames(ahus_matrix) = mimatmapping[rownames(ahus_matrix)]
+ahus_matrix = ahus_matrix[rownames(ahus_matrix) %in% miRNA2MIMAT$AHUS, ]#mimatmapping
+rownames(ahus_matrix) = miRNA2MIMAT[match(rownames(ahus_matrix),miRNA2MIMAT$AHUS), "MIMAT"]
 
 
 # read the UCAM data, using the providers version
 ucam_matrix = read.table(paste(datadir, "/", UCAM_data_file, sep=""), header = TRUE, sep="\t", stringsAsFactors=FALSE)
-ucam_matrix = ucam_matrix[ucam_matrix[,2] %in%  names(mimatmapping),]
+ucam_matrix = ucam_matrix[ucam_matrix[,2] %in% miRNA2MIMAT$UCAM, ]
 
 # UCAM data has been already filtered - 823 features.
 # But some microRNA are measured with several different probes, use only one probe per microRNA,
@@ -80,59 +69,50 @@ rowsd = apply(ucam_matrix[,-c(1,2)], MARGIN=1, FUN=sd)
 ucam_matrix = ucam_matrix[order(rowsd, decreasing=TRUE), ]
 ucam_matrix = ucam_matrix[!duplicated(ucam_matrix[,2]), ]
 
-# debug
-# x =  mimatmapping[ucam_matrix[,2]]
-# y = duplicated(x) | duplicated(x, fromLast = TRUE)
-# ucam_matrix[y,2]
+
 ucam_microrna_names_filtered=ucam_matrix[,2]
-rownames(ucam_matrix) = mimatmapping[ucam_matrix[,2]]
+rownames(ucam_matrix) =  miRNA2MIMAT[match(ucam_matrix[,2],miRNA2MIMAT$UCAM), "MIMAT"]
 ucam_matrix = as.matrix(ucam_matrix[, -c(1,2)])
 colnames(ucam_matrix) = paste("UCAM_", colnames(ucam_matrix), sep="") # another naming scheme is used in the annotation used here.
 
 # A few of the samples are without sample annotation, probably some kind of control samples. We filter them out.
 ucam_matrix = ucam_matrix[, colnames(ucam_matrix) %in% sampleannotation$sample_id]
 
-# Make a vecor of all common MIMAT before filtering.
-ucam_genes = read.table(paste(annotdir, "/", "UCAM_genes.txt", sep=""), header = FALSE, sep="\t", 
-												stringsAsFactors=FALSE)[,1] # The IDs of all genes from the UCAM platform, also the ones filtered out in the data matrix.
-unfilteredUCAMMIMAT =  mimatmapping[ucam_genes]
-#rm(ucam_genes)
-unfilteredUCAMMIMAT = unfilteredUCAMMIMAT[!is.na(unfilteredUCAMMIMAT)]
-unfilteredUCAMMIMAT = unfilteredUCAMMIMAT[!duplicated(unfilteredUCAMMIMAT)]
-filteredUCAMMIMAT =   mimatmapping[ucam_microrna_names_filtered]
-filteredUCAMMIMAT = filteredUCAMMIMAT[!is.na(filteredUCAMMIMAT)]
 
-filteredAHUSMIMAT =  rownames(ahus_matrix)
-unfilteredAHUSMIMAT =  mimatmapping[ahus_uRNAList$genes$GeneName]
-unfilteredAHUSMIMAT = unfilteredAHUSMIMAT[!is.na(unfilteredAHUSMIMAT)]
-unfilteredcommonMIMAT = intersect(unfilteredAHUSMIMAT, unfilteredUCAMMIMAT)
 
-# # a back to name mapping for the two data sets
-# commonanot = data.frame(MIMAT=unfilteredcommonMIMAT, UCAMname=NA, AHUSname=NA)
-# commonanot$UCAMname = names(unfilteredUCAMMIMAT[match(unfilteredcommonMIMAT, unfilteredUCAMMIMAT)])
-# commonanot$AHUSname = names(unfilteredAHUSMIMAT[match(unfilteredcommonMIMAT, unfilteredAHUSMIMAT)])
-# a = (commonanot$UCAMname == commonanot$AHUSname)
-# commonanot[!a,] # only 3 differed
-
-# make a mapping back to the microRNA name. But use the arm name when availible.
-unfilteredcommonname = names(unfilteredAHUSMIMAT[unfilteredAHUSMIMAT %in% unfilteredcommonMIMAT])
-names(unfilteredcommonname) = mimatmapping[unfilteredcommonname]
-
-for(i in 1:length(unfilteredcommonname))
-{
-	id = names(unfilteredcommonname)[i]
-	a = geneannot$ID %in% id
-	tmpnames = geneannot[a, 1]
-	b = grepl("-5p|-3p" , tmpnames)
-	if(sum(b)==1)
-		unfilteredcommonname[i] = tmpnames[b]	
-}
-
-# ad hoc fixes 
-# unfilteredcommonname["MIMAT0002813"] = "hsa-miR-493-5p"
-
-#sum( grepl("-5p|-3p", unfilteredcommonname ) )
-
+# ##########klipp
+# # Make a vecor of all common MIMAT before filtering.
+# ucam_genes = read.table(paste(annotdir, "/", "UCAM_genes.txt", sep=""), header = FALSE, sep="\t", 
+# 												stringsAsFactors=FALSE)[,1] # The IDs of all genes from the UCAM platform, also the ones filtered out in the data matrix.
+# unfilteredUCAMMIMAT =  mimatmapping[ucam_genes]
+# #rm(ucam_genes)
+# unfilteredUCAMMIMAT = unfilteredUCAMMIMAT[!is.na(unfilteredUCAMMIMAT)]
+# unfilteredUCAMMIMAT = unfilteredUCAMMIMAT[!duplicated(unfilteredUCAMMIMAT)]
+# filteredUCAMMIMAT =   mimatmapping[ucam_microrna_names_filtered]
+# filteredUCAMMIMAT = filteredUCAMMIMAT[!is.na(filteredUCAMMIMAT)]
+# 
+# filteredAHUSMIMAT =  rownames(ahus_matrix)
+# unfilteredAHUSMIMAT =  mimatmapping[ahus_uRNAList$genes$GeneName]
+# unfilteredAHUSMIMAT = unfilteredAHUSMIMAT[!is.na(unfilteredAHUSMIMAT)]
+# unfilteredcommonMIMAT = intersect(unfilteredAHUSMIMAT, unfilteredUCAMMIMAT)
+# 
+# # # a back to name mapping for the two data sets
+# 
+# 
+# # make a mapping back to the microRNA name. But use the arm name when availible.
+# unfilteredcommonname = names(unfilteredAHUSMIMAT[unfilteredAHUSMIMAT %in% unfilteredcommonMIMAT])
+# names(unfilteredcommonname) = mimatmapping[unfilteredcommonname]
+# 
+# for(i in 1:length(unfilteredcommonname))
+# {
+# 	id = names(unfilteredcommonname)[i]
+# 	a = geneannot$ID %in% id
+# 	tmpnames = geneannot[a, 1]
+# 	b = grepl("-5p|-3p" , tmpnames)
+# 	if(sum(b)==1)
+# 		unfilteredcommonname[i] = tmpnames[b]	
+# }
+# ########################klipp
 
 # filter data based on common MIMATS,
 filteredcommonMIMAT = intersect(rownames(ucam_matrix), rownames(ahus_matrix))

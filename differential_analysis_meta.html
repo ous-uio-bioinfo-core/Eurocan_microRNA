@@ -220,7 +220,45 @@ hr {
 <pre><code class="r">library(AgiMicroRna)
 library(Biobase)
 library(MAMA)
-library(plyr)
+</code></pre>
+
+<pre><code>## Loading required package: genefilter
+## 
+## Attaching package: &#39;genefilter&#39;
+## 
+## The following object is masked from &#39;package:base&#39;:
+## 
+##     anyNA
+## 
+## Loading required package: metaMA
+## Loading required package: SMVar
+## 
+## Attaching package: &#39;metaMA&#39;
+## 
+## The following object is masked from &#39;package:genefilter&#39;:
+## 
+##     rowVars
+## 
+## Loading required package: multtest
+## Loading required package: gtools
+## 
+## Attaching package: &#39;gtools&#39;
+## 
+## The following object is masked from &#39;package:mgcv&#39;:
+## 
+##     scat
+## 
+## Loading required package: grid
+## Loading required package: GeneMeta
+## 
+## Attaching package: &#39;MAMA&#39;
+## 
+## The following objects are masked from &#39;package:GeneMeta&#39;:
+## 
+##     multExpFDR, zScoreFDR, zScorePermuted, zScores
+</code></pre>
+
+<pre><code class="r">library(plyr)
 #load(&quot;AHUS_agiMicroRNAdata.rdata&quot;)
 if(!exists(&quot;inputisread&quot;))
     source(&quot;read_input.r&quot;)
@@ -228,22 +266,11 @@ if(!exists(&quot;inputisread&quot;))
 
 <h2>Preprocessing -  summarization</h2>
 
-<p>First we load  and preprocess the AHUS data. The use only one of the AHUS dataset which has DCIS samples. We choose to use  RMA summarisation of  the signal without background correction as described in BMC Research Notes 2010, 3:18.We also read the processed and already normalized UCAM data and the annotation file. 
-We further annotate the samples using the annotation file and check if the data is paired. Only 5 samples from the AHUS Agilent
-v2 and 31 samples Agilent v3 is paired.  No information on matched samples from UCAM.  Since we are interested in DCIS comparisons ( where there is no paired data available) we will not use paired data design.</p>
+<p>Was done prior, see read_input.r.</p>
 
-<pre><code class="r">annot &lt;- sampleannotation # wich is read in read_input.r
-
-## read the UCAM data
-ucam = read.table(paste(datadir, &quot;/Agilent_ncRNA_60k_normalised_miRNA_expression_ORIGINAL.txt&quot;, sep=&quot;&quot;), header = TRUE, sep = &quot;&quot;)
-rowsd = apply(ucam[,-c(1,2)], MARGIN=1, FUN=sd)
-ucam = ucam[order(rowsd, decreasing=TRUE), ]
-ucam = ucam[!duplicated(ucam[,2]), ]
-ucam_rownames  &lt;- ucam$miRNA
-rownames(ucam) &lt;- ucam_rownames
-ucam = as.matrix(ucam[, -c(1,2)])
-colnames(ucam) = paste(&quot;UCAM_&quot;, colnames(ucam), sep=&quot;&quot;) 
-ucam = ucam[, colnames(ucam) %in% sampleannotation$sample_id]
+<pre><code class="r">annot &lt;- sampleannotation 
+## use the UCAM data loaded earlier.
+ucam = ucam_matrix
 </code></pre>
 
 <h2>Create the target files</h2>
@@ -320,43 +347,16 @@ ucam_eset &lt;- new(&quot;ExpressionSet&quot;, exprs = as.matrix(ucam) , phenoDa
 
 <h2>Conversion of   miRNA names to miRbase accession numbers</h2>
 
-<p>A microRNA to MIMATID mapping was made earlier (in read_input.r) and is used to harmonize and easier comparisons between datasets.</p>
+<p>A microRNA to MIMATID mapping was made earlier (in read_input.r) . The UCAM data is already using MIMAT as ID.</p>
 
-<pre><code class="r">df = data.frame(V1=names(mimatmapping), ID=mimatmapping) # use MIMATmapping read in read_input.r
-rownames(df) &lt;-1:length(mimatmapping)
-
-featureNames(ahus_v3_eset) &lt;- gsub(&quot;_v.*&quot;, &quot;&quot;, featureNames(ahus_v3_eset))## remove the version attached to the names
-miRnabase_ID2 &lt;- data.frame(miRNA = c(), mirbase_an = c())
-for (i in 1: length( featureNames(ahus_v3_eset ))) { 
-miRBase_feature &lt;- df[ which(df[,1] == featureNames(ahus_v3_eset)[i]),2]
-tem_ID &lt;- data.frame(miRNA   = featureNames(ahus_v3_eset)[i],  mirbase_an =  as.character(miRBase_feature)   )
-miRnabase_ID2  &lt;- rbind( miRnabase_ID2, tem_ID)}
-miRnabase_id&lt;- miRnabase_ID2[!duplicated(miRnabase_ID2), ]
-featureNames(ahus_v3_eset) &lt;- miRnabase_id[,2]
-ind &lt;- grep(&quot;put.*&quot;, featureNames(ucam_eset))
-ucam_eset&lt;- ucam_eset[-ind, ]
-ind &lt;- grep(&quot;DQ.*&quot;, featureNames(ucam_eset))
-ucam_eset&lt;- ucam_eset[-ind, ]
-ind &lt;- grep(&quot;FANTOM.*&quot;, featureNames(ucam_eset))
-ucam_eset&lt;- ucam_eset[-ind, ]
-miRnabase_ID3 &lt;- data.frame(miRNA = c(), mirbase_an = c())
-for (i in 1: length( featureNames(ucam_eset ))) { 
-miRBase_feature &lt;- df[ which(df[,1] == featureNames(ucam_eset)[i]),2 ]
-tem_ID &lt;- data.frame(miRNA   = featureNames(ucam_eset)[i],  mirbase_an =  as.character(miRBase_feature)   )
-miRnabase_ID3  &lt;- rbind( miRnabase_ID3, tem_ID)
-}
-miRnabase_id&lt;- miRnabase_ID3[!duplicated(miRnabase_ID3), ]
-rownames(miRnabase_id) &lt;- 1:nrow(miRnabase_id)
-d &lt;- as.character(miRnabase_id$mirbase_an)
-d[389] &lt;- &quot;MIMAT0003257*&quot;
-featureNames(ucam_eset) &lt;- d
+<pre><code class="r">featureNames(ahus_v3_eset) = miRNA2MIMAT[match(featureNames(ahus_v3_eset), miRNA2MIMAT$AHUS), &quot;MIMAT&quot;]
 </code></pre>
 
 <h2>Find common features for both datasets</h2>
 
 <pre><code class="r">ahus_v3_features &lt;- featureNames(ahus_v3_eset) ## 266
 ucam_features &lt;- featureNames(ucam_eset)
-all_features &lt;- intersect(ahus_v3_features, ucam_features) ## ahus_v2 does not have DCIS data
+all_features &lt;- intersect(ahus_v3_features, ucam_features) ## 
 ahus_v3_common_features &lt;- ahus_v3_eset[featureNames(ahus_v3_eset)  %in% all_features , ]
 ahus_v3_common_features &lt;- ahus_v3_common_features[order( featureNames(ahus_v3_common_features)),]
 ucam_common_features &lt;- ucam_eset[featureNames(ucam_eset)  %in% all_features , ]
@@ -512,13 +512,13 @@ results_pval1 &lt;- metaMA(all_normal_DCIS, varname = &quot;status&quot;, modera
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -531,13 +531,13 @@ results_pval1 &lt;- metaMA(all_invasive_DCIS, varname = &quot;status&quot;, mode
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -550,13 +550,13 @@ results_pval1 &lt;- metaMA(all_normnal_to_benign, varname = &quot;status&quot;, 
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -569,13 +569,13 @@ results_pval1 &lt;- metaMA(all_dcis_LumA, varname = &quot;var2&quot;, moderated 
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -588,13 +588,13 @@ results_pval1 &lt;- metaMA(all_dcis_LumB, varname = &quot;var2&quot;, moderated 
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -607,13 +607,13 @@ results_pval1 &lt;- metaMA(all_dcis_Her2, varname = &quot;var2&quot;, moderated 
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -626,13 +626,13 @@ results_pval1 &lt;- metaMA(all_dcis_Normal, varname = &quot;var2&quot;, moderate
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -645,13 +645,13 @@ results_pval1 &lt;- metaMA(all_dcis_Basal, varname = &quot;var2&quot;, moderated
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -664,13 +664,13 @@ results_pval1 &lt;- metaMA(  all_dcis_HER2neg_ERneg_PGRneg, varname = &quot;ihc&
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -683,13 +683,13 @@ results_pval1 &lt;- metaMA(  all_dcis_HER2neg_ERpos, varname = &quot;ihc&quot;, 
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -702,13 +702,13 @@ results_pval1 &lt;- metaMA(  all_dcis_HER2pos_ERneg, varname = &quot;ihc&quot;, 
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
@@ -721,13 +721,13 @@ results_pval1 &lt;- metaMA(  all_dcis_HER2pos_ERpos, varname = &quot;ihc&quot;, 
 </code></pre>
 
 <pre><code>##   DE  IDD Loss  IDR  IRR 
-##  266    0    0    0    0
+##  265    0    0    0    0
 </code></pre>
 
 <pre><code class="r">test &lt;- data.frame(MIMAT = c(), miRNAname = c(),FC=c())
 for (i in c(results_pval1$Meta) ){
 DE &lt;- results_pval1$gene.names[i]
-feature &lt;-  df[ which(df$ID ==  DE) , 1]
+feature &lt;-  miRNA2MIMAT[DE, &quot;preferredname&quot;]
 test_st &lt;-  results_pval1$TestStatistic[i]
 pval &lt;- 2*(1-pnorm(abs(test_st)))
 test2 &lt;- data.frame(MIMAT = DE,  miRNAname = paste(feature, sep = &quot;,&quot;, collapse = &quot;,&quot;), TestStatistic = test_st, pval)
