@@ -1,6 +1,6 @@
 Overlap between our results and Volinia et al.
 ========================================================
-2015-06-18 17:00:54
+2015-06-19 15:36:24
 
 
 <br/>
@@ -53,7 +53,7 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jun 18 17:00:54 2015 -->
+<!-- Fri Jun 19 15:36:25 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -81,7 +81,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jun 18 17:00:54 2015 -->
+<!-- Fri Jun 19 15:36:25 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -89,7 +89,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> invasive </td> <td align="right">    5 </td> <td align="right">    0 </td> <td align="right">    8 </td> <td align="right">   16 </td> <td align="right">   15 </td> <td align="right">    7 </td> <td align="right">    4 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jun 18 17:00:54 2015 -->
+<!-- Fri Jun 19 15:36:25 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -117,7 +117,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jun 18 17:00:54 2015 -->
+<!-- Fri Jun 19 15:36:25 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -127,7 +127,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> normal </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">   70 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jun 18 17:00:54 2015 -->
+<!-- Fri Jun 19 15:36:25 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -250,7 +250,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jun 18 17:00:54 2015 -->
+<!-- Fri Jun 19 15:36:25 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
 <tr> <th>  </th> <th> found_meta </th> <th> found_merged </th> <th> found_both </th>  </tr>
@@ -337,7 +337,7 @@ print(xtable(correlationmatrix1,
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jun 18 17:00:54 2015 -->
+<!-- Fri Jun 19 15:36:25 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
 <tr> <th>  </th> <th> DCIS-normal </th> <th> invasive-DCIS </th> <th> Normallike-DCIS </th> <th> LumA-DCIS </th> <th> LumB-DCIS </th> <th> Her2-DCIS </th> <th> Basallike-DCIS </th> <th> HER2neg_ERneg_PGRneg-DCIS </th> <th> HER2neg_ERpos-DCIS </th> <th> HER2pos_ERneg-DCIS </th> <th> HER2pos_ERpos-DCIS </th>  </tr>
@@ -407,7 +407,7 @@ print(head(voliniatab[[1]]), row.names = FALSE)
 ##     miR-10b MIMAT0000254 -1.2863 4.00e-07
 ##     miR-143 MIMAT0000435 -1.3585 5.00e-07
 ##      let-7d MIMAT0000065  1.3334 5.20e-06
-##  miR-218(2)         <NA> -0.6897 1.59e-05
+##  miR-218(2) MIMAT0000275 -0.6897 1.59e-05
 ##  miR-335-5p MIMAT0000765 -1.1844 5.43e-05
 ##     miR-126 MIMAT0000445 -1.1203 7.13e-05
 ```
@@ -502,6 +502,7 @@ print( xtable( volinia_overlap[["DCIS-normal"]] , caption="microRNA found in Vol
   <tr> <td> let-7b </td> <td> MIMAT0000063 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> TRUE </td> </tr>
   <tr> <td> let-7c </td> <td> MIMAT0000064 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.001 </td> <td> TRUE </td> </tr>
   <tr> <td> miR-193b </td> <td> MIMAT0002819 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.003 </td> <td> DOWN </td> <td align="right"> 0.001 </td> <td> TRUE </td> </tr>
+  <tr> <td> miR-19b(2) </td> <td> MIMAT0000074 </td> <td> DOWN </td> <td align="right"> 0.015 </td> <td> UP </td> <td align="right"> 0.003 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-106b </td> <td> MIMAT0000680 </td> <td> UP </td> <td align="right"> 0.001 </td> <td> UP </td> <td align="right"> 0.004 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> TRUE </td> </tr>
   <tr> <td> miR-145* </td> <td> MIMAT0004601 </td> <td> DOWN </td> <td align="right"> 0.001 </td> <td> DOWN </td> <td align="right"> 0.006 </td> <td> DOWN </td> <td align="right"> 0.002 </td> <td> TRUE </td> </tr>
   <tr> <td> miR-342 </td> <td> MIMAT0000753 </td> <td> UP </td> <td align="right"> 0.005 </td> <td> UP </td> <td align="right"> 0.006 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> TRUE </td> </tr>
@@ -509,16 +510,22 @@ print( xtable( volinia_overlap[["DCIS-normal"]] , caption="microRNA found in Vol
   <tr> <td> miR-210 </td> <td> MIMAT0000267 </td> <td> DOWN </td> <td align="right"> 0.009 </td> <td> UP </td> <td align="right"> 0.022 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-22 </td> <td> MIMAT0000077 </td> <td> DOWN </td> <td align="right"> 0.001 </td> <td> DOWN </td> <td align="right"> 0.024 </td> <td> DOWN </td> <td align="right"> 0.049 </td> <td> TRUE </td> </tr>
   <tr> <td> miR-652 </td> <td> MIMAT0003322 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.041 </td> <td> DOWN </td> <td align="right"> 0.005 </td> <td> TRUE </td> </tr>
+  <tr> <td> miR-125b(2) </td> <td> MIMAT0000423 </td> <td> DOWN </td> <td align="right"> 0.004 </td> <td> DOWN </td> <td align="right"> 0.044 </td> <td> DOWN </td> <td align="right"> 0.022 </td> <td> TRUE </td> </tr>
   <tr> <td> miR-374b </td> <td> MIMAT0004955 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> UP </td> <td align="right"> 0.051 </td> <td> UP </td> <td align="right"> 0.001 </td> <td> FALSE </td> </tr>
+  <tr> <td> miR-92a(2) </td> <td> MIMAT0000092 </td> <td> UP </td> <td align="right"> 0.011 </td> <td> DOWN </td> <td align="right"> 0.053 </td> <td> DOWN </td> <td align="right"> 0.020 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-19a </td> <td> MIMAT0000073 </td> <td> UP </td> <td align="right"> 0.008 </td> <td> UP </td> <td align="right"> 0.072 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-376c </td> <td> MIMAT0000720 </td> <td> DOWN </td> <td align="right"> 0.005 </td> <td> DOWN </td> <td align="right"> 0.088 </td> <td> DOWN </td> <td align="right"> 0.324 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-221 </td> <td> MIMAT0000278 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> UP </td> <td align="right"> 0.112 </td> <td> UP </td> <td align="right"> 0.091 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-361-5p </td> <td> MIMAT0000703 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.114 </td> <td> DOWN </td> <td align="right"> 0.041 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-30d </td> <td> MIMAT0000245 </td> <td> UP </td> <td align="right"> 0.003 </td> <td> DOWN </td> <td align="right"> 0.115 </td> <td> DOWN </td> <td align="right"> 0.034 </td> <td> FALSE </td> </tr>
+  <tr> <td> miR-376a-3p(2) </td> <td> MIMAT0000729 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.117 </td> <td> DOWN </td> <td align="right"> 0.319 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-223 </td> <td> MIMAT0000280 </td> <td> UP </td> <td align="right"> 0.003 </td> <td> UP </td> <td align="right"> 0.123 </td> <td> UP </td> <td align="right"> 0.079 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-185 </td> <td> MIMAT0000455 </td> <td> DOWN </td> <td align="right"> 0.005 </td> <td> UP </td> <td align="right"> 0.129 </td> <td> UP </td> <td align="right"> 0.182 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-374a </td> <td> MIMAT0000727 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> UP </td> <td align="right"> 0.194 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-127-3p </td> <td> MIMAT0000446 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.199 </td> <td> DOWN </td> <td align="right"> 0.084 </td> <td> FALSE </td> </tr>
+  <tr> <td> miR-26a(2) </td> <td> MIMAT0000082 </td> <td> UP </td> <td align="right"> 0.013 </td> <td> DOWN </td> <td align="right"> 0.235 </td> <td> DOWN </td> <td align="right"> 0.204 </td> <td> FALSE </td> </tr>
+  <tr> <td> miR-16(2) </td> <td> MIMAT0000069 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> UP </td> <td align="right"> 0.282 </td> <td> UP </td> <td align="right"> 0.325 </td> <td> FALSE </td> </tr>
+  <tr> <td> miR-29b(2) </td> <td> MIMAT0000100 </td> <td> UP </td> <td align="right"> 0.007 </td> <td> UP </td> <td align="right"> 0.290 </td> <td> UP </td> <td align="right"> 0.066 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-26b </td> <td> MIMAT0000083 </td> <td> UP </td> <td align="right"> 0.002 </td> <td> UP </td> <td align="right"> 0.378 </td> <td> UP </td> <td align="right"> 0.266 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-574-3p </td> <td> MIMAT0003239 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> UP </td> <td align="right"> 0.379 </td> <td> UP </td> <td align="right"> 0.271 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-20a </td> <td> MIMAT0000075 </td> <td> UP </td> <td align="right"> 0.007 </td> <td> UP </td> <td align="right"> 0.447 </td> <td> UP </td> <td align="right"> 0.350 </td> <td> FALSE </td> </tr>
@@ -529,6 +536,7 @@ print( xtable( volinia_overlap[["DCIS-normal"]] , caption="microRNA found in Vol
   <tr> <td> miR-15b </td> <td> MIMAT0000417 </td> <td> UP </td> <td align="right"> 0.001 </td> <td> DOWN </td> <td align="right"> 0.945 </td> <td> UP </td> <td align="right"> 0.641 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-29c </td> <td> MIMAT0000681 </td> <td> UP </td> <td align="right"> 0.006 </td> <td> UP </td> <td align="right"> 0.951 </td> <td> DOWN </td> <td align="right"> 0.640 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-15a </td> <td> MIMAT0000068 </td> <td> UP </td> <td align="right"> 0.013 </td> <td> DOWN </td> <td align="right"> 0.972 </td> <td> DOWN </td> <td align="right"> 0.981 </td> <td> FALSE </td> </tr>
+  <tr> <td> miR-324 </td> <td> MIMAT0000761 </td> <td> DOWN </td> <td align="right"> 0.001 </td> <td> UP </td> <td align="right"> 0.973 </td> <td> DOWN </td> <td align="right"> 0.583 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-182 </td> <td> MIMAT0000259 </td> <td> UP </td> <td align="right"> 0.001 </td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
   <tr> <td> miR-423-3p </td> <td> MIMAT0001340 </td> <td> DOWN </td> <td align="right"> 0.001 </td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
   <tr> <td> miR-106b* </td> <td> MIMAT0004672 </td> <td> DOWN </td> <td align="right"> 0.002 </td> <td>  </td> <td align="right">  </td> <td>  </td> <td align="right">  </td> <td>  </td> </tr>
@@ -561,6 +569,8 @@ print( xtable( volinia_overlap[["invasive-DCIS"]][x,] , caption="microRNA found 
   <tr> <td> miR-221 </td> <td> MIMAT0000278 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.306 </td> <td> DOWN </td> <td align="right"> 0.710 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-126 </td> <td> MIMAT0000445 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.359 </td> <td> DOWN </td> <td align="right"> 0.821 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-143 </td> <td> MIMAT0000435 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.497 </td> <td> DOWN </td> <td align="right"> 0.959 </td> <td> FALSE </td> </tr>
+  <tr> <td> miR-218(2) </td> <td> MIMAT0000275 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.501 </td> <td> DOWN </td> <td align="right"> 0.936 </td> <td> FALSE </td> </tr>
+  <tr> <td> miR-181a(2) </td> <td> MIMAT0000256 </td> <td> UP </td> <td align="right"> 0.000 </td> <td> UP </td> <td align="right"> 0.600 </td> <td> UP </td> <td align="right"> 0.977 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-335-5p </td> <td> MIMAT0000765 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> DOWN </td> <td align="right"> 0.614 </td> <td> DOWN </td> <td align="right"> 0.959 </td> <td> FALSE </td> </tr>
   <tr> <td> miR-10b </td> <td> MIMAT0000254 </td> <td> DOWN </td> <td align="right"> 0.000 </td> <td> UP </td> <td align="right"> 0.991 </td> <td> UP </td> <td align="right"> 0.959 </td> <td> FALSE </td> </tr>
    </table>
@@ -632,8 +642,8 @@ for(n in names(volinia_overlap))
 ```
 
 ```
-## [1] "invasive-DCIS white 7"
-## [1] "DCIS-normal white 55"
+## [1] "invasive-DCIS white 9"
+## [1] "DCIS-normal white 63"
 ```
 The microRNAs reported by Volinia et al. are all in the "for sure microRNA" list in Fromm et al.
 <br/>
@@ -807,13 +817,13 @@ attached base packages:
 other attached packages:
  [1] MAMA_2.2.1            GeneMeta_1.36.0       gtools_3.4.1         
  [4] multtest_2.20.0       metaMA_2.1            SMVar_1.3.3          
- [7] genefilter_1.46.1     sva_3.10.0            mgcv_1.8-4           
-[10] nlme_3.1-120          corpcor_1.6.7         xtable_1.7-4         
-[13] RColorBrewer_1.1-2    knitr_1.9             AgiMicroRna_2.14.0   
-[16] affycoretools_1.36.1  GO.db_2.14.0          RSQLite_1.0.0        
-[19] DBI_0.3.1             AnnotationDbi_1.26.1  GenomeInfoDb_1.0.2   
-[22] preprocessCore_1.26.1 affy_1.42.3           limma_3.20.9         
-[25] Biobase_2.24.0        BiocGenerics_0.10.0   plyr_1.8.1           
+ [7] genefilter_1.46.1     AgiMicroRna_2.14.0    affycoretools_1.36.1 
+[10] GO.db_2.14.0          RSQLite_1.0.0         DBI_0.3.1            
+[13] AnnotationDbi_1.26.1  GenomeInfoDb_1.0.2    preprocessCore_1.26.1
+[16] affy_1.42.3           limma_3.20.9          Biobase_2.24.0       
+[19] BiocGenerics_0.10.0   plyr_1.8.1            sva_3.10.0           
+[22] mgcv_1.8-4            nlme_3.1-120          corpcor_1.6.7        
+[25] xtable_1.7-4          RColorBrewer_1.1-2    knitr_1.9            
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.32.0            
@@ -864,6 +874,6 @@ loaded via a namespace (and not attached):
 [91] zlibbioc_1.10.0          
 ```
 
-generation ended 2015-06-18 17:00:55. Time spent 0 minutes .
+generation ended 2015-06-19 15:36:26. Time spent 0 minutes .
 
 

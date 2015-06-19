@@ -154,7 +154,7 @@ MIMAT0005909	NA	hsa-miR-1258	hsa-miR-1258	NA
 MIMAT0005910	NA	hsa-miR-1259_v15.0	hsa-miR-1259	NA
 MIMAT0004602	hsa-miR-125a-3p	hsa-miR-125a-3p	hsa-miR-125a-3p	NA
 MIMAT0000443	hsa-miR-125a-5p	hsa-miR-125a-5p	hsa-miR-125a-5p	miR-125a
-MIMAT0000423	hsa-miR-125b-5p	hsa-miR-125b	hsa-miR-125b	NA
+MIMAT0000423	hsa-miR-125b-5p	hsa-miR-125b	hsa-miR-125b	miR-125b(2)
 MIMAT0004592	hsa-miR-125b-1-3p	hsa-miR-125b-1*	hsa-miR-125b-1*	NA
 MIMAT0004603	hsa-miR-125b-2-3p	hsa-miR-125b-2*	hsa-miR-125b-2*	NA
 MIMAT0000445	hsa-miR-126-3p	hsa-miR-126	hsa-miR-126	miR-126
@@ -285,12 +285,12 @@ MIMAT0000068	hsa-miR-15a-5p	hsa-miR-15a	hsa-miR-15a	miR-15a
 MIMAT0004488	hsa-miR-15a-3p	hsa-miR-15a*	hsa-miR-15a*	NA
 MIMAT0000417	hsa-miR-15b-5p	hsa-miR-15b	hsa-miR-15b	miR-15b
 MIMAT0004586	hsa-miR-15b-3p	hsa-miR-15b*	hsa-miR-15b*	NA
-MIMAT0000069	hsa-miR-16-5p	hsa-miR-16	hsa-miR-16	NA
+MIMAT0000069	hsa-miR-16-5p	hsa-miR-16	hsa-miR-16	miR-16(2)
 MIMAT0004489	hsa-miR-16-1-3p	hsa-miR-16-1*	hsa-miR-16-1*	NA
 MIMAT0004518	hsa-miR-16-2-3p	hsa-miR-16-2*	hsa-miR-16-2*	NA
 MIMAT0000070	hsa-miR-17-5p	hsa-miR-17	hsa-miR-17	NA
 MIMAT0000071	hsa-miR-17-3p	hsa-miR-17*	hsa-miR-17*	miR-17*
-MIMAT0000256	hsa-miR-181a-5p	hsa-miR-181a	hsa-miR-181a	NA
+MIMAT0000256	hsa-miR-181a-5p	hsa-miR-181a	hsa-miR-181a	miR-181a(2)
 MIMAT0000270	hsa-miR-181a-3p	hsa-miR-181a*	hsa-miR-181a*	NA
 MIMAT0004558	hsa-miR-181a-2-3p	hsa-miR-181a-2*	hsa-miR-181a-2*	NA
 MIMAT0000257	hsa-miR-181b-5p	hsa-miR-181b	hsa-miR-181b	NA
@@ -353,7 +353,7 @@ MIMAT0000231	hsa-miR-199a-5p	hsa-miR-199a-5p	hsa-miR-199a-5p	NA
 MIMAT0000263	hsa-miR-199b-5p	hsa-miR-199b-5p	hsa-miR-199b-5p	NA
 MIMAT0000073	hsa-miR-19a-3p	hsa-miR-19a	hsa-miR-19a	miR-19a
 MIMAT0004490	hsa-miR-19a-5p	hsa-miR-19a*	hsa-miR-19a*	NA
-MIMAT0000074	hsa-miR-19b-3p	hsa-miR-19b	hsa-miR-19b	NA
+MIMAT0000074	hsa-miR-19b-3p	hsa-miR-19b	hsa-miR-19b	miR-19b(2)
 MIMAT0004491	hsa-miR-19b-1-5p	hsa-miR-19b-1*	hsa-miR-19b-1*	NA
 MIMAT0004492	hsa-miR-19b-2-5p	hsa-miR-19b-2*	hsa-miR-19b-2*	NA
 MIMAT0000682	hsa-miR-200a-3p	hsa-miR-200a	hsa-miR-200a	NA
@@ -385,7 +385,7 @@ MIMAT0000272	hsa-miR-215-5p	hsa-miR-215	hsa-miR-215	NA
 MIMAT0000273	hsa-miR-216a-5p	hsa-miR-216a	hsa-miR-216a	NA
 MIMAT0004959	hsa-miR-216b-5p	hsa-miR-216b	hsa-miR-216b	NA
 MIMAT0000274	NA	hsa-miR-217	hsa-miR-217	NA
-MIMAT0000275	hsa-miR-218-5p	hsa-miR-218	hsa-miR-218	NA
+MIMAT0000275	hsa-miR-218-5p	hsa-miR-218	hsa-miR-218	miR-218(2)
 MIMAT0004565	hsa-miR-218-1-3p	hsa-miR-218-1*	hsa-miR-218-1*	NA
 MIMAT0004566	hsa-miR-218-2-3p	hsa-miR-218-2*	hsa-miR-218-2*	NA
 MIMAT0004567	hsa-miR-219-1-3p	hsa-miR-219-1-3p	hsa-miR-219-1-3p	NA
@@ -412,7 +412,7 @@ MIMAT0000079	hsa-miR-24-1-5p	hsa-miR-24-1*	hsa-miR-24-1*	NA
 MIMAT0004497	hsa-miR-24-2-5p	hsa-miR-24-2*	hsa-miR-24-2*	NA
 MIMAT0000081	hsa-miR-25-3p	hsa-miR-25	hsa-miR-25	NA
 MIMAT0004498	hsa-miR-25-5p	hsa-miR-25*	hsa-miR-25*	NA
-MIMAT0000082	hsa-miR-26a-5p	hsa-miR-26a	hsa-miR-26a	NA
+MIMAT0000082	hsa-miR-26a-5p	hsa-miR-26a	hsa-miR-26a	miR-26a(2)
 MIMAT0004499	hsa-miR-26a-1-3p	hsa-miR-26a-1*	hsa-miR-26a-1*	NA
 MIMAT0004681	hsa-miR-26a-2-3p	hsa-miR-26a-2*	hsa-miR-26a-2*	NA
 MIMAT0000083	hsa-miR-26b-5p	hsa-miR-26b	hsa-miR-26b	miR-26b
@@ -431,7 +431,7 @@ MIMAT0000687	hsa-miR-299-3p	hsa-miR-299-3p	hsa-miR-299-3p	NA
 MIMAT0002890	hsa-miR-299-5p	hsa-miR-299-5p	hsa-miR-299-5p	NA
 MIMAT0000086	hsa-miR-29a-3p	hsa-miR-29a	hsa-miR-29a	NA
 MIMAT0004503	hsa-miR-29a-5p	hsa-miR-29a*	hsa-miR-29a*	NA
-MIMAT0000100	hsa-miR-29b-3p	hsa-miR-29b	hsa-miR-29b	NA
+MIMAT0000100	hsa-miR-29b-3p	hsa-miR-29b	hsa-miR-29b	miR-29b(2)
 MIMAT0004514	hsa-miR-29b-1-5p	hsa-miR-29b-1*	hsa-miR-29b-1*	NA
 MIMAT0004515	hsa-miR-29b-2-5p	hsa-miR-29b-2*	hsa-miR-29b-2*	NA
 MIMAT0000681	hsa-miR-29c-3p	hsa-miR-29c	hsa-miR-29c	miR-29c
@@ -472,7 +472,7 @@ MIMAT0000755	hsa-miR-323-3p	hsa-miR-323-3p	hsa-miR-323-3p	NA
 MIMAT0004696	hsa-miR-323-5p	hsa-miR-323-5p	hsa-miR-323-5p	NA
 MIMAT0001630	hsa-miR-323b-5p	hsa-miR-323b-5p	hsa-miR-323b-5p	NA
 MIMAT0000762	hsa-miR-324-3p	hsa-miR-324-3p	hsa-miR-324-3p	NA
-MIMAT0000761	hsa-miR-324-5p	hsa-miR-324-5p	hsa-miR-324-5p	NA
+MIMAT0000761	hsa-miR-324-5p	hsa-miR-324-5p	hsa-miR-324-5p	miR-324
 MIMAT0000771	NA	hsa-miR-325	hsa-miR-325	NA
 MIMAT0000756	NA	hsa-miR-326	hsa-miR-326	NA
 MIMAT0000752	hsa-miR-328-3p	hsa-miR-328	hsa-miR-328	NA
@@ -527,7 +527,7 @@ MIMAT0004688	hsa-miR-374a-3p	hsa-miR-374a*	hsa-miR-374a*	NA
 MIMAT0004955	hsa-miR-374b-5p	hsa-miR-374b	hsa-miR-374b	miR-374b
 MIMAT0004956	hsa-miR-374b-3p	hsa-miR-374b*	hsa-miR-374b*	NA
 MIMAT0000728	NA	hsa-miR-375	hsa-miR-375	NA
-MIMAT0000729	hsa-miR-376a-3p	hsa-miR-376a	hsa-miR-376a	NA
+MIMAT0000729	hsa-miR-376a-3p	hsa-miR-376a	hsa-miR-376a	miR-376a-3p(2)
 MIMAT0003386	hsa-miR-376a-5p	hsa-miR-376a*	hsa-miR-376a*	NA
 MIMAT0002172	hsa-miR-376b-3p	hsa-miR-376b	hsa-miR-376b	NA
 MIMAT0000720	hsa-miR-376c-3p	hsa-miR-376c	hsa-miR-376c	miR-376c
@@ -885,7 +885,7 @@ MIMAT0004971	NA	hsa-miR-921	hsa-miR-921	NA
 MIMAT0004972	NA	hsa-miR-922	hsa-miR-922	NA
 MIMAT0004973	NA	hsa-miR-923_v12.0	NA	NA
 MIMAT0004974	NA	hsa-miR-924	hsa-miR-924	NA
-MIMAT0000092	hsa-miR-92a-3p	hsa-miR-92a	hsa-miR-92a	NA
+MIMAT0000092	hsa-miR-92a-3p	hsa-miR-92a	hsa-miR-92a	miR-92a(2)
 MIMAT0004507	hsa-miR-92a-1-5p	hsa-miR-92a-1*	hsa-miR-92a-1*	NA
 MIMAT0004508	hsa-miR-92a-2-5p	hsa-miR-92a-2*	hsa-miR-92a-2*	NA
 MIMAT0003218	hsa-miR-92b-3p	hsa-miR-92b	hsa-miR-92b	NA

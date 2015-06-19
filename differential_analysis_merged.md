@@ -1,6 +1,6 @@
 Finding differentially expressed microRNA in the  AHUS and UCAM data sets
 ========================================================
-2015-06-18 17:00:38
+2015-06-19 15:36:08
 
 
 <br/>
@@ -61,7 +61,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Jun 18 17:00:38 2015 -->
+<!-- Fri Jun 19 15:36:08 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -358,13 +358,13 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] sva_3.10.0            mgcv_1.8-4            nlme_3.1-120         
- [4] corpcor_1.6.7         xtable_1.7-4          RColorBrewer_1.1-2   
- [7] knitr_1.9             AgiMicroRna_2.14.0    affycoretools_1.36.1 
-[10] GO.db_2.14.0          RSQLite_1.0.0         DBI_0.3.1            
-[13] AnnotationDbi_1.26.1  GenomeInfoDb_1.0.2    preprocessCore_1.26.1
-[16] affy_1.42.3           limma_3.20.9          Biobase_2.24.0       
-[19] BiocGenerics_0.10.0   plyr_1.8.1           
+ [1] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0         
+ [4] RSQLite_1.0.0         DBI_0.3.1             AnnotationDbi_1.26.1 
+ [7] GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3          
+[10] limma_3.20.9          Biobase_2.24.0        BiocGenerics_0.10.0  
+[13] plyr_1.8.1            sva_3.10.0            mgcv_1.8-4           
+[16] nlme_3.1-120          corpcor_1.6.7         xtable_1.7-4         
+[19] RColorBrewer_1.1-2    knitr_1.9            
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.32.0            
@@ -415,4 +415,4 @@ loaded via a namespace (and not attached):
 [91] XVector_0.4.0             zlibbioc_1.10.0          
 ```
 
-generation ended 2015-06-18 17:00:39. Time spent 0 minutes .
+generation ended 2015-06-19 15:36:09. Time spent 0 minutes .

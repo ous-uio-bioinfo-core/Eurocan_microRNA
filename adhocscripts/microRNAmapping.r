@@ -91,7 +91,27 @@ tmp = voliniatab[ voliniatab$MIMAT %in% miRNA2MIMAT$MIMAT, c("miRNA", "MIMAT")]
 miRNA2MIMAT[tmp$MIMAT, "volinia"] = remainder[tmp$miRNA]
 tmp = voliniatab[!(voliniatab$MIMAT %in% miRNA2MIMAT$MIMAT), c("miRNA", "MIMAT")] # no matches
 remainder = volinia_genes[!volinia_genes %in% miRNA2MIMAT$volinia]
-write.table(remainder, file="unmapped_volinia.txt", quote=FALSE, row.names=FALSE, col.names=FALSE)
+#write.table(remainder, file="unmapped_volinia.txt", quote=FALSE, row.names=FALSE, col.names=FALSE)
+
+# ad-hoc mmaping done on the some of the above few
+con <- textConnection(
+	"miRNA	MIMAT
+miR-16(2)	MIMAT0000069
+miR-19b(2)	MIMAT0000074
+miR-26a(2)	MIMAT0000082
+miR-92a(2)	MIMAT0000092
+miR-29b(2)	MIMAT0000100
+miR-181a(2)	MIMAT0000256
+miR-218(2)	MIMAT0000275
+miR-125b(2)	MIMAT0000423
+miR-376a-3p(2)	MIMAT0000729
+miR-324	MIMAT0000761")
+adhocmap = read.table(con, header = TRUE, sep="\t", 
+											stringsAsFactors=FALSE)
+tmp = adhocmap[ adhocmap$MIMAT %in% miRNA2MIMAT$MIMAT, c("miRNA", "MIMAT")]
+miRNA2MIMAT[tmp$MIMAT, "volinia"] = tmp$miRNA
+tmp = adhocmap[!(adhocmap$MIMAT %in% miRNA2MIMAT$MIMAT), c("miRNA", "MIMAT")] # none
+
 
 # based on the mirBASE, attach the miRNA name with arm info, -3p or -5p
 miRNA2MIMAT$arm=NA
