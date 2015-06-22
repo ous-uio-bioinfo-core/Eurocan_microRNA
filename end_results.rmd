@@ -125,7 +125,7 @@ table1 = rbind(a[c("normal", "DCIS", "invasive"),],
 							 b[c("LumA", "LumB", "Her2", "Basallike", "Normallike"),],
 							 c[c("HER2neg_ERpos", "HER2pos_ERpos", "HER2pos_ERneg", "HER2neg_ERneg_PGRneg"),],
 							 total=colSums(a))
-write.table(table1, file=paste(articledir, "/table1.txt", sep=""), sep=separator, col.names=NA, quote=FALSE)
+write.table(table1, file=paste(articledir, "/table1", postfix, sep=""), sep=separator, col.names=NA, quote=FALSE)
 
 ```
 
@@ -222,7 +222,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
       type = "html",
       html.table.attributes="CELLPADDING=5",
       include.rownames = TRUE)
-	write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, "/suppltable1.txt", sep=""), 
+	write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, "/suppltable1", postfix, sep=""), 
 							row.names=TRUE, col.names=NA, sep=separator)
 
 ```
@@ -394,7 +394,7 @@ table2 = table2[table2$consensus,]
 table2 = table2[table2$MIMAT %in% rownames( volinia_overlap[["DCIS-normal"]])[volinia_overlap[["DCIS-normal"]]$validated], ]
 table2 = table2[order(table2$logFC.merged),2:6]
 table2[,c(2,4)] = round(table2[,c(2,4)], 2)
-write.table(table2, file=paste(articledir, "/table2.txt", sep=""), sep=separator, col.names=NA, quote=FALSE)
+write.table(table2, file=paste(articledir, "/table2", postfix, sep=""), sep=separator, col.names=NA, quote=FALSE)
 
 
 ```
@@ -519,7 +519,7 @@ table3 = matrix("",ncol=length(tableclasses), nrow=nrows)
 colnames(table3)=tableclasses
 for(n in tableclasses)
 	table3[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table3, file=paste(articledir, "/table3.txt", sep=""), sep=separator, row.names=FALSE, quote=FALSE)
+write.table(table3, file=paste(articledir, "/table3", postfix, sep=""), sep=separator, row.names=FALSE, quote=FALSE)
 
 tableclasses = c("HER2pos_ERpos-DCIS", "HER2neg_ERpos-DCIS", "HER2pos_ERneg-DCIS", "HER2neg_ERneg_PGRneg-DCIS")
 nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
@@ -528,7 +528,7 @@ colnames(table4)=tableclasses
 for(n in tableclasses)
 	if(length(namelists[[n]])>0)
 		table4[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table4, file=paste(articledir, "/table4.txt", sep=""), sep=separator, row.names=FALSE, quote=FALSE)
+write.table(table4, file=paste(articledir, "/table4", postfix, sep=""), sep=separator, row.names=FALSE, quote=FALSE)
 
 ```
 

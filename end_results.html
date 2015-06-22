@@ -203,7 +203,7 @@ hr {
 <body>
 <h1>Overlap between our results and Volinia et al.</h1>
 
-<p>2015-06-22 16:06:23</p>
+<p>2015-06-22 16:17:57</p>
 
 <p><br/>
 <br/></p>
@@ -263,7 +263,7 @@ fdrCO = 0.05
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Mon Jun 22 16:06:23 2015 -->
+<!-- Mon Jun 22 16:17:57 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
@@ -292,7 +292,7 @@ Sample count based on PAM50 classification in each tissue and from each provider
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Mon Jun 22 16:06:23 2015 -->
+<!-- Mon Jun 22 16:17:57 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
@@ -303,7 +303,7 @@ Sample count based on PAM50 classification in each tissue and from each provider
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Mon Jun 22 16:06:23 2015 -->
+<!-- Mon Jun 22 16:17:57 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
@@ -331,7 +331,7 @@ Sample count based on IHC diagnosis in each tissue and from each provider</p>
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Mon Jun 22 16:06:23 2015 -->
+<!-- Mon Jun 22 16:17:57 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
@@ -344,7 +344,7 @@ Sample count based on IHC diagnosis in each tissue and from each provider</p>
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Mon Jun 22 16:06:23 2015 -->
+<!-- Mon Jun 22 16:17:57 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
@@ -370,7 +370,7 @@ table1 = rbind(a[c(&quot;normal&quot;, &quot;DCIS&quot;, &quot;invasive&quot;),]
                              b[c(&quot;LumA&quot;, &quot;LumB&quot;, &quot;Her2&quot;, &quot;Basallike&quot;, &quot;Normallike&quot;),],
                              c[c(&quot;HER2neg_ERpos&quot;, &quot;HER2pos_ERpos&quot;, &quot;HER2pos_ERneg&quot;, &quot;HER2neg_ERneg_PGRneg&quot;),],
                              total=colSums(a))
-write.table(table1, file=paste(articledir, &quot;/table1.txt&quot;, sep=&quot;&quot;), sep=separator, col.names=NA, quote=FALSE)
+write.table(table1, file=paste(articledir, &quot;/table1&quot;, postfix, sep=&quot;&quot;), sep=separator, col.names=NA, quote=FALSE)
 </code></pre>
 
 <p>Read in our results from files.</p>
@@ -464,7 +464,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Mon Jun 22 16:06:23 2015 -->
+<!-- Mon Jun 22 16:17:58 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
@@ -482,7 +482,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
   <tr> <td align="right"> HER2pos_ERpos-DCIS </td> <td align="right">    3 </td> <td align="right">    5 </td> <td align="right">    0 </td> </tr>
    </table>
 
-<pre><code class="r">    write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, &quot;/suppltable1.txt&quot;, sep=&quot;&quot;), 
+<pre><code class="r">    write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, &quot;/suppltable1&quot;, postfix, sep=&quot;&quot;), 
                             row.names=TRUE, col.names=NA, sep=separator)
 </code></pre>
 
@@ -552,7 +552,7 @@ print(xtable(correlationmatrix1,
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Mon Jun 22 16:06:24 2015 -->
+<!-- Mon Jun 22 16:17:58 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
@@ -670,7 +670,7 @@ table2 = table2[table2$consensus,]
 table2 = table2[table2$MIMAT %in% rownames( volinia_overlap[[&quot;DCIS-normal&quot;]])[volinia_overlap[[&quot;DCIS-normal&quot;]]$validated], ]
 table2 = table2[order(table2$logFC.merged),2:6]
 table2[,c(2,4)] = round(table2[,c(2,4)], 2)
-write.table(table2, file=paste(articledir, &quot;/table2.txt&quot;, sep=&quot;&quot;), sep=separator, col.names=NA, quote=FALSE)
+write.table(table2, file=paste(articledir, &quot;/table2&quot;, postfix, sep=&quot;&quot;), sep=separator, col.names=NA, quote=FALSE)
 </code></pre>
 
 <p>And below is the result list from Volinia et al. with our results attached. First the &ldquo;DCIS-normal&rdquo; comparison. Rows are sorted by FDR from our &ldquo;merged&rdquo; approach. <a href="output-analysis/Volinia_validation_DCIS-normal.txt">Link to file</a></p>
@@ -882,7 +882,7 @@ table3 = matrix(&quot;&quot;,ncol=length(tableclasses), nrow=nrows)
 colnames(table3)=tableclasses
 for(n in tableclasses)
     table3[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table3, file=paste(articledir, &quot;/table3.txt&quot;, sep=&quot;&quot;), sep=separator, row.names=FALSE, quote=FALSE)
+write.table(table3, file=paste(articledir, &quot;/table3&quot;, postfix, sep=&quot;&quot;), sep=separator, row.names=FALSE, quote=FALSE)
 
 tableclasses = c(&quot;HER2pos_ERpos-DCIS&quot;, &quot;HER2neg_ERpos-DCIS&quot;, &quot;HER2pos_ERneg-DCIS&quot;, &quot;HER2neg_ERneg_PGRneg-DCIS&quot;)
 nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
@@ -891,7 +891,7 @@ colnames(table4)=tableclasses
 for(n in tableclasses)
     if(length(namelists[[n]])&gt;0)
         table4[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table4, file=paste(articledir, &quot;/table4.txt&quot;, sep=&quot;&quot;), sep=separator, row.names=FALSE, quote=FALSE)
+write.table(table4, file=paste(articledir, &quot;/table4&quot;, postfix, sep=&quot;&quot;), sep=separator, row.names=FALSE, quote=FALSE)
 </code></pre>
 
 <p>Result files for all the comparisons with p-values for the two approaches, and with the curation status added, are <a href="output-analysis/consensus">here</a>. The tables look like this (top of the DCIS-normal comparison as an example):</p>
@@ -1068,7 +1068,7 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 </code></pre>
 
-<p>generation ended 2015-06-22 16:06:24. Time spent 0 minutes .</p>
+<p>generation ended 2015-06-22 16:17:59. Time spent 0 minutes .</p>
 
 </body>
 
