@@ -14,46 +14,6 @@ AHUS outputs comes from Agilents Feature Extraction Software (AFE). UCAM data  h
 library(AgiMicroRna)
 library(Biobase)
 library(MAMA)
-```
-
-```
-## Loading required package: genefilter
-## 
-## Attaching package: 'genefilter'
-## 
-## The following object is masked from 'package:base':
-## 
-##     anyNA
-## 
-## Loading required package: metaMA
-## Loading required package: SMVar
-## 
-## Attaching package: 'metaMA'
-## 
-## The following object is masked from 'package:genefilter':
-## 
-##     rowVars
-## 
-## Loading required package: multtest
-## Loading required package: gtools
-## 
-## Attaching package: 'gtools'
-## 
-## The following object is masked from 'package:mgcv':
-## 
-##     scat
-## 
-## Loading required package: grid
-## Loading required package: GeneMeta
-## 
-## Attaching package: 'MAMA'
-## 
-## The following objects are masked from 'package:GeneMeta':
-## 
-##     multExpFDR, zScoreFDR, zScorePermuted, zScores
-```
-
-```r
 library(plyr)
 #load("AHUS_agiMicroRNAdata.rdata")
 if(!exists("inputisread"))

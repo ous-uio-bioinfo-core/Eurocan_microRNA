@@ -1,6 +1,6 @@
 Overlap between our results and Volinia et al.
 ========================================================
-2015-06-19 15:36:24
+2015-06-22 16:06:23
 
 
 <br/>
@@ -21,12 +21,20 @@ Read in prepared data.
 library(xtable)
 if(!exists("inputisread"))
 	source("read_input.r")
-postfix = ".txt"
+postfix = ".csv"
+separator=","
 options(digits=4)
 outputdir = "output-analysis"
-consensusdir = paste(outputdir, "/consensus", sep="")
-if(!file.exists(consensusdir))
-	dir.create(consensusdir)
+divdir = paste(outputdir, "/div", sep="")
+if(!file.exists(divdir))
+	dir.create(divdir)
+articledir = paste(outputdir, "/used_in_article", sep="")
+if(!file.exists(articledir))
+	dir.create(articledir)
+supplementaryfile1dir = paste(articledir, "/additionalfile1", sep="")
+if(!file.exists(supplementaryfile1dir))
+	dir.create(supplementaryfile1dir)
+
 fdrCO = 0.05
 ```
 <br/>
@@ -53,7 +61,7 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jun 19 15:36:25 2015 -->
+<!-- Mon Jun 22 16:06:23 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -81,7 +89,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jun 19 15:36:25 2015 -->
+<!-- Mon Jun 22 16:06:23 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -89,7 +97,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> invasive </td> <td align="right">    5 </td> <td align="right">    0 </td> <td align="right">    8 </td> <td align="right">   16 </td> <td align="right">   15 </td> <td align="right">    7 </td> <td align="right">    4 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jun 19 15:36:25 2015 -->
+<!-- Mon Jun 22 16:06:23 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -117,7 +125,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jun 19 15:36:25 2015 -->
+<!-- Mon Jun 22 16:06:23 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -127,7 +135,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> normal </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">   70 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jun 19 15:36:25 2015 -->
+<!-- Mon Jun 22 16:06:23 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -154,7 +162,7 @@ table1 = rbind(a[c("normal", "DCIS", "invasive"),],
 							 b[c("LumA", "LumB", "Her2", "Basallike", "Normallike"),],
 							 c[c("HER2neg_ERpos", "HER2pos_ERpos", "HER2pos_ERneg", "HER2neg_ERneg_PGRneg"),],
 							 total=colSums(a))
-write.table(table1, file=paste(outputdir, "/table1.txt", sep=""), sep="\t", col.names=NA, quote=FALSE)
+write.table(table1, file=paste(articledir, "/table1.txt", sep=""), sep=separator, col.names=NA, quote=FALSE)
 ```
 
 Read in our results from files.
@@ -250,7 +258,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jun 19 15:36:25 2015 -->
+<!-- Mon Jun 22 16:06:23 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
 <tr> <th>  </th> <th> found_meta </th> <th> found_merged </th> <th> found_both </th>  </tr>
@@ -266,6 +274,11 @@ Next, summarize the number of microRNAs found differentially expressed between s
   <tr> <td align="right"> HER2pos_ERneg-DCIS </td> <td align="right">   15 </td> <td align="right">   19 </td> <td align="right">    8 </td> </tr>
   <tr> <td align="right"> HER2pos_ERpos-DCIS </td> <td align="right">    3 </td> <td align="right">    5 </td> <td align="right">    0 </td> </tr>
    </table>
+
+```r
+	write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, "/suppltable1.txt", sep=""), 
+							row.names=TRUE, col.names=NA, sep=separator)
+```
 
 
 For several of the comparisons, the shorter list seems to be mostly included in the longer. We will use the intersect as differentially expressed microRNAs, i.e a microRNA is deemed differentially expressed if it is within 0.05 FDR in both the meta and merged analyses.
@@ -289,12 +302,12 @@ for(n in names(consensustables))
 	signchangetab[ x$consensus & x$logFC.merged<0, n ] = "DOWN"
 	signchangetab[ x$consensus & x$logFC.merged>0, n ] = "UP" 
 }
-signchangetabfn = paste(consensusdir, "/signchangetab", postfix, sep="")
+signchangetabfn = paste(divdir, "/signchangetab", postfix, sep="")
 write.table(signchangetab, file=signchangetabfn,
-            quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE, na="")
+            quote=FALSE, sep=separator, row.names=FALSE, col.names=TRUE, na="")
 ```
 
-[Link to file](output-analysis/consensus/signchangetab.txt)
+[Link to file](output-analysis/div/signchangetab.csv)
 <br/>
 <br/>
 Next, the overlap in findings between the comparisons.
@@ -317,16 +330,16 @@ for(i in 1:(length(comps)-1))
 
 }
 
-correlationmatrixfn = paste(consensusdir, "/subtypecorrelation", postfix, sep="")
+correlationmatrixfn = paste(divdir, "/subtypecorrelation", postfix, sep="")
 h1 = "Count of significant microRNAs found going in the same direction for the subtypes"
 write(h1, file=correlationmatrixfn)
-write(paste("\t", colnames(correlationmatrix1), collapse="\t"), file=correlationmatrixfn)
-write.table(correlationmatrix1, file=correlationmatrixfn,quote=FALSE, sep="\t", col.names=FALSE, na="X", append=TRUE)
+write(paste(separator, colnames(correlationmatrix1), collapse=separator), file=correlationmatrixfn, append=TRUE)
+write.table(correlationmatrix1, file=correlationmatrixfn,quote=FALSE, sep=separator, col.names=FALSE, na="X", append=TRUE)
 write("\n\n\n", file=correlationmatrixfn, append=TRUE)
 h2 = "Count of significant microRNAs found going in the opposite direction for the subtypes"
 write(h2, file=correlationmatrixfn, append=TRUE)
-write(paste("\t", colnames(correlationmatrix2), collapse="\t"), file=correlationmatrixfn)
-write.table(correlationmatrix2, file=correlationmatrixfn,quote=FALSE, sep="\t", col.names=FALSE,  na="X", append=TRUE)
+write(paste(separator, colnames(correlationmatrix2), collapse=separator), file=correlationmatrixfn, append=TRUE)
+write.table(correlationmatrix2, file=correlationmatrixfn,quote=FALSE, sep=separator, col.names=FALSE,  na="X", append=TRUE)
 
 print(xtable(correlationmatrix1, 
              caption=h1, digits=3), 
@@ -337,7 +350,7 @@ print(xtable(correlationmatrix1,
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jun 19 15:36:25 2015 -->
+<!-- Mon Jun 22 16:06:24 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
 <tr> <th>  </th> <th> DCIS-normal </th> <th> invasive-DCIS </th> <th> Normallike-DCIS </th> <th> LumA-DCIS </th> <th> LumB-DCIS </th> <th> Her2-DCIS </th> <th> Basallike-DCIS </th> <th> HER2neg_ERneg_PGRneg-DCIS </th> <th> HER2neg_ERpos-DCIS </th> <th> HER2pos_ERneg-DCIS </th> <th> HER2pos_ERpos-DCIS </th>  </tr>
@@ -354,7 +367,7 @@ print(xtable(correlationmatrix1,
   <tr> <td align="right"> HER2pos_ERpos-DCIS </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">  </td> </tr>
    </table>
 
-[Link to file](output-analysis/consensus/subtypecorrelation.txt)
+[Link to file](output-analysis/div/subtypecorrelation.csv)
 
 <br/>
 <br/>
@@ -454,7 +467,7 @@ for(contrast in names(voliniatab))
 	volinia_overlap[[contrast]] = overlaptab
 	write.table(overlaptab, 
             file=paste(outputdir, "/Volinia_validation_", contrast, postfix, sep=""),
-            quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
+            quote=FALSE, sep=separator, row.names=TRUE, col.names=NA)
 
 	rm(x, overlaptab, contrast)
 }
@@ -465,7 +478,7 @@ table2 = table2[table2$consensus,]
 table2 = table2[table2$MIMAT %in% rownames( volinia_overlap[["DCIS-normal"]])[volinia_overlap[["DCIS-normal"]]$validated], ]
 table2 = table2[order(table2$logFC.merged),2:6]
 table2[,c(2,4)] = round(table2[,c(2,4)], 2)
-write.table(table2, file=paste(outputdir, "/table2.txt", sep=""), sep="\t", col.names=NA, quote=FALSE)
+write.table(table2, file=paste(articledir, "/table2.txt", sep=""), sep=separator, col.names=NA, quote=FALSE)
 ```
 
 And below is the result list from Volinia et al. with our results attached. First the "DCIS-normal" comparison. Rows are sorted by FDR from our "merged" approach. [Link to file](output-analysis/Volinia_validation_DCIS-normal.txt)
@@ -653,13 +666,15 @@ And now the same assignment and summary for our results from the AHUS and METABR
 
 ```r
 namelists = list()
+
+
 for(n in names(consensustables))
 {
 	x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1]))
 	consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), "status"]
 	write.table( format( consensustables[[n]], digits=4), 
-            file=paste(consensusdir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, postfix, sep=""),
-            quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
+            file=paste(supplementaryfile1dir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, postfix, sep=""),
+            quote=FALSE, sep=separator, row.names=FALSE, col.names=TRUE)
 	
 	# for table3 and 4.
 	dd = consensustables[[n]]
@@ -672,7 +687,12 @@ for(n in names(consensustables))
 	namelists[[n]]=v
 	
 }
+file.copy(from = paste("input", "/README_supl_tables.txt", sep=""), to=supplementaryfile1dir)
+```
 
+[1] TRUE
+
+```r
 # write table3 and table4 in our article
 tableclasses = c("LumA-DCIS", "LumB-DCIS", "Her2-DCIS", "Basallike-DCIS", "Normallike-DCIS")
 nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
@@ -680,7 +700,7 @@ table3 = matrix("",ncol=length(tableclasses), nrow=nrows)
 colnames(table3)=tableclasses
 for(n in tableclasses)
 	table3[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table3, file=paste(outputdir, "/table3.txt", sep=""), sep="\t", row.names=FALSE, quote=FALSE)
+write.table(table3, file=paste(articledir, "/table3.txt", sep=""), sep=separator, row.names=FALSE, quote=FALSE)
 
 tableclasses = c("HER2pos_ERpos-DCIS", "HER2neg_ERpos-DCIS", "HER2pos_ERneg-DCIS", "HER2neg_ERneg_PGRneg-DCIS")
 nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
@@ -689,7 +709,7 @@ colnames(table4)=tableclasses
 for(n in tableclasses)
 	if(length(namelists[[n]])>0)
 		table4[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table4, file=paste(outputdir, "/table4.txt", sep=""), sep="\t", row.names=FALSE, quote=FALSE)
+write.table(table4, file=paste(articledir, "/table4.txt", sep=""), sep=separator, row.names=FALSE, quote=FALSE)
 ```
 
 Result files for all the comparisons with p-values for the two approaches, and with the curation status added, are [here](output-analysis/consensus). The tables look like this (top of the DCIS-normal comparison as an example):
@@ -811,69 +831,71 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] grid      parallel  stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+ [1] grid      stats4    parallel  stats     graphics  grDevices utils    
+ [8] datasets  methods   base     
 
 other attached packages:
- [1] MAMA_2.2.1            GeneMeta_1.36.0       gtools_3.4.1         
- [4] multtest_2.20.0       metaMA_2.1            SMVar_1.3.3          
- [7] genefilter_1.46.1     AgiMicroRna_2.14.0    affycoretools_1.36.1 
-[10] GO.db_2.14.0          RSQLite_1.0.0         DBI_0.3.1            
-[13] AnnotationDbi_1.26.1  GenomeInfoDb_1.0.2    preprocessCore_1.26.1
-[16] affy_1.42.3           limma_3.20.9          Biobase_2.24.0       
-[19] BiocGenerics_0.10.0   plyr_1.8.1            sva_3.10.0           
-[22] mgcv_1.8-4            nlme_3.1-120          corpcor_1.6.7        
-[25] xtable_1.7-4          RColorBrewer_1.1-2    knitr_1.9            
+ [1] MAMA_2.2.1            GeneMeta_1.38.0       gtools_3.4.2         
+ [4] multtest_2.22.0       metaMA_2.1            SMVar_1.3.3          
+ [7] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
+[10] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
+[13] knitr_1.10.5          AgiMicroRna_2.16.0    affycoretools_1.38.0 
+[16] GO.db_3.0.0           RSQLite_1.0.0         DBI_0.3.1            
+[19] AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5    IRanges_2.0.1        
+[22] S4Vectors_0.4.0       preprocessCore_1.28.0 affy_1.44.0          
+[25] limma_3.22.7          Biobase_2.26.0        BiocGenerics_0.12.1  
+[28] plyr_1.8.2           
 
 loaded via a namespace (and not attached):
- [1] acepack_1.3-3.3           affyio_1.32.0            
- [3] annaffy_1.36.0            annotate_1.42.1          
- [5] AnnotationForge_1.6.1     base64enc_0.1-2          
- [7] BatchJobs_1.5             BBmisc_1.9               
- [9] BiocInstaller_1.14.3      BiocParallel_0.6.1       
-[11] biomaRt_2.20.0            Biostrings_2.32.1        
-[13] biovizBase_1.12.3         bit_1.1-12               
+ [1] acepack_1.3-3.3           affyio_1.34.0            
+ [3] annaffy_1.38.0            annotate_1.44.0          
+ [5] AnnotationForge_1.8.2     base64enc_0.1-2          
+ [7] BatchJobs_1.6             BBmisc_1.9               
+ [9] BiocInstaller_1.16.5      BiocParallel_1.0.3       
+[11] biomaRt_2.22.0            Biostrings_2.34.1        
+[13] biovizBase_1.14.1         bit_1.1-12               
 [15] bitops_1.0-6              brew_1.0-6               
-[17] BSgenome_1.32.0           Category_2.30.0          
-[19] caTools_1.17.1            checkmate_1.5.1          
-[21] cluster_2.0.1             codetools_0.2-10         
-[23] colorspace_1.2-4          DESeq2_1.4.5             
+[17] BSgenome_1.34.1           Category_2.32.0          
+[19] caTools_1.17.1            checkmate_1.5.3          
+[21] cluster_2.0.1             codetools_0.2-11         
+[23] colorspace_1.2-6          DESeq2_1.6.3             
 [25] dichromat_2.0-0           digest_0.6.8             
-[27] edgeR_3.6.8               evaluate_0.5.5           
+[27] edgeR_3.8.6               evaluate_0.7             
 [29] fail_1.2                  ff_2.2-13                
 [31] foreach_1.4.2             foreign_0.8-63           
-[33] formatR_1.0               Formula_1.2-0            
-[35] gcrma_2.36.0              gdata_2.13.3             
-[37] geneplotter_1.42.0        GenomicAlignments_1.0.6  
-[39] GenomicFeatures_1.16.3    GenomicRanges_1.16.4     
-[41] ggbio_1.12.10             ggplot2_1.0.0            
-[43] GOstats_2.30.0            gplots_2.16.0            
-[45] graph_1.42.0              gridExtra_0.9.1          
-[47] GSEABase_1.26.0           gtable_0.1.2             
-[49] Hmisc_3.15-0              hwriter_1.3.2            
-[51] IRanges_1.22.10           iterators_1.0.7          
-[53] KernSmooth_2.23-14        lattice_0.20-30          
+[33] formatR_1.2               Formula_1.2-1            
+[35] gcrma_2.38.0              gdata_2.16.1             
+[37] geneplotter_1.44.0        GenomicAlignments_1.2.2  
+[39] GenomicFeatures_1.18.7    GenomicRanges_1.18.4     
+[41] GGally_0.5.0              ggbio_1.14.0             
+[43] ggplot2_1.0.1             GOstats_2.32.0           
+[45] gplots_2.17.0             graph_1.44.1             
+[47] gridExtra_0.9.1           GSEABase_1.28.0          
+[49] gtable_0.1.2              Hmisc_3.16-0             
+[51] hwriter_1.3.2             iterators_1.0.7          
+[53] KernSmooth_2.23-14        lattice_0.20-31          
 [55] latticeExtra_0.6-26       locfit_1.5-9.1           
-[57] markdown_0.7.4            MASS_7.3-39              
-[59] Matrix_1.1-5              MergeMaid_2.36.0         
-[61] metaArray_1.42.0          mime_0.2                 
-[63] munsell_0.4.2             nnet_7.3-9               
-[65] oligoClasses_1.26.0       PFAM.db_2.14.0           
-[67] proto_0.3-10              R.methodsS3_1.7.0        
-[69] R.oo_1.19.0               R.utils_2.0.2            
-[71] R2HTML_2.3.1              RBGL_1.40.1              
-[73] Rcpp_0.11.4               RcppArmadillo_0.4.650.1.1
-[75] RCurl_1.95-4.5            ReportingTools_2.4.0     
-[77] reshape2_1.4.1            rpart_4.1-9              
-[79] Rsamtools_1.16.1          rtracklayer_1.24.2       
-[81] scales_0.2.4              sendmailR_1.2-1          
-[83] splines_3.1.1             stats4_3.1.1             
-[85] stringr_0.6.2             survival_2.38-1          
-[87] tools_3.1.1               VariantAnnotation_1.10.5 
-[89] XML_3.98-1.1              XVector_0.4.0            
-[91] zlibbioc_1.10.0          
+[57] magrittr_1.5              markdown_0.7.7           
+[59] MASS_7.3-40               Matrix_1.2-0             
+[61] MergeMaid_2.38.0          metaArray_1.44.0         
+[63] mime_0.3                  munsell_0.4.2            
+[65] nnet_7.3-9                oligoClasses_1.28.0      
+[67] OrganismDbi_1.8.1         PFAM.db_3.0.0            
+[69] proto_0.3-10              R.methodsS3_1.7.0        
+[71] R.oo_1.19.0               R.utils_2.0.2            
+[73] RBGL_1.42.0               Rcpp_0.11.6              
+[75] RcppArmadillo_0.5.100.1.0 RCurl_1.95-4.6           
+[77] ReportingTools_2.6.0      reshape_0.8.5            
+[79] reshape2_1.4.1            rpart_4.1-9              
+[81] Rsamtools_1.18.3          rtracklayer_1.26.3       
+[83] scales_0.2.4              sendmailR_1.2-1          
+[85] splines_3.1.1             stringi_0.4-1            
+[87] stringr_1.0.0             survival_2.38-1          
+[89] tools_3.1.1               VariantAnnotation_1.12.9 
+[91] XML_3.98-1.1              XVector_0.6.0            
+[93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-06-19 15:36:26. Time spent 0 minutes .
+generation ended 2015-06-22 16:06:24. Time spent 0 minutes .
 
 

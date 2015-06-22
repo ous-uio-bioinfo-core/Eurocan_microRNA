@@ -1,0 +1,30 @@
+Count of significant microRNAs found going in the same direction for the subtypes
+, DCIS-normal,, invasive-DCIS,, Normallike-DCIS,, LumA-DCIS,, LumB-DCIS,, Her2-DCIS,, Basallike-DCIS,, HER2neg_ERneg_PGRneg-DCIS,, HER2neg_ERpos-DCIS,, HER2pos_ERneg-DCIS,, HER2pos_ERpos-DCIS
+DCIS-normal,X,0,0,1,10,2,2,1,0,1,0
+invasive-DCIS,0,X,0,0,0,0,0,0,0,0,0
+Normallike-DCIS,0,0,X,2,0,0,0,0,0,0,0
+LumA-DCIS,1,0,2,X,2,0,0,0,0,0,0
+LumB-DCIS,10,0,0,2,X,3,1,1,0,2,0
+Her2-DCIS,2,0,0,0,3,X,1,1,0,4,0
+Basallike-DCIS,2,0,0,0,1,1,X,2,0,1,0
+HER2neg_ERneg_PGRneg-DCIS,1,0,0,0,1,1,2,X,0,1,0
+HER2neg_ERpos-DCIS,0,0,0,0,0,0,0,0,X,0,0
+HER2pos_ERneg-DCIS,1,0,0,0,2,4,1,1,0,X,0
+HER2pos_ERpos-DCIS,0,0,0,0,0,0,0,0,0,0,X
+
+
+
+
+Count of significant microRNAs found going in the opposite direction for the subtypes
+, DCIS-normal,, invasive-DCIS,, Normallike-DCIS,, LumA-DCIS,, LumB-DCIS,, Her2-DCIS,, Basallike-DCIS,, HER2neg_ERneg_PGRneg-DCIS,, HER2neg_ERpos-DCIS,, HER2pos_ERneg-DCIS,, HER2pos_ERpos-DCIS
+DCIS-normal,X,0,6,2,1,0,1,0,0,0,0
+invasive-DCIS,0,X,0,0,0,0,0,0,0,0,0
+Normallike-DCIS,6,0,X,0,1,0,0,0,0,0,0
+LumA-DCIS,2,0,0,X,0,1,1,0,0,1,0
+LumB-DCIS,1,0,1,0,X,0,1,0,0,0,0
+Her2-DCIS,0,0,0,1,0,X,0,0,0,0,0
+Basallike-DCIS,1,0,0,1,1,0,X,0,0,0,0
+HER2neg_ERneg_PGRneg-DCIS,0,0,0,0,0,0,0,X,0,0,0
+HER2neg_ERpos-DCIS,0,0,0,0,0,0,0,0,X,0,0
+HER2pos_ERneg-DCIS,0,0,0,1,0,0,0,0,0,X,0
+HER2pos_ERpos-DCIS,0,0,0,0,0,0,0,0,0,0,X

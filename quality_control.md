@@ -3,7 +3,7 @@ Quality control plots of AHUS and UCAM microRNA data used in Volinia check
 
 
 
-2015-06-19 15:35:40  
+2015-06-22 16:06:02  
 <br/>
 <br/>
 
@@ -16,52 +16,13 @@ Setting some dependencies
 
 ```r
 library(RColorBrewer)
-```
-
-```
-## Warning: package 'RColorBrewer' was built under R version 3.1.2
-```
-
-```r
 library(xtable)
 library(sva)
-```
-
-```
-## Warning: package 'mgcv' was built under R version 3.1.2
-```
-
-```
-## Warning: package 'nlme' was built under R version 3.1.2
-```
-
-```r
 set.seed(100)
 
 source("./helper_functions.r")
 if(!exists("inputisread"))
 	source("read_input.r")
-```
-
-```
-## Warning: package 'RSQLite' was built under R version 3.1.2
-```
-
-```
-## FILTERING PROBES BY FLAGS 
-## 
-## 
-## FILTERING BY ControlType 
-## 
-##    FEATURES BEFORE FILTERING:  961 
-##  	FEATURES AFTER ControlType FILTERING:  939 
-## ------------------------------------------------------ 
-## FILTERING BY IsGeneDetected FLAG 
-## 
-## 	FLAG FILTERING OPTIONS - FLAG OK = 1 - limIsGeneDetected:  75 % 
-## 	FEATURES AFTER IsGeneDetected FILTERING:  288 
-## 	NON Gene Detected : 651 
-## ------------------------------------------------------
 ```
 
 The data matrix has 1573 samples and 265 microRNAs.
@@ -78,7 +39,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jun 19 15:36:02 2015 -->
+<!-- Mon Jun 22 16:06:02 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -272,64 +233,69 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] parallel  stats     graphics  grDevices utils     datasets  methods  
-[8] base     
+ [1] grid      stats4    parallel  stats     graphics  grDevices utils    
+ [8] datasets  methods   base     
 
 other attached packages:
- [1] AgiMicroRna_2.14.0    affycoretools_1.36.1  GO.db_2.14.0         
- [4] RSQLite_1.0.0         DBI_0.3.1             AnnotationDbi_1.26.1 
- [7] GenomeInfoDb_1.0.2    preprocessCore_1.26.1 affy_1.42.3          
-[10] limma_3.20.9          Biobase_2.24.0        BiocGenerics_0.10.0  
-[13] plyr_1.8.1            sva_3.10.0            mgcv_1.8-4           
-[16] nlme_3.1-120          corpcor_1.6.7         xtable_1.7-4         
-[19] RColorBrewer_1.1-2    knitr_1.9            
+ [1] MAMA_2.2.1            GeneMeta_1.38.0       gtools_3.4.2         
+ [4] multtest_2.22.0       metaMA_2.1            SMVar_1.3.3          
+ [7] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
+[10] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
+[13] knitr_1.10.5          AgiMicroRna_2.16.0    affycoretools_1.38.0 
+[16] GO.db_3.0.0           RSQLite_1.0.0         DBI_0.3.1            
+[19] AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5    IRanges_2.0.1        
+[22] S4Vectors_0.4.0       preprocessCore_1.28.0 affy_1.44.0          
+[25] limma_3.22.7          Biobase_2.26.0        BiocGenerics_0.12.1  
+[28] plyr_1.8.2           
 
 loaded via a namespace (and not attached):
- [1] acepack_1.3-3.3           affyio_1.32.0            
- [3] annaffy_1.36.0            annotate_1.42.1          
- [5] AnnotationForge_1.6.1     base64enc_0.1-2          
- [7] BatchJobs_1.5             BBmisc_1.9               
- [9] BiocInstaller_1.14.3      BiocParallel_0.6.1       
-[11] biomaRt_2.20.0            Biostrings_2.32.1        
-[13] biovizBase_1.12.3         bit_1.1-12               
+ [1] acepack_1.3-3.3           affyio_1.34.0            
+ [3] annaffy_1.38.0            annotate_1.44.0          
+ [5] AnnotationForge_1.8.2     base64enc_0.1-2          
+ [7] BatchJobs_1.6             BBmisc_1.9               
+ [9] BiocInstaller_1.16.5      BiocParallel_1.0.3       
+[11] biomaRt_2.22.0            Biostrings_2.34.1        
+[13] biovizBase_1.14.1         bit_1.1-12               
 [15] bitops_1.0-6              brew_1.0-6               
-[17] BSgenome_1.32.0           Category_2.30.0          
-[19] caTools_1.17.1            checkmate_1.5.1          
-[21] cluster_2.0.1             codetools_0.2-10         
-[23] colorspace_1.2-4          DESeq2_1.4.5             
+[17] BSgenome_1.34.1           Category_2.32.0          
+[19] caTools_1.17.1            checkmate_1.5.3          
+[21] cluster_2.0.1             codetools_0.2-11         
+[23] colorspace_1.2-6          DESeq2_1.6.3             
 [25] dichromat_2.0-0           digest_0.6.8             
-[27] edgeR_3.6.8               evaluate_0.5.5           
+[27] edgeR_3.8.6               evaluate_0.7             
 [29] fail_1.2                  ff_2.2-13                
 [31] foreach_1.4.2             foreign_0.8-63           
-[33] formatR_1.0               Formula_1.2-0            
-[35] gcrma_2.36.0              gdata_2.13.3             
-[37] genefilter_1.46.1         geneplotter_1.42.0       
-[39] GenomicAlignments_1.0.6   GenomicFeatures_1.16.3   
-[41] GenomicRanges_1.16.4      ggbio_1.12.10            
-[43] ggplot2_1.0.0             GOstats_2.30.0           
-[45] gplots_2.16.0             graph_1.42.0             
-[47] grid_3.1.1                gridExtra_0.9.1          
-[49] GSEABase_1.26.0           gtable_0.1.2             
-[51] gtools_3.4.1              Hmisc_3.15-0             
-[53] hwriter_1.3.2             IRanges_1.22.10          
-[55] iterators_1.0.7           KernSmooth_2.23-14       
-[57] lattice_0.20-30           latticeExtra_0.6-26      
-[59] locfit_1.5-9.1            MASS_7.3-39              
-[61] Matrix_1.1-5              munsell_0.4.2            
-[63] nnet_7.3-9                oligoClasses_1.26.0      
-[65] PFAM.db_2.14.0            proto_0.3-10             
-[67] R.methodsS3_1.7.0         R.oo_1.19.0              
-[69] R.utils_2.0.2             R2HTML_2.3.1             
-[71] RBGL_1.40.1               Rcpp_0.11.4              
-[73] RcppArmadillo_0.4.650.1.1 RCurl_1.95-4.5           
-[75] ReportingTools_2.4.0      reshape2_1.4.1           
-[77] rpart_4.1-9               Rsamtools_1.16.1         
-[79] rtracklayer_1.24.2        scales_0.2.4             
-[81] sendmailR_1.2-1           splines_3.1.1            
-[83] stats4_3.1.1              stringr_0.6.2            
-[85] survival_2.38-1           tools_3.1.1              
-[87] VariantAnnotation_1.10.5  XML_3.98-1.1             
-[89] XVector_0.4.0             zlibbioc_1.10.0          
+[33] formatR_1.2               Formula_1.2-1            
+[35] gcrma_2.38.0              gdata_2.16.1             
+[37] geneplotter_1.44.0        GenomicAlignments_1.2.2  
+[39] GenomicFeatures_1.18.7    GenomicRanges_1.18.4     
+[41] GGally_0.5.0              ggbio_1.14.0             
+[43] ggplot2_1.0.1             GOstats_2.32.0           
+[45] gplots_2.17.0             graph_1.44.1             
+[47] gridExtra_0.9.1           GSEABase_1.28.0          
+[49] gtable_0.1.2              Hmisc_3.16-0             
+[51] hwriter_1.3.2             iterators_1.0.7          
+[53] KernSmooth_2.23-14        lattice_0.20-31          
+[55] latticeExtra_0.6-26       locfit_1.5-9.1           
+[57] magrittr_1.5              markdown_0.7.7           
+[59] MASS_7.3-40               Matrix_1.2-0             
+[61] MergeMaid_2.38.0          metaArray_1.44.0         
+[63] mime_0.3                  munsell_0.4.2            
+[65] nnet_7.3-9                oligoClasses_1.28.0      
+[67] OrganismDbi_1.8.1         PFAM.db_3.0.0            
+[69] proto_0.3-10              R.methodsS3_1.7.0        
+[71] R.oo_1.19.0               R.utils_2.0.2            
+[73] RBGL_1.42.0               Rcpp_0.11.6              
+[75] RcppArmadillo_0.5.100.1.0 RCurl_1.95-4.6           
+[77] ReportingTools_2.6.0      reshape_0.8.5            
+[79] reshape2_1.4.1            rpart_4.1-9              
+[81] Rsamtools_1.18.3          rtracklayer_1.26.3       
+[83] scales_0.2.4              sendmailR_1.2-1          
+[85] splines_3.1.1             stringi_0.4-1            
+[87] stringr_1.0.0             survival_2.38-1          
+[89] tools_3.1.1               VariantAnnotation_1.12.9 
+[91] XML_3.98-1.1              XVector_0.6.0            
+[93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-06-19 15:36:08. Time spent 0 minutes .
+generation ended 2015-06-22 16:06:07. Time spent 0 minutes .
