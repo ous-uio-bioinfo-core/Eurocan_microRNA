@@ -18,7 +18,7 @@ startdir = getwd()
 ############################################################
 ### Read sampleannotation
 ############################################################
-sampleannotation_file="sampleannotation_validatingvolinia.txt"
+sampleannotation_file="sampleannotation.txt"
 
 sampleannotation=read.table(paste(inputdir,  "/", sampleannotation_file, sep=""),
 														sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,

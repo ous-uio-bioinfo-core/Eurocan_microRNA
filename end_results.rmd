@@ -510,6 +510,8 @@ for(n in names(consensustables))
 	
 }
 file.copy(from = paste("input", "/README_supl_tables.txt", sep=""), to=supplementaryfile1dir)
+write.table(sampleannotation, file=paste(supplementaryfile1dir, "/sampleannotation", postfix, sep=""), 
+						sep=separator, row.names=FALSE, col.names=TRUE)
 
 
 # write table3 and table4 in our article

@@ -18,7 +18,7 @@ datadir = "not_in_github"
 
 AHUS_binary_data_file="AHUS_agiMicroRNAdata.rdata"
 UCAM_data_file = "Agilent_ncRNA_60k_normalised_miRNA_expression_ORIGINAL.txt"
-sampleannotation_file="sampleannotation_validatingvolinia.txt"
+sampleannotation_file="sampleannotation.txt"
 mimatmapping_file = "MIMATID_conversion.txt"
 
 # the miRNA to MIMAT mapping with preferred arm name if availible, else use AHUS version
