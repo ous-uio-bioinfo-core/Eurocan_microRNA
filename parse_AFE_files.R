@@ -43,6 +43,11 @@ ahus_uRNAList  = rmaMicroRna(AHUS_agiMicroRNAdata, normalize = TRUE, background 
 ############################################################
 save(ahus_uRNAList, file=paste(outputdir, "/AHUS_rma_uRNAList.rdata", sep=""))
 
+#write matrix as text for deposit to arrayExpress or similar
+arrayExpressmatrix = ahus_uRNAList$TGS
+rownames(arrayExpressmatrix) = ahus_uRNAList$genes$GeneName
+write.table(arrayExpressmatrix, file=paste(outputdir, "/toArrayExpress.txt", sep=""),
+						row.names=TRUE, col.names=NA, sep="\t", quote=FALSE)
 
 		 
 sink("parse_AFE_files_sessionInfo.txt")
