@@ -269,65 +269,6 @@ For the diff-tests I ran a few sanity checks where I permuted the group labels w
 <br/>
 <br/>
 
-## Stratification based on iClust-subtypes
-
-The UCAM samples are classified as an iClust-subtype based on mRNA samples. This is provided as a sample annotationlike the pam50 estimates. We will finde differentially expressed microRNA between the DCIS samples and each of the iClust-types. This classification is onlye aveilible for the UCAM dataset and no alternative meta-analysis is done.
-
-
-
-```{r}
-iClust = sampleannotation$iClust
-iClust[!is.na(iClust)] = paste("iClust", iClust[!is.na(iClust)], sep="")
-iClust[sampleannotation$tissue_type=="DCIS"] = "DCIS"
-to_be_used =  sampleannotation$tissue_type %in% c("DCIS", "invasive") &
-	!is.na(iClust) & # do not use samples without clinical info
-	sampleannotation$provider=="UCAM" 
-table(iClust[to_be_used],sampleannotation[to_be_used,"tissue_type"], useNA="ifany")
-```
-
-
-The diff test,
-```{r find_diff_genes_iClustlabels}
-
-labels = unique(iClust[to_be_used & !iClust %in% c("", "unknown", "DCIS")])
-contrasts = paste(labels, "-DCIS", sep="")
-
-group = factor(iClust[to_be_used])
-#group[group!="DCIS"] = sample(group[group!="DCIS"])#simple sanity check
-
-design = model.matrix(~0+group)
-colnames(design) = gsub("group", "", colnames(design))
-fit = lmFit(common_matrix[,to_be_used], design)
-fit$genes$name = miRNA2MIMAT[rownames(common_matrix), "preferredname"]
-cont.matrix = makeContrasts ( contrasts=contrasts, levels=design)  
-fit2 = contrasts.fit(fit, cont.matrix)
-fit2 <- eBayes(fit2)
-
-iClustdifflistdir = paste(outputdir, "/difflists_iClust_UCAM_only", sep="")
-if(!file.exists(iClustdifflistdir))
-	dir.create(iClustdifflistdir)
-
-for(thiscontrast in contrasts)
-{
-  thisres = topTable(fit2, coef=thiscontrast, adjust="BH", number=999)
-
-  thisname= gsub("-", "-vs-", thiscontrast)
-  thislabel = strsplit(thiscontrast, "-")[[1]][1]
-
-  difflistfile=paste(iClustdifflistdir, "/difflist-iClust-",thisname, postfix, sep="")
-  write.table(thisres, 
-            file=difflistfile,
-            quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
-  print( paste("Diff genes with fdr<0.05 for ", thislabel, " vs DCIS: ",
-               sum(thisres$adj.P.Val < 0.05), sep=""))
-  
-}
-
-
-
-```
-
-
 
 
 

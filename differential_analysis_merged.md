@@ -1,6 +1,6 @@
 Finding differentially expressed microRNA in the  AHUS and UCAM data sets
 ========================================================
-2015-06-23 18:38:15
+2015-08-20 14:12:37
 
 
 <br/>
@@ -61,7 +61,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Tue Jun 23 18:38:15 2015 -->
+<!-- Thu Aug 20 14:12:37 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -338,92 +338,6 @@ For the diff-tests I ran a few sanity checks where I permuted the group labels w
 <br/>
 <br/>
 
-## Stratification based on iClust-subtypes
-
-The UCAM samples are classified as an iClust-subtype based on mRNA samples. This is provided as a sample annotationlike the pam50 estimates. We will finde differentially expressed microRNA between the DCIS samples and each of the iClust-types. This classification is onlye aveilible for the UCAM dataset and no alternative meta-analysis is done.
-
-
-
-
-```r
-iClust = sampleannotation$iClust
-iClust[!is.na(iClust)] = paste("iClust", iClust[!is.na(iClust)], sep="")
-iClust[sampleannotation$tissue_type=="DCIS"] = "DCIS"
-to_be_used =  sampleannotation$tissue_type %in% c("DCIS", "invasive") &
-	!is.na(iClust) & # do not use samples without clinical info
-	sampleannotation$provider=="UCAM" 
-table(iClust[to_be_used],sampleannotation[to_be_used,"tissue_type"], useNA="ifany")
-```
-
-```
-##           
-##            DCIS invasive
-##   DCIS       10        0
-##   iClust1     0       91
-##   iClust10    0      134
-##   iClust2     0       52
-##   iClust3     0      191
-##   iClust4     0      242
-##   iClust5     0      122
-##   iClust6     0       56
-##   iClust7     0      114
-##   iClust8     0      186
-##   iClust9     0       87
-```
-
-
-The diff test,
-
-```r
-labels = unique(iClust[to_be_used & !iClust %in% c("", "unknown", "DCIS")])
-contrasts = paste(labels, "-DCIS", sep="")
-
-group = factor(iClust[to_be_used])
-#group[group!="DCIS"] = sample(group[group!="DCIS"])#simple sanity check
-
-design = model.matrix(~0+group)
-colnames(design) = gsub("group", "", colnames(design))
-fit = lmFit(common_matrix[,to_be_used], design)
-fit$genes$name = miRNA2MIMAT[rownames(common_matrix), "preferredname"]
-cont.matrix = makeContrasts ( contrasts=contrasts, levels=design)  
-fit2 = contrasts.fit(fit, cont.matrix)
-fit2 <- eBayes(fit2)
-
-iClustdifflistdir = paste(outputdir, "/difflists_iClust_UCAM_only", sep="")
-if(!file.exists(iClustdifflistdir))
-	dir.create(iClustdifflistdir)
-
-for(thiscontrast in contrasts)
-{
-  thisres = topTable(fit2, coef=thiscontrast, adjust="BH", number=999)
-
-  thisname= gsub("-", "-vs-", thiscontrast)
-  thislabel = strsplit(thiscontrast, "-")[[1]][1]
-
-  difflistfile=paste(iClustdifflistdir, "/difflist-iClust-",thisname, postfix, sep="")
-  write.table(thisres, 
-            file=difflistfile,
-            quote=FALSE, sep="\t", row.names=TRUE, col.names=NA)
-  print( paste("Diff genes with fdr<0.05 for ", thislabel, " vs DCIS: ",
-               sum(thisres$adj.P.Val < 0.05), sep=""))
-  
-}
-```
-
-```
-## [1] "Diff genes with fdr<0.05 for iClust10 vs DCIS: 73"
-## [1] "Diff genes with fdr<0.05 for iClust4 vs DCIS: 0"
-## [1] "Diff genes with fdr<0.05 for iClust2 vs DCIS: 9"
-## [1] "Diff genes with fdr<0.05 for iClust1 vs DCIS: 20"
-## [1] "Diff genes with fdr<0.05 for iClust3 vs DCIS: 0"
-## [1] "Diff genes with fdr<0.05 for iClust5 vs DCIS: 1"
-## [1] "Diff genes with fdr<0.05 for iClust9 vs DCIS: 11"
-## [1] "Diff genes with fdr<0.05 for iClust6 vs DCIS: 10"
-## [1] "Diff genes with fdr<0.05 for iClust7 vs DCIS: 1"
-## [1] "Diff genes with fdr<0.05 for iClust8 vs DCIS: 17"
-```
-
-
 
 
 
@@ -444,18 +358,20 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats4    parallel  stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+ [1] grid      stats4    parallel  stats     graphics  grDevices utils    
+ [8] datasets  methods   base     
 
 other attached packages:
- [1] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
- [4] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
- [7] knitr_1.10.5          AgiMicroRna_2.16.0    affycoretools_1.38.0 
-[10] GO.db_3.0.0           RSQLite_1.0.0         DBI_0.3.1            
-[13] AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5    IRanges_2.0.1        
-[16] S4Vectors_0.4.0       preprocessCore_1.28.0 affy_1.44.0          
-[19] limma_3.22.7          Biobase_2.26.0        BiocGenerics_0.12.1  
-[22] plyr_1.8.2           
+ [1] MAMA_2.2.1            GeneMeta_1.38.0       gtools_3.4.2         
+ [4] multtest_2.22.0       metaMA_2.1            SMVar_1.3.3          
+ [7] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
+[10] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
+[13] knitr_1.10.5          AgiMicroRna_2.16.0    affycoretools_1.38.0 
+[16] GO.db_3.0.0           RSQLite_1.0.0         DBI_0.3.1            
+[19] AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5    IRanges_2.0.1        
+[22] S4Vectors_0.4.0       preprocessCore_1.28.0 affy_1.44.0          
+[25] limma_3.22.7          Biobase_2.26.0        BiocGenerics_0.12.1  
+[28] plyr_1.8.2           
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.34.0            
@@ -481,14 +397,14 @@ loaded via a namespace (and not attached):
 [41] GGally_0.5.0              ggbio_1.14.0             
 [43] ggplot2_1.0.1             GOstats_2.32.0           
 [45] gplots_2.17.0             graph_1.44.1             
-[47] grid_3.1.1                gridExtra_0.9.1          
-[49] GSEABase_1.28.0           gtable_0.1.2             
-[51] gtools_3.4.2              Hmisc_3.16-0             
-[53] hwriter_1.3.2             iterators_1.0.7          
-[55] KernSmooth_2.23-14        lattice_0.20-31          
-[57] latticeExtra_0.6-26       locfit_1.5-9.1           
-[59] magrittr_1.5              markdown_0.7.7           
-[61] MASS_7.3-40               Matrix_1.2-0             
+[47] gridExtra_0.9.1           GSEABase_1.28.0          
+[49] gtable_0.1.2              Hmisc_3.16-0             
+[51] hwriter_1.3.2             iterators_1.0.7          
+[53] KernSmooth_2.23-14        lattice_0.20-31          
+[55] latticeExtra_0.6-26       locfit_1.5-9.1           
+[57] magrittr_1.5              markdown_0.7.7           
+[59] MASS_7.3-40               Matrix_1.2-0             
+[61] MergeMaid_2.38.0          metaArray_1.44.0         
 [63] mime_0.3                  munsell_0.4.2            
 [65] nnet_7.3-9                oligoClasses_1.28.0      
 [67] OrganismDbi_1.8.1         PFAM.db_3.0.0            
@@ -507,4 +423,4 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-06-23 18:38:16. Time spent 0 minutes .
+generation ended 2015-08-20 14:12:37. Time spent 0 minutes .

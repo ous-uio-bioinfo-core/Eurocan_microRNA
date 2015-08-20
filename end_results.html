@@ -203,7 +203,7 @@ hr {
 <body>
 <h1>Overlap between our results and Volinia et al.</h1>
 
-<p>2015-06-23 18:38:31</p>
+<p>2015-08-20 14:12:51</p>
 
 <p><br/>
 <br/></p>
@@ -263,7 +263,7 @@ fdrCO = 0.05
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Tue Jun 23 18:38:31 2015 -->
+<!-- Thu Aug 20 14:12:51 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
@@ -292,7 +292,7 @@ Sample count based on PAM50 classification in each tissue and from each provider
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Tue Jun 23 18:38:31 2015 -->
+<!-- Thu Aug 20 14:12:51 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
@@ -303,7 +303,7 @@ Sample count based on PAM50 classification in each tissue and from each provider
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Tue Jun 23 18:38:31 2015 -->
+<!-- Thu Aug 20 14:12:51 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
@@ -331,7 +331,7 @@ Sample count based on IHC diagnosis in each tissue and from each provider</p>
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Tue Jun 23 18:38:31 2015 -->
+<!-- Thu Aug 20 14:12:51 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
@@ -344,7 +344,7 @@ Sample count based on IHC diagnosis in each tissue and from each provider</p>
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Tue Jun 23 18:38:31 2015 -->
+<!-- Thu Aug 20 14:12:51 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
@@ -464,7 +464,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Tue Jun 23 18:38:32 2015 -->
+<!-- Thu Aug 20 14:12:52 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
@@ -552,7 +552,7 @@ print(xtable(correlationmatrix1,
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Tue Jun 23 18:38:32 2015 -->
+<!-- Thu Aug 20 14:12:52 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
@@ -786,16 +786,15 @@ print( xtable( volinia_overlap[[&quot;invasive-DCIS&quot;]][x,] , caption=&quot;
 
 <p>Bastian Fromm and colleagues have carefully evaluated the evidence for the Human micro RNAs reported in mirBase and provided a classification based on this. In short, a lot of microRNAs in mirBASE and included in the microarray platforms are probably not real microRNAs.</p>
 
-<p>A list of human microRNAs and their curation classification is provided:</p>
+<p>A list of human microRNAs and their curation classification for our microRNAS is provided:</p>
 
 <pre><code class="r">    curatedfn = &quot;curated_microRNA_MIMAT.csv&quot;
   orgcuratedtab  = read.table(paste(annotdir, &quot;/&quot;, curatedfn, sep=&quot;&quot;), sep=&quot;\t&quot;, 
                                                  header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
                                      strip.white=TRUE, comment.char =&quot;&quot;)
     orgcuratedtab$miRNA = paste(&quot;hsa-&quot;, orgcuratedtab$miRNA, sep=&quot;&quot;)
-  # ad hoc fix
-    #orgcuratedtab$miRNA = gsub(&quot;-mir-&quot;, &quot;-miR-&quot;, orgcuratedtab$miRNA)
 
+    # rearrange to a more practical object
     curatedtab = orgcuratedtab[,c(1,2,3)]
     names(curatedtab)[3]= &quot;MIMAT&quot;
 
@@ -805,9 +804,6 @@ print( xtable( volinia_overlap[[&quot;invasive-DCIS&quot;]][x,] , caption=&quot;
                                          setNames( orgcuratedtab[,c(1,2,6)], names(curatedtab)) )
     curatedtab = curatedtab[curatedtab$MIMAT != &quot;&quot;, ]
 
-    #curatedtab$MIMAT = mimatmapping[curatedtab$miRNA]
-    #table(curatedtab$status)
-    #curatedtab = curatedtab[!is.na(curatedtab$MIMAT),]
     table(orgcuratedtab$status)
 </code></pre>
 
@@ -853,7 +849,7 @@ And now the same assignment and summary for our results from the AHUS and METABR
 
 for(n in names(consensustables))
 {
-    x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, &quot;_&quot;)[[1]][1]))
+    x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, &quot;_&quot;)[[1]][1])) # not neede anymore?
     consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), &quot;status&quot;]
     write.table( format( consensustables[[n]], digits=4), 
             file=paste(supplementaryfile1dir, &quot;/consensusresults_&quot;,meta2merged[n, &quot;comparisontype&quot;], &quot;__&quot;, n, postfix, sep=&quot;&quot;),
@@ -870,7 +866,7 @@ for(n in names(consensustables))
     namelists[[n]]=v
 
 }
-file.copy(from = paste(&quot;input&quot;, &quot;/README_supl_tables.txt&quot;, sep=&quot;&quot;), to=supplementaryfile1dir)
+file.copy(from = paste(&quot;input&quot;, &quot;/README_suppl_tables.txt&quot;, sep=&quot;&quot;), to=supplementaryfile1dir)
 </code></pre>
 
 <p>[1] TRUE</p>
@@ -878,8 +874,13 @@ file.copy(from = paste(&quot;input&quot;, &quot;/README_supl_tables.txt&quot;, s
 <pre><code class="r">write.table(sampleannotation, file=paste(supplementaryfile1dir, &quot;/sampleannotation&quot;, postfix, sep=&quot;&quot;), 
                         sep=separator, row.names=FALSE, col.names=TRUE)
 
+#another file, created semi-manually.
+file.copy(from = paste(&quot;input&quot;, &quot;/Suppl_Chromosomal location.xlsx&quot;, sep=&quot;&quot;), to=supplementaryfile1dir)
+</code></pre>
 
-# write table3 and table4 in our article
+<p>[1] TRUE</p>
+
+<pre><code class="r"># write table3 and table4 in our article
 tableclasses = c(&quot;LumA-DCIS&quot;, &quot;LumB-DCIS&quot;, &quot;Her2-DCIS&quot;, &quot;Basallike-DCIS&quot;, &quot;Normallike-DCIS&quot;)
 nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
 table3 = matrix(&quot;&quot;,ncol=length(tableclasses), nrow=nrows)
@@ -972,9 +973,6 @@ unfilt1 = unlist(lapply(unfilteredcommonMIMAT, FUN=function(x)strsplit(x, &quot;
 expressed = table(curatedtab$status[match(filt1, curatedtab$MIMAT)])
 nonexpressed=   table(curatedtab$status[match(unfilt1[!unfilt1 %in% filt1],curatedtab$MIMAT) ])
 
-#genelist = rownames(consensustables[[&quot;DCIS-normal&quot;]])[consensustables[[&quot;DCIS-normal&quot;]]$consensus]
-#significant = table(curatedtab$status[curatedtab$MIMAT %in% genelist])
-
 significant = table(consensustables[[&quot;DCIS-normal&quot;]]$curated[ consensustables[[&quot;DCIS-normal&quot;]]$consensus])
 
 print( xtable( rbind(nonexpressed,expressed,significant), caption=&quot;&quot;, digits=3), 
@@ -995,7 +993,188 @@ print( xtable( rbind(nonexpressed,expressed,significant), caption=&quot;&quot;, 
 <p>In the above table, <em>nonexpressed</em> is the number of micorRNAs that were filtered out in one or both of the platforms. The filter was mainly based on some expression threshold in a minimum amount of samples. For short these can be considered non-expressed. The <em>expressed</em> class consists of the microRNAs that passed the filter criteria in both platforms. The <em>significant</em> class is here the microRNAs that were found as significant in the &ldquo;normal to DCIS&rdquo;-comparison for the combined METABRIC and AHUS data sets.</p>
 
 <p><br/>
+<br/>
 <br/></p>
+
+<h2>Stratification based on iClust-subtypes</h2>
+
+<p>The UCAM samples are classified as an iClust-sub-type based on mRNA samples. This is provided as a sample annotation like the pam50 estimates. We will find differentially expressed microRNA between the DCIS samples and each of the iClust-types. This classification is only available for the UCAM data set and no alternative meta-analysis is done.</p>
+
+<pre><code class="r">iClust = sampleannotation$iClust
+iClust[!is.na(iClust)] = paste(&quot;iClust&quot;, iClust[!is.na(iClust)], sep=&quot;&quot;)
+iClust[sampleannotation$tissue_type==&quot;DCIS&quot;] = &quot;DCIS&quot;
+to_be_used =  sampleannotation$tissue_type %in% c(&quot;DCIS&quot;, &quot;invasive&quot;) &amp;
+    !is.na(iClust) &amp; # do not use samples without clinical info
+    sampleannotation$provider==&quot;UCAM&quot; 
+table(iClust[to_be_used],sampleannotation[to_be_used,&quot;tissue_type&quot;], useNA=&quot;ifany&quot;)
+</code></pre>
+
+<pre><code>##           
+##            DCIS invasive
+##   DCIS       10        0
+##   iClust1     0       91
+##   iClust10    0      134
+##   iClust2     0       52
+##   iClust3     0      191
+##   iClust4     0      242
+##   iClust5     0      122
+##   iClust6     0       56
+##   iClust7     0      114
+##   iClust8     0      186
+##   iClust9     0       87
+</code></pre>
+
+<p>The diff test,</p>
+
+<pre><code class="r">labels = unique(iClust[to_be_used &amp; !iClust %in% c(&quot;&quot;, &quot;unknown&quot;, &quot;DCIS&quot;)])
+contrasts = paste(labels, &quot;-DCIS&quot;, sep=&quot;&quot;)
+
+group = factor(iClust[to_be_used])
+
+design = model.matrix(~0+group)
+colnames(design) = gsub(&quot;group&quot;, &quot;&quot;, colnames(design))
+fit = lmFit(common_matrix[,to_be_used], design)
+fit$genes$name = miRNA2MIMAT[rownames(common_matrix), &quot;preferredname&quot;]
+fit$genes$MIMAT = rownames(common_matrix)
+fit$genes$curated = curatedtab[ match( rownames(common_matrix), curatedtab$MIMAT ), &quot;status&quot;]
+cont.matrix = makeContrasts ( contrasts=contrasts, levels=design)  
+fit2 = contrasts.fit(fit, cont.matrix)
+fit2 &lt;- eBayes(fit2)
+
+iClustdifflistdir = paste(supplementaryfile1dir, &quot;/difflists_iClust_UCAM_only&quot;, sep=&quot;&quot;)
+if(!file.exists(iClustdifflistdir))
+    dir.create(iClustdifflistdir)
+
+iclustres = list()
+for(thiscontrast in contrasts)
+{
+  thisres = topTable(fit2, coef=thiscontrast, adjust=&quot;BH&quot;, number=999)
+
+  names(thisres)=gsub(&quot;^ID.&quot;, &quot;&quot;, names(thisres))
+  thisname= gsub(&quot;-&quot;, &quot;-vs-&quot;, thiscontrast)
+  thislabel = strsplit(thiscontrast, &quot;-&quot;)[[1]][1]
+
+  iclustres[[thislabel]] = thisres
+
+  difflistfile=paste(iClustdifflistdir, &quot;/difflist-iClust-&quot;,thisname, postfix, sep=&quot;&quot;)
+  write.table(thisres, 
+            file=difflistfile,
+            quote=FALSE, sep=&quot;\t&quot;, row.names=FALSE, col.names=TRUE)
+  print( paste(&quot;Diff genes with fdr&lt;0.05 for &quot;, thislabel, &quot; vs DCIS: &quot;,
+               sum(thisres$adj.P.Val &lt; 0.05), sep=&quot;&quot;))
+
+}
+</code></pre>
+
+<pre><code>## [1] &quot;Diff genes with fdr&lt;0.05 for iClust10 vs DCIS: 73&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust4 vs DCIS: 0&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust2 vs DCIS: 9&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust1 vs DCIS: 20&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust3 vs DCIS: 0&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust5 vs DCIS: 1&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust9 vs DCIS: 11&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust6 vs DCIS: 10&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust7 vs DCIS: 1&quot;
+## [1] &quot;Diff genes with fdr&lt;0.05 for iClust8 vs DCIS: 17&quot;
+</code></pre>
+
+<h2>Printing more tables and plots used in the article.</h2>
+
+<p>Creating table 7 from our article. All the microRNAs that are found to change both from normal to DCIS and further from DCIS to one of the sub-types of invasive. </p>
+
+<pre><code class="r">dcisDEG = as.character(subset(volinia_overlap[[&quot;DCIS-normal&quot;]]$MIMATID_vol, volinia_overlap[[&quot;DCIS-normal&quot;]]$validated))
+
+table7 = data.frame(MIMA=character(0), name=character(0),  DCIS_direction=character(0),
+                                        subtype=character(0), annottype=character(0), subtype_direction=character(0),
+                                        stringsAsFactors=FALSE)
+
+
+for(annot in c(&quot;pam50_est&quot;, &quot;IHC&quot;))
+{
+    for(lab in unique(sampleannotation[,annot]))
+    {
+
+        thislab = paste(lab, &quot;-DCIS&quot;, sep=&quot;&quot;)
+        a = consensustables[[thislab]]$consensus == TRUE &amp;
+                consensustables[[thislab]]$curated %in% c(&quot;purple&quot;, &quot;white&quot;, &quot;yellow&quot;)
+        a = a &amp; !is.na(a)
+        commonDEG = intersect(consensustables[[thislab]]$MIMAT[a], dcisDEG)
+        if(length(commonDEG) &gt; 0)
+        {
+            df = data.frame( MIMAT = commonDEG,
+                                        name=miRNA2MIMAT[commonDEG, &quot;preferredname&quot;],
+                                        DCIS_direction=ifelse(consensustables[[&quot;DCIS-normal&quot;]][commonDEG, &quot;logFC.merged&quot;] &gt; 0, &quot;UP&quot;, &quot;DOWN&quot; ),
+                                        annottype=annot,
+                                        subtype=lab,
+                                        subtype_direction=ifelse(consensustables[[thislab]][commonDEG, &quot;logFC.merged&quot;] &gt; 0, &quot;UP&quot;, &quot;DOWN&quot; ),
+                                        stringsAsFactors=FALSE
+                                        )       
+            table7=rbind(table7,df )
+        }
+
+    }
+}
+
+for(lab in names(iclustres))
+{
+
+        a = iclustres[[lab]]$adj.P.Val &lt; fdrCO &amp; iclustres[[lab]]$curated %in% c(&quot;purple&quot;, &quot;white&quot;, &quot;yellow&quot;)
+        commonDEG = intersect( iclustres[[lab]]$MIMAT[a], dcisDEG)
+        a = a &amp; !is.na(a)
+        if(length(commonDEG) &gt; 0)
+        {
+            df = data.frame( MIMAT = commonDEG,
+                                        name=miRNA2MIMAT[commonDEG, &quot;preferredname&quot;],
+                                        DCIS_direction=ifelse(consensustables[[&quot;DCIS-normal&quot;]][commonDEG, &quot;logFC.merged&quot;] &gt; 0, &quot;UP&quot;, &quot;DOWN&quot; ),
+                                        annottype=&quot;iClust&quot;,
+                                        subtype=lab,
+                                        subtype_direction=ifelse(iclustres[[lab]][commonDEG, &quot;logFC&quot;] &gt; 0, &quot;UP&quot;, &quot;DOWN&quot; ),
+                                        stringsAsFactors=FALSE
+                                        )       
+            table7=rbind(table7,df )
+        }
+}
+
+nicetable7 = aggregate(subtype ~., table7[, -4], FUN=paste, collapse=&quot; &quot;)
+nicetable7 = nicetable7[order(nicetable7$name),]
+nicetable7 = nicetable7[order(nicetable7$DCIS_direction, decreasing=TRUE),]
+
+write.table(nicetable7, paste(articledir, &quot;/table7&quot;, postfix, sep=&quot;&quot;), quote=TRUE, sep=separator, row.names=FALSE)
+
+pdf(file=paste(supplementaryfile1dir, &quot;/boxplots_table7microRNA.pdf&quot;, sep=&quot;&quot;))
+
+par(oma=c(0,0,2,0))
+par(mfrow=c(2, 1))
+par(mar=c(2, 2, 2, 2) + 0.1)
+for(thismimat in unique(table7$MIMAT))
+{
+    tmptab =    table7[table7$MIMAT==thismimat,]
+
+    for(p in unique(sampleannotation$provider))
+    {
+        datapoints = list()     
+        datapoints[[&quot;normal&quot;]] = common_matrix[thismimat, sampleannotation$tissue_type==&quot;normal&quot; &amp; sampleannotation$provider==p ]
+        datapoints[[&quot;DCIS&quot;]] = common_matrix[thismimat, sampleannotation$tissue_type==&quot;DCIS&quot; &amp; sampleannotation$provider==p ]
+
+        for(i in 1:nrow(tmptab))
+        {
+            n = sampleannotation[,tmptab$annottype[i] ] == gsub(&quot;iClust&quot;, &quot;&quot;, tmptab$subtype[i]) &amp; sampleannotation$provider==p
+            n = n &amp; !is.na(n)
+            if(sum(n)&gt;0)
+                datapoints[[tmptab$subtype[i]]] = common_matrix[thismimat, n]
+
+        }
+        boxplot(datapoints, ylab=&quot;Log2 processed signal&quot; )
+        legend(&quot;topright&quot;, legend=p)
+    }
+    title(main=paste(thismimat, miRNA2MIMAT[thismimat, &quot;preferredname&quot;], sep=&quot;,   &quot;),outer=T)
+}
+dev.off()
+</code></pre>
+
+<pre><code>## RStudioGD 
+##         2
+</code></pre>
 
 <pre><code class="r">sessionInfo()
 </code></pre>
@@ -1072,7 +1251,7 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 </code></pre>
 
-<p>generation ended 2015-06-23 18:38:32. Time spent 0 minutes .</p>
+<p>generation ended 2015-08-20 14:12:53. Time spent 0 minutes .</p>
 
 </body>
 
