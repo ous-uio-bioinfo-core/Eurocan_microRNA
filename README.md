@@ -31,7 +31,7 @@ Compares our results from the two analysis approaches, meta and merged. Then com
  
 
 ### NB! not all necessary input files are here!.
-Neither the Agilent Feature Extraction Files for the AHUS experiment or the processed matrix from UCAM are in this github-repository. In order to reproduce the reports completely these files need to be obtained and put in a folder named "not_in_github". The same folder is also used to store some intermediate R-objects.
+Neither the Agilent Feature Extraction Files for the AHUS experiment or the processed matrix from UCAM are in this github-repository. In order to reproduce the reports these files need to be obtained and put in a folder named "not_in_github". The same folder is also used to store some intermediate R-objects and old reports.
  
 ### not_in_github/
 - *Agilent_ncRNA_60k_normalised_miRNA_expression_ORIGINAL.txt*, the processed data file made by Dvinge et al. (UCAM) obtainable from ...

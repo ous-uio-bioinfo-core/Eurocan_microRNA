@@ -203,7 +203,7 @@ hr {
 <body>
 <h1>Overlap between our results and Volinia et al.</h1>
 
-<p>2015-08-20 14:12:51</p>
+<p>2015-08-31 13:20:21</p>
 
 <p><br/>
 <br/></p>
@@ -263,7 +263,7 @@ fdrCO = 0.05
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
@@ -292,7 +292,7 @@ Sample count based on PAM50 classification in each tissue and from each provider
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
@@ -303,7 +303,7 @@ Sample count based on PAM50 classification in each tissue and from each provider
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
@@ -331,7 +331,7 @@ Sample count based on IHC diagnosis in each tissue and from each provider</p>
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
@@ -344,7 +344,7 @@ Sample count based on IHC diagnosis in each tissue and from each provider</p>
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
@@ -464,7 +464,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Thu Aug 20 14:12:52 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
@@ -482,8 +482,8 @@ Next, summarize the number of microRNAs found differentially expressed between s
   <tr> <td align="right"> HER2pos_ERpos-DCIS </td> <td align="right">    3 </td> <td align="right">    5 </td> <td align="right">    0 </td> </tr>
    </table>
 
-<pre><code class="r">    write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, &quot;/suppltable1&quot;, postfix, sep=&quot;&quot;), 
-                            row.names=TRUE, col.names=NA, sep=separator)
+<pre><code class="r">#   write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, &quot;/suppltable1&quot;, postfix, sep=&quot;&quot;), 
+#                           row.names=TRUE, col.names=NA, sep=separator)
 </code></pre>
 
 <p>For several of the comparisons, the shorter list seems to be mostly included in the longer. We will use the intersect as differentially expressed microRNAs, i.e a microRNA is deemed differentially expressed if it is within 0.05 FDR in both the meta and merged analyses.
@@ -552,7 +552,7 @@ print(xtable(correlationmatrix1,
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Thu Aug 20 14:12:52 2015 -->
+<!-- Mon Aug 31 13:20:22 2015 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
@@ -846,13 +846,15 @@ And now the same assignment and summary for our results from the AHUS and METABR
 
 <pre><code class="r">namelists = list()
 
-
+consensusresultsdir=paste(supplementaryfile1dir, &quot;/consensuslists&quot;, sep=&quot;&quot;)
+if(!file.exists(consensusresultsdir))
+    dir.create(consensusresultsdir)
 for(n in names(consensustables))
 {
     x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, &quot;_&quot;)[[1]][1])) # not neede anymore?
     consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), &quot;status&quot;]
     write.table( format( consensustables[[n]], digits=4), 
-            file=paste(supplementaryfile1dir, &quot;/consensusresults_&quot;,meta2merged[n, &quot;comparisontype&quot;], &quot;__&quot;, n, postfix, sep=&quot;&quot;),
+            file=paste(consensusresultsdir, &quot;/consensusresults_&quot;,meta2merged[n, &quot;comparisontype&quot;], &quot;__&quot;, n, postfix, sep=&quot;&quot;),
             quote=FALSE, sep=separator, row.names=FALSE, col.names=TRUE)
 
     # for table3 and 4.
@@ -866,19 +868,17 @@ for(n in names(consensustables))
     namelists[[n]]=v
 
 }
-file.copy(from = paste(&quot;input&quot;, &quot;/README_suppl_tables.txt&quot;, sep=&quot;&quot;), to=supplementaryfile1dir)
+
+# add a nice version of the sampleannotation to the suppl.
+write.table(sampleannotation[,c(&quot;sample_id&quot;, &quot;tissue_type&quot;, &quot;pam50_est&quot;, &quot;IHC&quot;, &quot;iClust&quot;, &quot;provider&quot;)], 
+                        file=paste(supplementaryfile1dir, &quot;/sampleannotation_suppl&quot;, postfix, sep=&quot;&quot;), sep=separator, 
+                        row.names=FALSE, col.names=TRUE)
+
+# copy files made elsewhere to be included in suppl.
+file.copy(from =list.files(&quot;input/additionalfile&quot;, full.names=TRUE), to=supplementaryfile1dir, overwrite=TRUE)
 </code></pre>
 
-<p>[1] TRUE</p>
-
-<pre><code class="r">write.table(sampleannotation, file=paste(supplementaryfile1dir, &quot;/sampleannotation&quot;, postfix, sep=&quot;&quot;), 
-                        sep=separator, row.names=FALSE, col.names=TRUE)
-
-#another file, created semi-manually.
-file.copy(from = paste(&quot;input&quot;, &quot;/Suppl_Chromosomal location.xlsx&quot;, sep=&quot;&quot;), to=supplementaryfile1dir)
-</code></pre>
-
-<p>[1] TRUE</p>
+<p>[1] TRUE TRUE TRUE TRUE</p>
 
 <pre><code class="r"># write table3 and table4 in our article
 tableclasses = c(&quot;LumA-DCIS&quot;, &quot;LumB-DCIS&quot;, &quot;Her2-DCIS&quot;, &quot;Basallike-DCIS&quot;, &quot;Normallike-DCIS&quot;)
@@ -1059,7 +1059,7 @@ for(thiscontrast in contrasts)
   difflistfile=paste(iClustdifflistdir, &quot;/difflist-iClust-&quot;,thisname, postfix, sep=&quot;&quot;)
   write.table(thisres, 
             file=difflistfile,
-            quote=FALSE, sep=&quot;\t&quot;, row.names=FALSE, col.names=TRUE)
+            quote=FALSE, sep=separator, row.names=FALSE, col.names=TRUE)
   print( paste(&quot;Diff genes with fdr&lt;0.05 for &quot;, thislabel, &quot; vs DCIS: &quot;,
                sum(thisres$adj.P.Val &lt; 0.05), sep=&quot;&quot;))
 
@@ -1145,7 +1145,7 @@ pdf(file=paste(supplementaryfile1dir, &quot;/boxplots_table7microRNA.pdf&quot;, 
 
 par(oma=c(0,0,2,0))
 par(mfrow=c(2, 1))
-par(mar=c(2, 2, 2, 2) + 0.1)
+par(mar=c(2, 4, 2, 2) + 0.1)
 for(thismimat in unique(table7$MIMAT))
 {
     tmptab =    table7[table7$MIMAT==thismimat,]
@@ -1172,8 +1172,8 @@ for(thismimat in unique(table7$MIMAT))
 dev.off()
 </code></pre>
 
-<pre><code>## RStudioGD 
-##         2
+<pre><code>## quartz_off_screen 
+##                 2
 </code></pre>
 
 <pre><code class="r">sessionInfo()
@@ -1251,7 +1251,7 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 </code></pre>
 
-<p>generation ended 2015-08-20 14:12:53. Time spent 0 minutes .</p>
+<p>generation ended 2015-08-31 13:20:23. Time spent 0 minutes .</p>
 
 </body>
 

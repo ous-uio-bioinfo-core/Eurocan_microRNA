@@ -3,7 +3,7 @@ Quality control plots of AHUS and UCAM microRNA data used in Volinia check
 
 
 
-2015-08-20 14:12:31  
+2015-08-31 13:20:01  
 <br/>
 <br/>
 
@@ -39,7 +39,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Aug 20 14:12:31 2015 -->
+<!-- Mon Aug 31 13:20:02 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -298,4 +298,4 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-08-20 14:12:36. Time spent 0 minutes .
+generation ended 2015-08-31 13:20:06. Time spent 0 minutes .

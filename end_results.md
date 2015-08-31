@@ -1,6 +1,6 @@
 Overlap between our results and Volinia et al.
 ========================================================
-2015-08-20 14:12:51
+2015-08-31 13:20:21
 
 
 <br/>
@@ -61,7 +61,7 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -89,7 +89,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -97,7 +97,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> invasive </td> <td align="right">    5 </td> <td align="right">    0 </td> <td align="right">    8 </td> <td align="right">   16 </td> <td align="right">   15 </td> <td align="right">    7 </td> <td align="right">    4 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -125,7 +125,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -135,7 +135,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> normal </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">   70 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Aug 20 14:12:51 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -258,7 +258,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Aug 20 14:12:52 2015 -->
+<!-- Mon Aug 31 13:20:21 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
 <tr> <th>  </th> <th> found_meta </th> <th> found_merged </th> <th> found_both </th>  </tr>
@@ -276,8 +276,8 @@ Next, summarize the number of microRNAs found differentially expressed between s
    </table>
 
 ```r
-	write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, "/suppltable1", postfix, sep=""), 
-							row.names=TRUE, col.names=NA, sep=separator)
+#	write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, "/suppltable1", postfix, sep=""), 
+#							row.names=TRUE, col.names=NA, sep=separator)
 ```
 
 
@@ -350,7 +350,7 @@ print(xtable(correlationmatrix1,
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Aug 20 14:12:52 2015 -->
+<!-- Mon Aug 31 13:20:22 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
 <tr> <th>  </th> <th> DCIS-normal </th> <th> invasive-DCIS </th> <th> Normallike-DCIS </th> <th> LumA-DCIS </th> <th> LumB-DCIS </th> <th> Her2-DCIS </th> <th> Basallike-DCIS </th> <th> HER2neg_ERneg_PGRneg-DCIS </th> <th> HER2neg_ERpos-DCIS </th> <th> HER2pos_ERneg-DCIS </th> <th> HER2pos_ERpos-DCIS </th>  </tr>
@@ -663,13 +663,15 @@ And now the same assignment and summary for our results from the AHUS and METABR
 ```r
 namelists = list()
 
-
+consensusresultsdir=paste(supplementaryfile1dir, "/consensuslists", sep="")
+if(!file.exists(consensusresultsdir))
+	dir.create(consensusresultsdir)
 for(n in names(consensustables))
 {
 	x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1])) # not neede anymore?
 	consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), "status"]
 	write.table( format( consensustables[[n]], digits=4), 
-            file=paste(supplementaryfile1dir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, postfix, sep=""),
+            file=paste(consensusresultsdir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, postfix, sep=""),
             quote=FALSE, sep=separator, row.names=FALSE, col.names=TRUE)
 	
 	# for table3 and 4.
@@ -683,20 +685,17 @@ for(n in names(consensustables))
 	namelists[[n]]=v
 	
 }
-file.copy(from = paste("input", "/README_suppl_tables.txt", sep=""), to=supplementaryfile1dir)
+
+# add a nice version of the sampleannotation to the suppl.
+write.table(sampleannotation[,c("sample_id", "tissue_type", "pam50_est", "IHC", "iClust", "provider")], 
+						file=paste(supplementaryfile1dir, "/sampleannotation_suppl", postfix, sep=""), sep=separator, 
+						row.names=FALSE, col.names=TRUE)
+
+# copy files made elsewhere to be included in suppl.
+file.copy(from =list.files("input/additionalfile", full.names=TRUE), to=supplementaryfile1dir, overwrite=TRUE)
 ```
 
-[1] TRUE
-
-```r
-write.table(sampleannotation, file=paste(supplementaryfile1dir, "/sampleannotation", postfix, sep=""), 
-						sep=separator, row.names=FALSE, col.names=TRUE)
-
-#another file, created semi-manually.
-file.copy(from = paste("input", "/Suppl_Chromosomal location.xlsx", sep=""), to=supplementaryfile1dir)
-```
-
-[1] TRUE
+[1] TRUE TRUE TRUE TRUE
 
 ```r
 # write table3 and table4 in our article
@@ -892,7 +891,7 @@ for(thiscontrast in contrasts)
   difflistfile=paste(iClustdifflistdir, "/difflist-iClust-",thisname, postfix, sep="")
   write.table(thisres, 
             file=difflistfile,
-            quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
+            quote=FALSE, sep=separator, row.names=FALSE, col.names=TRUE)
   print( paste("Diff genes with fdr<0.05 for ", thislabel, " vs DCIS: ",
                sum(thisres$adj.P.Val < 0.05), sep=""))
   
@@ -980,7 +979,7 @@ pdf(file=paste(supplementaryfile1dir, "/boxplots_table7microRNA.pdf", sep=""))
 
 par(oma=c(0,0,2,0))
 par(mfrow=c(2, 1))
-par(mar=c(2, 2, 2, 2) + 0.1)
+par(mar=c(2, 4, 2, 2) + 0.1)
 for(thismimat in unique(table7$MIMAT))
 {
 	tmptab = 	table7[table7$MIMAT==thismimat,]
@@ -1008,8 +1007,8 @@ dev.off()
 ```
 
 ```
-## RStudioGD 
-##         2
+## quartz_off_screen 
+##                 2
 ```
 
 
@@ -1091,6 +1090,6 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-08-20 14:12:53. Time spent 0 minutes .
+generation ended 2015-08-31 13:20:23. Time spent 0 minutes .
 
 

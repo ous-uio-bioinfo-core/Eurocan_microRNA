@@ -222,8 +222,8 @@ Next, summarize the number of microRNAs found differentially expressed between s
       type = "html",
       html.table.attributes="CELLPADDING=5",
       include.rownames = TRUE)
-	write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, "/suppltable1", postfix, sep=""), 
-							row.names=TRUE, col.names=NA, sep=separator)
+#	write.table(summarytab[,1:3], file=paste(supplementaryfile1dir, "/suppltable1", postfix, sep=""), 
+#							row.names=TRUE, col.names=NA, sep=separator)
 
 ```
 
@@ -485,13 +485,15 @@ And now the same assignment and summary for our results from the AHUS and METABR
 ```{r results='asis'}
 namelists = list()
 
-
+consensusresultsdir=paste(supplementaryfile1dir, "/consensuslists", sep="")
+if(!file.exists(consensusresultsdir))
+	dir.create(consensusresultsdir)
 for(n in names(consensustables))
 {
 	x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1])) # not neede anymore?
 	consensustables[[n]]$curated = curatedtab[ match( x, curatedtab$MIMAT ), "status"]
 	write.table( format( consensustables[[n]], digits=4), 
-            file=paste(supplementaryfile1dir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, postfix, sep=""),
+            file=paste(consensusresultsdir, "/consensusresults_",meta2merged[n, "comparisontype"], "__", n, postfix, sep=""),
             quote=FALSE, sep=separator, row.names=FALSE, col.names=TRUE)
 	
 	# for table3 and 4.
@@ -505,13 +507,14 @@ for(n in names(consensustables))
 	namelists[[n]]=v
 	
 }
-file.copy(from = paste("input", "/README_suppl_tables.txt", sep=""), to=supplementaryfile1dir)
-write.table(sampleannotation, file=paste(supplementaryfile1dir, "/sampleannotation", postfix, sep=""), 
-						sep=separator, row.names=FALSE, col.names=TRUE)
 
-#another file, created semi-manually.
-file.copy(from = paste("input", "/Suppl_Chromosomal location.xlsx", sep=""), to=supplementaryfile1dir)
+# add a nice version of the sampleannotation to the suppl.
+write.table(sampleannotation[,c("sample_id", "tissue_type", "pam50_est", "IHC", "iClust", "provider")], 
+						file=paste(supplementaryfile1dir, "/sampleannotation_suppl", postfix, sep=""), sep=separator, 
+						row.names=FALSE, col.names=TRUE)
 
+# copy files made elsewhere to be included in suppl.
+file.copy(from =list.files("input/additionalfile", full.names=TRUE), to=supplementaryfile1dir, overwrite=TRUE)
 
 # write table3 and table4 in our article
 tableclasses = c("LumA-DCIS", "LumB-DCIS", "Her2-DCIS", "Basallike-DCIS", "Normallike-DCIS")
@@ -656,7 +659,7 @@ for(thiscontrast in contrasts)
   difflistfile=paste(iClustdifflistdir, "/difflist-iClust-",thisname, postfix, sep="")
   write.table(thisres, 
             file=difflistfile,
-            quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
+            quote=FALSE, sep=separator, row.names=FALSE, col.names=TRUE)
   print( paste("Diff genes with fdr<0.05 for ", thislabel, " vs DCIS: ",
                sum(thisres$adj.P.Val < 0.05), sep=""))
   
