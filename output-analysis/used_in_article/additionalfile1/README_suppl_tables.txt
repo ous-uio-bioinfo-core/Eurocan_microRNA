@@ -10,7 +10,7 @@ Additional file 1 contains the following files:
 Explanation for the genelists (consensuslists and difflists_iClust_UCAM_only):
 Differentially expressed miRNAs between the two groups given in the file name.
 The adjusted P-values (adj.P.Val) listed are False Discovery Rates (FDR).
-Curated miRNAS: White= confirmed miRNAs, purple=possible miRNAs, yellow= equivocal, rejected= do not represent real miRNAs. (Fromm et al, 2015)
+Curated miRNAS: White= confirmed miRNAs, purple=possible miRNAs, yellow= equivocal, rejected= do not represent real miRNAs. (Fromm et al, 2015). Be aware that the "rejected" are still included in these lists, but not included in tables where significant miRNAs are counted. They may still be differentially expressed, although they are not microRNAs.
 Fold change is in log2, a positive value means that the first group (in the filename) has the highest mean expression, i.e is up-regulated compared to the second group.	
 
 Further explanation for consensus lists:

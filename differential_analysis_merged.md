@@ -1,6 +1,6 @@
 Finding differentially expressed microRNA in the  AHUS and UCAM data sets
 ========================================================
-2015-08-31 13:20:06
+2015-09-01 16:39:13
 
 
 <br/>
@@ -61,7 +61,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Mon Aug 31 13:20:06 2015 -->
+<!-- Tue Sep  1 16:39:13 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -358,20 +358,18 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
- [1] grid      stats4    parallel  stats     graphics  grDevices utils    
- [8] datasets  methods   base     
+[1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+[8] methods   base     
 
 other attached packages:
- [1] MAMA_2.2.1            GeneMeta_1.38.0       gtools_3.4.2         
- [4] multtest_2.22.0       metaMA_2.1            SMVar_1.3.3          
- [7] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
-[10] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
-[13] knitr_1.10.5          AgiMicroRna_2.16.0    affycoretools_1.38.0 
-[16] GO.db_3.0.0           RSQLite_1.0.0         DBI_0.3.1            
-[19] AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5    IRanges_2.0.1        
-[22] S4Vectors_0.4.0       preprocessCore_1.28.0 affy_1.44.0          
-[25] limma_3.22.7          Biobase_2.26.0        BiocGenerics_0.12.1  
-[28] plyr_1.8.2           
+ [1] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
+ [4] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
+ [7] knitr_1.10.5          plyr_1.8.2            AgiMicroRna_2.16.0   
+[10] affycoretools_1.38.0  GO.db_3.0.0           RSQLite_1.0.0        
+[13] DBI_0.3.1             AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5   
+[16] IRanges_2.0.1         S4Vectors_0.4.0       preprocessCore_1.28.0
+[19] affy_1.44.0           limma_3.22.7          Biobase_2.26.0       
+[22] BiocGenerics_0.12.1  
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.34.0            
@@ -397,14 +395,14 @@ loaded via a namespace (and not attached):
 [41] GGally_0.5.0              ggbio_1.14.0             
 [43] ggplot2_1.0.1             GOstats_2.32.0           
 [45] gplots_2.17.0             graph_1.44.1             
-[47] gridExtra_0.9.1           GSEABase_1.28.0          
-[49] gtable_0.1.2              Hmisc_3.16-0             
-[51] hwriter_1.3.2             iterators_1.0.7          
-[53] KernSmooth_2.23-14        lattice_0.20-31          
-[55] latticeExtra_0.6-26       locfit_1.5-9.1           
-[57] magrittr_1.5              markdown_0.7.7           
-[59] MASS_7.3-40               Matrix_1.2-0             
-[61] MergeMaid_2.38.0          metaArray_1.44.0         
+[47] grid_3.1.1                gridExtra_0.9.1          
+[49] GSEABase_1.28.0           gtable_0.1.2             
+[51] gtools_3.4.2              Hmisc_3.16-0             
+[53] hwriter_1.3.2             iterators_1.0.7          
+[55] KernSmooth_2.23-14        lattice_0.20-31          
+[57] latticeExtra_0.6-26       locfit_1.5-9.1           
+[59] magrittr_1.5              markdown_0.7.7           
+[61] MASS_7.3-40               Matrix_1.2-0             
 [63] mime_0.3                  munsell_0.4.2            
 [65] nnet_7.3-9                oligoClasses_1.28.0      
 [67] OrganismDbi_1.8.1         PFAM.db_3.0.0            
@@ -423,4 +421,4 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-08-31 13:20:07. Time spent 0 minutes .
+generation ended 2015-09-01 16:39:14. Time spent 0 minutes .

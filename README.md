@@ -4,7 +4,7 @@ Eurocan_microRNA
 This repository consist of R-code used to produce the results reported in TITLE OF OUR PULICATION. 
 
 
-Two sources of breast cancer microarray microRNA data are analysed, from "AHUS" and "UCAM" (Dvinge et al.), and microRNA that differ between states are reported and compared to the findings in Volinia et al. At last our resulting microRNA are checked towards a curated list of microRNAs reported by Fromm et al.
+Two sources of breast cancer microarray microRNA data are analysed, from "AHUS" and "UCAM" (Dvinge et al. also called "METABRIC" sometimes), and microRNA that differ between states are reported and compared to the findings in Volinia et al. At last our resulting microRNA are checked towards a curated list of microRNAs reported by Fromm et al.
 
 The code is split into several smaller files in order to make them more manageable.
 
@@ -32,14 +32,15 @@ Compares our results from the two analysis approaches, meta and merged. Then com
 
 ### NB! not all necessary input files are here!.
 Neither the Agilent Feature Extraction Files for the AHUS experiment or the processed matrix from UCAM are in this github-repository. In order to reproduce the reports these files need to be obtained and put in a folder named "not_in_github". The same folder is also used to store some intermediate R-objects and old reports.
+
  
 ### not_in_github/
-- *Agilent_ncRNA_60k_normalised_miRNA_expression_ORIGINAL.txt*, the processed data file made by Dvinge et al. (UCAM) obtainable from ...
-- *AHUS_AFE/*, the raw Agilent feature extraction files from AHUS obtainable from ....
+- *Agilent_ncRNA_60k_normalised_miRNA_expression_ORIGINAL.txt*, the processed data file made by Dvinge et al. (UCAM) is obtainable from  https://www.ebi.ac.uk/ega/ under accession number EGAS00000000122. Approval is needed, see web-page.
+- *AHUS_AFE/*, the raw Agilent feature extraction files from AHUS are obtainable from https://www.ebi.ac.uk/arrayexpress accession number [ E-MTAB-3759](http://www.ebi.ac.uk/arrayexpress/experiments/ E-MTAB-3759). This reproduction starts from the Agilent Feature Extraction files found in the three raw files E-MTAB-3759.raw.1.zip, E-MTAB-3759.raw.2.zip and E-MTAB-3759.raw.3.zip. Repository is not public prior to publication, access granted to reviewer (email vegard.nygaard@medisin.uio.no)
  
  
 ### Pam50 classification not included
-The pam50 classifications we use. are based on mRNA microarray data from the same cohorts. Neither the data or script to do this classification are provided here. The pam50 labels are presented and used as any other clinical label. Be aware that the pam50 classification we made for the UCAM data, differ somewhat from the classification in Dvinge et al.
+The pam50 classifications we use. are based on mRNA microarray data from the same cohorts. Neither the data or script to do this classification are provided here. The pam50 labels are presented and used as a clinical label. Be aware that the pam50 classification we made for the UCAM data, differ somewhat from the classification in Dvinge et al.
 
 
 ### Commands to reproduce the reports and results
