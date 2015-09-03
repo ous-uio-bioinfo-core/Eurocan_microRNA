@@ -3,7 +3,7 @@ Additional file 1 contains the following files:
 1. Suppl Chromosomal location: Chromosomal locations with many significant miRNAs
 2. boxplots_table 7: Boxplots of the expression of miRNAs differentially expressed in both malignant transitions (miRNAs from Table 7)
 3. sampleannotation_suppl: Sample names and grouping, a more complete annotation is found in the github repository; https://github.com/ous-uio-bioinfo-core/Eurocan_microRNA
-4. Comparison with Tahiri (Table and Figure): Comparing diffrentially expressed miRNAs in this study and Tahiri et al, 2014 who compared normal - benign and benign - invasive. 
+4. Comparison to Tahiri (Table and Figure): Comparing diffrentially expressed miRNAs in this study and Tahiri et al, 2014 who compared normal - benign and benign - invasive. 
 5. consensuslists: Differentially expressen miRNAs with data from both statistical approaches
 6. difflists_iClust_UCAM_only: 
 
