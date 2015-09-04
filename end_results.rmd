@@ -667,7 +667,7 @@ for(thiscontrast in contrasts)
 ```
 ## Printing more tables and plots used in the article.
 
-Creating table 7 from our article. All the microRNAs that are found to change both from normal to DCIS and further from DCIS to one of the sub-types of invasive. 
+Creating table 7 from our article. All the microRNAs that are found to change both from normal to DCIS and further from DCIS to one of the sub-types of invasive. Also creating Figure 3 which highlights 4 microRNA.
 
 ```{r table7}
 
@@ -734,7 +734,9 @@ pdf(file=paste(supplementaryfile1dir, "/boxplots_table7microRNA.pdf", sep=""))
 
 par(oma=c(0,0,2,0))
 par(mfrow=c(2, 1))
-par(mar=c(2, 4, 2, 2) + 0.1)
+par(mar=c(2, 2, 2, 0.5) + 0.1)
+par(mgp = c(1.2, 0.2, 0))
+boxplotcex = 1.25
 for(thismimat in unique(table7$MIMAT))
 {
 	tmptab = 	table7[table7$MIMAT==thismimat,]
@@ -744,21 +746,78 @@ for(thismimat in unique(table7$MIMAT))
 		datapoints = list()		
 		datapoints[["normal"]] = common_matrix[thismimat, sampleannotation$tissue_type=="normal" & sampleannotation$provider==p ]
 		datapoints[["DCIS"]] = common_matrix[thismimat, sampleannotation$tissue_type=="DCIS" & sampleannotation$provider==p ]
+		boxcols = c("white", "grey85")
 		
 		for(i in 1:nrow(tmptab))
 		{
 			n = sampleannotation[,tmptab$annottype[i] ] == gsub("iClust", "", tmptab$subtype[i]) & sampleannotation$provider==p
 			n = n & !is.na(n)
 			if(sum(n)>0)
+			{
 				datapoints[[tmptab$subtype[i]]] = common_matrix[thismimat, n]
-																									 
+				boxcols = c(boxcols, "grey45")
+			}																					 
 		}
-		boxplot(datapoints, ylab="Log2 processed signal" )
-		legend("topright", legend=p)
+		
+		boxplot(datapoints, ylab="Log2 processed signal", col=boxcols,  cex.axis=boxplotcex, cex.lab=0.7, yaxt="n", xaxt="n")
+		axis(1, at=1:length(datapoints), labels=names(datapoints), cex.axis=boxplotcex, tick=FALSE)
+		axis(2, cex.axis=0.7, tick=FALSE)
+		legend("topright", legend=p, cex=boxplotcex, bty="n")
 	}
 	title(main=paste(thismimat, miRNA2MIMAT[thismimat, "preferredname"], sep=",   "),outer=T)
 }
 dev.off()
+
+
+
+
+# Figure3, a subset of 4 microRNAS
+pdf(file=paste(articledir, "/fig3.pdf", sep=""))
+
+par(oma=c(0,0,0,0))
+par(mfcol=c(4, 2))
+par(mgp = c(1.2, 0.2, 0))
+boxplotcex = 1
+for(thismicroRNA in c("hsa-miR-193a-5p", "hsa-miR-378a-3p", "hsa-miR-342-3p", "hsa-miR-497-5p"))
+{
+	tmptab = 	table7[table7$name==thismicroRNA,]
+	thismimat = tmptab$MIMAT[1]
+	nicename = gsub("hsa-miR", "mir", thismicroRNA)
+	
+	for(p in unique(sampleannotation$provider))
+	{
+		datapoints = list()		
+		datapoints[["normal"]] = common_matrix[thismimat, sampleannotation$tissue_type=="normal" & sampleannotation$provider==p ]
+		datapoints[["DCIS"]] = common_matrix[thismimat, sampleannotation$tissue_type=="DCIS" & sampleannotation$provider==p ]
+		boxcols = c("white", "grey85")
+		
+		for(i in 1:nrow(tmptab))
+		{
+			n = sampleannotation[,tmptab$annottype[i] ] == gsub("iClust", "", tmptab$subtype[i]) & sampleannotation$provider==p
+			n = n & !is.na(n)
+			if(sum(n)>0)
+			{
+				datapoints[[tmptab$subtype[i]]] = common_matrix[thismimat, n]
+				boxcols = c(boxcols, "grey45")
+			}																					 
+		}
+		if(p=="AHUS")
+		{
+				par(mar=c(1, 1, 2, 0.5) + 0.1)
+				plottitle=nicename
+		}else{
+				par(mar=c(2, 1, 1, 0.5) + 0.1)
+				plottitle=""
+		}
+		boxplot(datapoints, col=boxcols,  cex.axis=boxplotcex, cex.lab=0.7, yaxt="n", xaxt="n", main=plottitle, cex.main=2)
+		axis(1, at=1:length(datapoints), labels=names(datapoints), cex.axis=boxplotcex, tick=FALSE)
+		axis(2, cex.axis=0.7, tick=FALSE)
+		legend("topright", legend=p, cex=1.5, bty="n")
+	}
+	#title(main=paste(thismimat, miRNA2MIMAT[thismimat, "preferredname"], sep=",   "),outer=T)
+}
+dev.off()
+
 
 ```
 

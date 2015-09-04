@@ -1,6 +1,6 @@
 Overlap between our results and Volinia et al.
 ========================================================
-2015-09-03 13:54:22
+2015-09-04 18:03:50
 
 
 <br/>
@@ -61,7 +61,7 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Sep  3 13:54:22 2015 -->
+<!-- Fri Sep  4 18:03:50 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -89,7 +89,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Sep  3 13:54:22 2015 -->
+<!-- Fri Sep  4 18:03:50 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -97,7 +97,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> invasive </td> <td align="right">    5 </td> <td align="right">    0 </td> <td align="right">    8 </td> <td align="right">   16 </td> <td align="right">   15 </td> <td align="right">    7 </td> <td align="right">    4 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Sep  3 13:54:22 2015 -->
+<!-- Fri Sep  4 18:03:50 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -125,7 +125,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Sep  3 13:54:22 2015 -->
+<!-- Fri Sep  4 18:03:50 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -135,7 +135,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> normal </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">   70 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Sep  3 13:54:22 2015 -->
+<!-- Fri Sep  4 18:03:50 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -258,7 +258,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Sep  3 13:54:22 2015 -->
+<!-- Fri Sep  4 18:03:50 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
 <tr> <th>  </th> <th> found_meta </th> <th> found_merged </th> <th> found_both </th>  </tr>
@@ -350,7 +350,7 @@ print(xtable(correlationmatrix1,
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Thu Sep  3 13:54:22 2015 -->
+<!-- Fri Sep  4 18:03:50 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
 <tr> <th>  </th> <th> DCIS-normal </th> <th> invasive-DCIS </th> <th> Normallike-DCIS </th> <th> LumA-DCIS </th> <th> LumB-DCIS </th> <th> Her2-DCIS </th> <th> Basallike-DCIS </th> <th> HER2neg_ERneg_PGRneg-DCIS </th> <th> HER2neg_ERpos-DCIS </th> <th> HER2pos_ERneg-DCIS </th> <th> HER2pos_ERpos-DCIS </th>  </tr>
@@ -912,7 +912,7 @@ for(thiscontrast in contrasts)
 ```
 ## Printing more tables and plots used in the article.
 
-Creating table 7 from our article. All the microRNAs that are found to change both from normal to DCIS and further from DCIS to one of the sub-types of invasive. 
+Creating table 7 from our article. All the microRNAs that are found to change both from normal to DCIS and further from DCIS to one of the sub-types of invasive. Also creating Figure 3 which highlights 4 microRNA.
 
 
 ```r
@@ -979,7 +979,9 @@ pdf(file=paste(supplementaryfile1dir, "/boxplots_table7microRNA.pdf", sep=""))
 
 par(oma=c(0,0,2,0))
 par(mfrow=c(2, 1))
-par(mar=c(2, 4, 2, 2) + 0.1)
+par(mar=c(2, 2, 2, 0.5) + 0.1)
+par(mgp = c(1.2, 0.2, 0))
+boxplotcex = 1.25
 for(thismimat in unique(table7$MIMAT))
 {
 	tmptab = 	table7[table7$MIMAT==thismimat,]
@@ -989,19 +991,79 @@ for(thismimat in unique(table7$MIMAT))
 		datapoints = list()		
 		datapoints[["normal"]] = common_matrix[thismimat, sampleannotation$tissue_type=="normal" & sampleannotation$provider==p ]
 		datapoints[["DCIS"]] = common_matrix[thismimat, sampleannotation$tissue_type=="DCIS" & sampleannotation$provider==p ]
+		boxcols = c("white", "grey85")
 		
 		for(i in 1:nrow(tmptab))
 		{
 			n = sampleannotation[,tmptab$annottype[i] ] == gsub("iClust", "", tmptab$subtype[i]) & sampleannotation$provider==p
 			n = n & !is.na(n)
 			if(sum(n)>0)
+			{
 				datapoints[[tmptab$subtype[i]]] = common_matrix[thismimat, n]
-																									 
+				boxcols = c(boxcols, "grey45")
+			}																					 
 		}
-		boxplot(datapoints, ylab="Log2 processed signal" )
-		legend("topright", legend=p)
+		
+		boxplot(datapoints, ylab="Log2 processed signal", col=boxcols,  cex.axis=boxplotcex, cex.lab=0.7, yaxt="n", xaxt="n")
+		axis(1, at=1:length(datapoints), labels=names(datapoints), cex.axis=boxplotcex, tick=FALSE)
+		axis(2, cex.axis=0.7, tick=FALSE)
+		legend("topright", legend=p, cex=boxplotcex, bty="n")
 	}
 	title(main=paste(thismimat, miRNA2MIMAT[thismimat, "preferredname"], sep=",   "),outer=T)
+}
+dev.off()
+```
+
+```
+## quartz_off_screen 
+##                 2
+```
+
+```r
+# Figure3, a subset of 4 microRNAS
+pdf(file=paste(articledir, "/fig3.pdf", sep=""))
+
+par(oma=c(0,0,0,0))
+par(mfcol=c(4, 2))
+par(mgp = c(1.2, 0.2, 0))
+boxplotcex = 1
+for(thismicroRNA in c("hsa-miR-193a-5p", "hsa-miR-378a-3p", "hsa-miR-342-3p", "hsa-miR-497-5p"))
+{
+	tmptab = 	table7[table7$name==thismicroRNA,]
+	thismimat = tmptab$MIMAT[1]
+	nicename = gsub("hsa-miR", "mir", thismicroRNA)
+	
+	for(p in unique(sampleannotation$provider))
+	{
+		datapoints = list()		
+		datapoints[["normal"]] = common_matrix[thismimat, sampleannotation$tissue_type=="normal" & sampleannotation$provider==p ]
+		datapoints[["DCIS"]] = common_matrix[thismimat, sampleannotation$tissue_type=="DCIS" & sampleannotation$provider==p ]
+		boxcols = c("white", "grey85")
+		
+		for(i in 1:nrow(tmptab))
+		{
+			n = sampleannotation[,tmptab$annottype[i] ] == gsub("iClust", "", tmptab$subtype[i]) & sampleannotation$provider==p
+			n = n & !is.na(n)
+			if(sum(n)>0)
+			{
+				datapoints[[tmptab$subtype[i]]] = common_matrix[thismimat, n]
+				boxcols = c(boxcols, "grey45")
+			}																					 
+		}
+		if(p=="AHUS")
+		{
+				par(mar=c(1, 1, 2, 0.5) + 0.1)
+				plottitle=nicename
+		}else{
+				par(mar=c(2, 1, 1, 0.5) + 0.1)
+				plottitle=""
+		}
+		boxplot(datapoints, col=boxcols,  cex.axis=boxplotcex, cex.lab=0.7, yaxt="n", xaxt="n", main=plottitle, cex.main=2)
+		axis(1, at=1:length(datapoints), labels=names(datapoints), cex.axis=boxplotcex, tick=FALSE)
+		axis(2, cex.axis=0.7, tick=FALSE)
+		legend("topright", legend=p, cex=1.5, bty="n")
+	}
+	#title(main=paste(thismimat, miRNA2MIMAT[thismimat, "preferredname"], sep=",   "),outer=T)
 }
 dev.off()
 ```
@@ -1090,6 +1152,6 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-09-03 13:54:24. Time spent 0 minutes .
+generation ended 2015-09-04 18:03:52. Time spent 0 minutes .
 
 
