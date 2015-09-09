@@ -1,6 +1,6 @@
 Finding differentially expressed microRNA in the  AHUS and UCAM data sets
 ========================================================
-2015-09-04 18:03:34
+2015-09-09 15:48:36
 
 
 <br/>
@@ -8,15 +8,14 @@ Finding differentially expressed microRNA in the  AHUS and UCAM data sets
 
 ## Introduction
 
-The aim of the analysis performed in this report is to validate some of the findings from [Volinia et al.](http://www.pnas.org/content/early/2012/02/01/1200010109), 
-based on two independent data sets using 3 different Agilent microRNA microarrays from two providers called **AHUS** and  **UCAM**.
+The aim of the analysis is to find microRNA differentially expressed between different states of breast cancer based on two independent data sets using 2 different Agilent microRNA microarrays from two providers called **AHUS** and  **UCAM**. Later the findings will be compared to what was reported in [Volinia et al.](http://www.pnas.org/content/early/2012/02/01/1200010109), 
+
 
 More specifically:
 
 - Combine the data into one big sample vs. microRNA matrix
 - Do a "find differentially expressed genes"- test between the tissue types DCIS-normal and invasive-DCIS
-- With a significance cut-off, report the overlap with what is given in Volinia et al. [(Suppl. table S1 and S2)](http://www.pnas.org/content/suppl/2012/02/02/1200010109.DCSupplemental/pnas.201200010SI.pdf) 
-- Do an additional  "find differentially expressed genes"- test between the tissue types DCIS and the individual pam50 subtypes based on classification performed on mRNA samples.
+- Do an additional  "find differentially expressed genes"- test between the tissue type DCIS and the sub types of invasive based on pam50 or IHC. The UCAM dataset also has iClust annotation and a DCIS to individual iClust test is preformed.
 
 This report is made with RStudio and knitr in order to tie the description, code, plots and results together, and hopefully to limit confusion and adhere to a more reproducible research style. 
 
@@ -61,7 +60,7 @@ print(xtable(table(sampleannotation[, c("provider", "tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Sep  4 18:03:34 2015 -->
+<!-- Wed Sep  9 15:48:36 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -332,7 +331,7 @@ for(thiscontrast in IHCcontrasts)
 ```
 
 **Important note regarding Limma results**
-For the diff-tests I ran a few sanity checks where I permuted the group labels whitin batches. For every 3 of 10 run I got a few genes, and once in a while I did get many more. This indicates that some assumtions of the model might be broken to a degree that the resulting p-values should be considered somewhat optimistic.
+For the diff-tests I ran a few sanity checks where I permuted the group labels within batches. For every 3 of 10 run I got a few genes, and once in a while I did get many more. This indicates that some assumptions of the model might be broken to a degree that the resulting p-values should be considered somewhat optimistic.
 
 
 <br/>
@@ -358,18 +357,20 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats4    parallel  stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+ [1] grid      stats4    parallel  stats     graphics  grDevices utils    
+ [8] datasets  methods   base     
 
 other attached packages:
- [1] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
- [4] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
- [7] knitr_1.10.5          AgiMicroRna_2.16.0    affycoretools_1.38.0 
-[10] GO.db_3.0.0           RSQLite_1.0.0         DBI_0.3.1            
-[13] AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5    IRanges_2.0.1        
-[16] S4Vectors_0.4.0       preprocessCore_1.28.0 affy_1.44.0          
-[19] limma_3.22.7          Biobase_2.26.0        BiocGenerics_0.12.1  
-[22] plyr_1.8.2           
+ [1] MAMA_2.2.1            GeneMeta_1.38.0       gtools_3.4.2         
+ [4] multtest_2.22.0       metaMA_2.1            SMVar_1.3.3          
+ [7] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
+[10] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
+[13] knitr_1.10.5          AgiMicroRna_2.16.0    affycoretools_1.38.0 
+[16] GO.db_3.0.0           RSQLite_1.0.0         DBI_0.3.1            
+[19] AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5    IRanges_2.0.1        
+[22] S4Vectors_0.4.0       preprocessCore_1.28.0 affy_1.44.0          
+[25] limma_3.22.7          Biobase_2.26.0        BiocGenerics_0.12.1  
+[28] plyr_1.8.2           
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.34.0            
@@ -395,14 +396,14 @@ loaded via a namespace (and not attached):
 [41] GGally_0.5.0              ggbio_1.14.0             
 [43] ggplot2_1.0.1             GOstats_2.32.0           
 [45] gplots_2.17.0             graph_1.44.1             
-[47] grid_3.1.1                gridExtra_0.9.1          
-[49] GSEABase_1.28.0           gtable_0.1.2             
-[51] gtools_3.4.2              Hmisc_3.16-0             
-[53] hwriter_1.3.2             iterators_1.0.7          
-[55] KernSmooth_2.23-14        lattice_0.20-31          
-[57] latticeExtra_0.6-26       locfit_1.5-9.1           
-[59] magrittr_1.5              markdown_0.7.7           
-[61] MASS_7.3-40               Matrix_1.2-0             
+[47] gridExtra_0.9.1           GSEABase_1.28.0          
+[49] gtable_0.1.2              Hmisc_3.16-0             
+[51] hwriter_1.3.2             iterators_1.0.7          
+[53] KernSmooth_2.23-14        lattice_0.20-31          
+[55] latticeExtra_0.6-26       locfit_1.5-9.1           
+[57] magrittr_1.5              markdown_0.7.7           
+[59] MASS_7.3-40               Matrix_1.2-0             
+[61] MergeMaid_2.38.0          metaArray_1.44.0         
 [63] mime_0.3                  munsell_0.4.2            
 [65] nnet_7.3-9                oligoClasses_1.28.0      
 [67] OrganismDbi_1.8.1         PFAM.db_3.0.0            
@@ -421,4 +422,4 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-09-04 18:03:34. Time spent 0 minutes .
+generation ended 2015-09-09 15:48:37. Time spent 0 minutes .

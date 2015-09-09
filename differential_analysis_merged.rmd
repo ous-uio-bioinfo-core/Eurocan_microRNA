@@ -18,15 +18,14 @@ if(file.exists(oldfn))
 
 ## Introduction
 
-The aim of the analysis performed in this report is to validate some of the findings from [Volinia et al.](http://www.pnas.org/content/early/2012/02/01/1200010109), 
-based on two independent data sets using 3 different Agilent microRNA microarrays from two providers called **AHUS** and  **UCAM**.
+The aim of the analysis is to find microRNA differentially expressed between different states of breast cancer based on two independent data sets using 2 different Agilent microRNA microarrays from two providers called **AHUS** and  **UCAM**. Later the findings will be compared to what was reported in [Volinia et al.](http://www.pnas.org/content/early/2012/02/01/1200010109), 
+
 
 More specifically:
 
 - Combine the data into one big sample vs. microRNA matrix
 - Do a "find differentially expressed genes"- test between the tissue types DCIS-normal and invasive-DCIS
-- With a significance cut-off, report the overlap with what is given in Volinia et al. [(Suppl. table S1 and S2)](http://www.pnas.org/content/suppl/2012/02/02/1200010109.DCSupplemental/pnas.201200010SI.pdf) 
-- Do an additional  "find differentially expressed genes"- test between the tissue types DCIS and the individual pam50 subtypes based on classification performed on mRNA samples.
+- Do an additional  "find differentially expressed genes"- test between the tissue type DCIS and the sub types of invasive based on pam50 or IHC. The UCAM dataset also has iClust annotation and a DCIS to individual iClust test is preformed.
 
 This report is made with RStudio and knitr in order to tie the description, code, plots and results together, and hopefully to limit confusion and adhere to a more reproducible research style. 
 
@@ -263,7 +262,7 @@ for(thiscontrast in IHCcontrasts)
 ```
 
 **Important note regarding Limma results**
-For the diff-tests I ran a few sanity checks where I permuted the group labels whitin batches. For every 3 of 10 run I got a few genes, and once in a while I did get many more. This indicates that some assumtions of the model might be broken to a degree that the resulting p-values should be considered somewhat optimistic.
+For the diff-tests I ran a few sanity checks where I permuted the group labels within batches. For every 3 of 10 run I got a few genes, and once in a while I did get many more. This indicates that some assumptions of the model might be broken to a degree that the resulting p-values should be considered somewhat optimistic.
 
 
 <br/>

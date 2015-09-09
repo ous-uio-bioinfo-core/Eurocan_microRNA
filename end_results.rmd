@@ -1,4 +1,4 @@
-Overlap between our results and Volinia et al.
+Consensus, validation, curation.
 ========================================================
 `r as.character(Sys.time())`
 
@@ -27,6 +27,8 @@ We will check for
 - concordance between our results and Volinia et al.
 - microRNA evidence status for the results
 
+And make most of the tables and plots used in our article.
+
 <BR/>
 <BR/>
 Read in prepared data.
@@ -48,6 +50,12 @@ if(!file.exists(articledir))
 supplementaryfile1dir = paste(articledir, "/additionalfile1", sep="")
 if(!file.exists(supplementaryfile1dir))
 	dir.create(supplementaryfile1dir)
+consensusresultsdir=paste(supplementaryfile1dir, "/consensuslists", sep="")
+if(!file.exists(consensusresultsdir))
+	dir.create(consensusresultsdir)
+iClustdifflistdir = paste(supplementaryfile1dir, "/difflists_iClust_UCAM_only", sep="")
+if(!file.exists(iClustdifflistdir))
+	dir.create(iClustdifflistdir)
 
 fdrCO = 0.05
 ```
@@ -209,7 +217,7 @@ if(sum(summarytab$wrong_direction)>0)
 
 
 ```
-The above tables are written to [files](output-analysis/consensus) later.
+The above tables are written to [files](`r consensusresultsdir`) later.
 <br/>
 <br/>
 Next, summarize the number of microRNAs found differentially expressed between states, according to the two approaches. The direction of fold change is taken into account. 
@@ -399,7 +407,7 @@ write.table(table2, file=paste(articledir, "/table2", postfix, sep=""), sep=sepa
 
 ```
 
-And below is the result list from Volinia et al. with our results attached. First the "DCIS-normal" comparison. Rows are sorted by FDR from our "merged" approach. [Link to file](output-analysis/Volinia_validation_DCIS-normal.txt)
+And below is the result list from Volinia et al. with our results attached. First the "DCIS-normal" comparison. Rows are sorted by FDR from our "merged" approach. 
 
 ```{r results='asis'}
 print( xtable( volinia_overlap[["DCIS-normal"]] , caption="microRNA found in Volinia compared to validation data", digits=3), 
@@ -411,7 +419,7 @@ print( xtable( volinia_overlap[["DCIS-normal"]] , caption="microRNA found in Vol
 
 <br/>
 <br/>
-And here is the same table for the "invasive-DCIS" comparison. [Link to file](output-analysis/Volinia_validation_invasive-DCIS.txt)
+And here is the same table for the "invasive-DCIS" comparison. Both tables are also written to [files](`r outputdir`).
 
 ```{r results='asis'}
 x = order(volinia_overlap[["invasive-DCIS"]]$adj.P.Val.merged)
@@ -433,7 +441,7 @@ print( xtable( volinia_overlap[["invasive-DCIS"]][x,] , caption="microRNA found 
 
 Bastian Fromm and colleagues have carefully evaluated the evidence for the Human micro RNAs reported in mirBase and provided a classification based on this. In short, a lot of microRNAs in mirBASE and included in the microarray platforms are probably not real microRNAs.
 
-A list of human microRNAs and their curation classification for our microRNAS is provided:
+A list of human microRNAs and their curation classification for our microRNAs is provided:
 
 ```{r}
 	curatedfn = "curated_microRNA_MIMAT.csv"
@@ -484,10 +492,6 @@ And now the same assignment and summary for our results from the AHUS and METABR
 
 ```{r results='asis'}
 namelists = list()
-
-consensusresultsdir=paste(supplementaryfile1dir, "/consensuslists", sep="")
-if(!file.exists(consensusresultsdir))
-	dir.create(consensusresultsdir)
 for(n in names(consensustables))
 {
 	x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1])) # not neede anymore?
@@ -536,7 +540,7 @@ write.table(table4, file=paste(articledir, "/table4", postfix, sep=""), sep=sepa
 
 ```
 
-Result files for all the comparisons with p-values for the two approaches, and with the curation status added, are [here](output-analysis/consensus). The tables look like this (top of the DCIS-normal comparison as an example):
+Result files for all the comparisons with p-values for the two approaches, and with the curation status added, are [here](`r consensusresultsdir`). The tables look like this (top of the DCIS-normal comparison as an example):
 
 ```{r results='asis'}
 print( xtable( consensustables[["DCIS-normal"]][1:5,], caption="", digits=3), 
@@ -623,7 +627,7 @@ table(iClust[to_be_used],sampleannotation[to_be_used,"tissue_type"], useNA="ifan
 ```
 
 
-The diff test,
+The diff test, result files saved to [here](`r iClustdifflistdir`).
 ```{r find_diff_genes_iClustlabels}
 
 labels = unique(iClust[to_be_used & !iClust %in% c("", "unknown", "DCIS")])
@@ -640,10 +644,6 @@ fit$genes$curated = curatedtab[ match( rownames(common_matrix), curatedtab$MIMAT
 cont.matrix = makeContrasts ( contrasts=contrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 <- eBayes(fit2)
-
-iClustdifflistdir = paste(supplementaryfile1dir, "/difflists_iClust_UCAM_only", sep="")
-if(!file.exists(iClustdifflistdir))
-	dir.create(iClustdifflistdir)
 
 iclustres = list()
 for(thiscontrast in contrasts)

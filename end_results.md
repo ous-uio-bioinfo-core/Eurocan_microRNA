@@ -1,6 +1,6 @@
-Overlap between our results and Volinia et al.
+Consensus, validation, curation.
 ========================================================
-2015-09-04 18:03:50
+2015-09-09 15:48:51
 
 
 <br/>
@@ -11,6 +11,8 @@ We will check for
 - concordance between our two approaches called **meta** and **merged**
 - concordance between our results and Volinia et al.
 - microRNA evidence status for the results
+
+And make most of the tables and plots used in our article.
 
 <BR/>
 <BR/>
@@ -34,6 +36,12 @@ if(!file.exists(articledir))
 supplementaryfile1dir = paste(articledir, "/additionalfile1", sep="")
 if(!file.exists(supplementaryfile1dir))
 	dir.create(supplementaryfile1dir)
+consensusresultsdir=paste(supplementaryfile1dir, "/consensuslists", sep="")
+if(!file.exists(consensusresultsdir))
+	dir.create(consensusresultsdir)
+iClustdifflistdir = paste(supplementaryfile1dir, "/difflists_iClust_UCAM_only", sep="")
+if(!file.exists(iClustdifflistdir))
+	dir.create(iClustdifflistdir)
 
 fdrCO = 0.05
 ```
@@ -61,7 +69,7 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Sep  4 18:03:50 2015 -->
+<!-- Wed Sep  9 15:48:51 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -89,7 +97,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Sep  4 18:03:50 2015 -->
+<!-- Wed Sep  9 15:48:51 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -97,7 +105,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> invasive </td> <td align="right">    5 </td> <td align="right">    0 </td> <td align="right">    8 </td> <td align="right">   16 </td> <td align="right">   15 </td> <td align="right">    7 </td> <td align="right">    4 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Sep  4 18:03:50 2015 -->
+<!-- Wed Sep  9 15:48:51 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -125,7 +133,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Sep  4 18:03:50 2015 -->
+<!-- Wed Sep  9 15:48:52 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -135,7 +143,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> normal </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">   70 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Sep  4 18:03:50 2015 -->
+<!-- Wed Sep  9 15:48:52 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -242,7 +250,7 @@ for(i in 1:nrow(meta2merged))
 if(sum(summarytab$wrong_direction)>0)
 	warning("Some common microRNAs were found that did not have the same dirrection of change!!")
 ```
-The above tables are written to [files](output-analysis/consensus) later.
+The above tables are written to [files](output-analysis/used_in_article/additionalfile1/consensuslists) later.
 <br/>
 <br/>
 Next, summarize the number of microRNAs found differentially expressed between states, according to the two approaches. The direction of fold change is taken into account. 
@@ -258,7 +266,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Sep  4 18:03:50 2015 -->
+<!-- Wed Sep  9 15:48:52 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
 <tr> <th>  </th> <th> found_meta </th> <th> found_merged </th> <th> found_both </th>  </tr>
@@ -350,7 +358,7 @@ print(xtable(correlationmatrix1,
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Sep  4 18:03:50 2015 -->
+<!-- Wed Sep  9 15:48:52 2015 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
 <tr> <th>  </th> <th> DCIS-normal </th> <th> invasive-DCIS </th> <th> Normallike-DCIS </th> <th> LumA-DCIS </th> <th> LumB-DCIS </th> <th> Her2-DCIS </th> <th> Basallike-DCIS </th> <th> HER2neg_ERneg_PGRneg-DCIS </th> <th> HER2neg_ERpos-DCIS </th> <th> HER2pos_ERneg-DCIS </th> <th> HER2pos_ERpos-DCIS </th>  </tr>
@@ -481,7 +489,7 @@ table2[,c(2,4)] = round(table2[,c(2,4)], 2)
 write.table(table2, file=paste(articledir, "/table2", postfix, sep=""), sep=separator, col.names=NA, quote=FALSE)
 ```
 
-And below is the result list from Volinia et al. with our results attached. First the "DCIS-normal" comparison. Rows are sorted by FDR from our "merged" approach. [Link to file](output-analysis/Volinia_validation_DCIS-normal.txt)
+And below is the result list from Volinia et al. with our results attached. First the "DCIS-normal" comparison. Rows are sorted by FDR from our "merged" approach. 
 
 
 ```r
@@ -562,7 +570,7 @@ print( xtable( volinia_overlap[["DCIS-normal"]] , caption="microRNA found in Vol
 
 <br/>
 <br/>
-And here is the same table for the "invasive-DCIS" comparison. [Link to file](output-analysis/Volinia_validation_invasive-DCIS.txt)
+And here is the same table for the "invasive-DCIS" comparison. Both tables are also written to [files](output-analysis).
 
 
 ```r
@@ -598,7 +606,7 @@ print( xtable( volinia_overlap[["invasive-DCIS"]][x,] , caption="microRNA found 
 
 Bastian Fromm and colleagues have carefully evaluated the evidence for the Human micro RNAs reported in mirBase and provided a classification based on this. In short, a lot of microRNAs in mirBASE and included in the microarray platforms are probably not real microRNAs.
 
-A list of human microRNAs and their curation classification for our microRNAS is provided:
+A list of human microRNAs and their curation classification for our microRNAs is provided:
 
 
 ```r
@@ -662,10 +670,6 @@ And now the same assignment and summary for our results from the AHUS and METABR
 
 ```r
 namelists = list()
-
-consensusresultsdir=paste(supplementaryfile1dir, "/consensuslists", sep="")
-if(!file.exists(consensusresultsdir))
-	dir.create(consensusresultsdir)
 for(n in names(consensustables))
 {
 	x = unlist(lapply(rownames(consensustables[[n]]), FUN=function(x)strsplit(x, "_")[[1]][1])) # not neede anymore?
@@ -717,7 +721,7 @@ for(n in tableclasses)
 write.table(table4, file=paste(articledir, "/table4", postfix, sep=""), sep=separator, row.names=FALSE, quote=FALSE)
 ```
 
-Result files for all the comparisons with p-values for the two approaches, and with the curation status added, are [here](output-analysis/consensus). The tables look like this (top of the DCIS-normal comparison as an example):
+Result files for all the comparisons with p-values for the two approaches, and with the curation status added, are [here](output-analysis/used_in_article/additionalfile1/consensuslists). The tables look like this (top of the DCIS-normal comparison as an example):
 
 
 ```r
@@ -855,7 +859,7 @@ table(iClust[to_be_used],sampleannotation[to_be_used,"tissue_type"], useNA="ifan
 ```
 
 
-The diff test,
+The diff test, result files saved to [here](output-analysis/used_in_article/additionalfile1/difflists_iClust_UCAM_only).
 
 ```r
 labels = unique(iClust[to_be_used & !iClust %in% c("", "unknown", "DCIS")])
@@ -872,10 +876,6 @@ fit$genes$curated = curatedtab[ match( rownames(common_matrix), curatedtab$MIMAT
 cont.matrix = makeContrasts ( contrasts=contrasts, levels=design)  
 fit2 = contrasts.fit(fit, cont.matrix)
 fit2 <- eBayes(fit2)
-
-iClustdifflistdir = paste(supplementaryfile1dir, "/difflists_iClust_UCAM_only", sep="")
-if(!file.exists(iClustdifflistdir))
-	dir.create(iClustdifflistdir)
 
 iclustres = list()
 for(thiscontrast in contrasts)
@@ -1152,6 +1152,6 @@ loaded via a namespace (and not attached):
 [93] zlibbioc_1.12.0          
 ```
 
-generation ended 2015-09-04 18:03:52. Time spent 0 minutes .
+generation ended 2015-09-09 15:48:53. Time spent 0 minutes .
 
 
