@@ -220,7 +220,42 @@ hr {
 <pre><code class="r">library(AgiMicroRna)
 library(Biobase)
 library(MAMA)
-library(plyr)
+</code></pre>
+
+<pre><code>## Loading required package: metaMA
+## Loading required package: SMVar
+## 
+## Attaching package: &#39;metaMA&#39;
+## 
+## The following object is masked from &#39;package:genefilter&#39;:
+## 
+##     rowVars
+## 
+## Loading required package: multtest
+## Loading required package: gtools
+</code></pre>
+
+<pre><code>## Warning: package &#39;gtools&#39; was built under R version 3.1.3
+</code></pre>
+
+<pre><code>## 
+## Attaching package: &#39;gtools&#39;
+## 
+## The following object is masked from &#39;package:mgcv&#39;:
+## 
+##     scat
+## 
+## Loading required package: grid
+## Loading required package: GeneMeta
+## 
+## Attaching package: &#39;MAMA&#39;
+## 
+## The following objects are masked from &#39;package:GeneMeta&#39;:
+## 
+##     multExpFDR, zScoreFDR, zScorePermuted, zScores
+</code></pre>
+
+<pre><code class="r">library(plyr)
 #load(&quot;AHUS_agiMicroRNAdata.rdata&quot;)
 if(!exists(&quot;inputisread&quot;))
     source(&quot;read_input.r&quot;)

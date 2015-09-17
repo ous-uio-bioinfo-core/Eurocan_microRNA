@@ -36,27 +36,24 @@ All_mRNAannto=read.table("../not_in_github/mRNAannot/sampleannotation_w_subtype_
 													sep="\t", header=TRUE, stringsAsFactors=FALSE, fill=TRUE,
 													strip.white=TRUE, comment.char ="")
 
-# check that the UCAMs pam50 still are the same
 UCAM_mRNAannto$similarid = gsub("MB-", "UCAM_MB.", UCAM_mRNAannto$sample_id)
-a = match( UCAM_mRNAannto$similarid, sa$sample_id)
-UCAM_mRNAannto = UCAM_mRNAannto[!is.na(a),]
-a = match( UCAM_mRNAannto$similarid, sa$sample_id)
-UCAM_mRNAannto$subtype.est = gsub("Basal", "Basallike", UCAM_mRNAannto$subtype.est)
-UCAM_mRNAannto$subtype.est = gsub("Normal", "Normallike", UCAM_mRNAannto$subtype.est)
-table(UCAM_mRNAannto$subtype.est==sa$pam50_est[a]) # ok.
-sa$accountedfor=FALSE
-sa$accountedfor[a] = TRUE
+a = UCAM_mRNAannto$similarid %in% sa$sample_id
+newtab  = data.frame( sample_id=UCAM_mRNAannto$similarid[a], newpam50est=UCAM_mRNAannto$subtype.est[a], stringsAsFactors=FALSE)
 
-a =match(All_mRNAannto$sample_id, sa$sample_id)
-All_mRNAannto = All_mRNAannto[!is.na(a),]
-a =match(All_mRNAannto$sample_id, sa$sample_id)
-All_mRNAannto$sub = gsub("^Basal$", "Basallike", All_mRNAannto$sub)
-All_mRNAannto$sub = gsub("^Normal$", "Normallike", All_mRNAannto$sub)
-b =(!is.na(All_mRNAannto$sub) & All_mRNAannto$sub!=sa$pam50_est[a])
-data.frame(All_mRNAannto$sample_id, All_mRNAannto$sub, sa$pam50_est[a], sa$tissue_type[a])[b,]
-b =(!is.na(All_mRNAannto$sub) & All_mRNAannto$sub==sa$pam50_est[a])
-sa$accountedfor[a][b] = TRUE
+a = All_mRNAannto$sample_id %in%  sa$sample_id & All_mRNAannto$provider!="UCAM"
+tmptab  = data.frame( sample_id=All_mRNAannto$sample_id[a], newpam50est=All_mRNAannto$sub[a], stringsAsFactors=FALSE)
 
+newtab = rbind(newtab,tmptab)
+newtab$newpam50est = gsub("Basal", "Basallike", newtab$newpam50est)
+newtab$newpam50est = gsub("Normal", "Normallike", newtab$newpam50est)
 
-sa[!sa$accountedfor, c("sample_id", "pam50_est", "tissue_type", "accountedfor")]
+comtab = data.frame(sa$sample_id, sa$tissue_type, sa$pam50_est, newpam50=newtab$newpam50est[match(sa$sample_id,newtab$sample_id)], stringsAsFactors=FALSE)
+comtab$newpam50[is.na(comtab$newpam50)] = "unknown"
+a = comtab$newpam50!=comtab$sa.pam50_est
+comtab[a,] # tre var forskjellige.
+
+table(sa$sample_id==comtab$sa.sample_id)
+sa$pam50_est = comtab$newpam50
+write.table(sa, file=sampleannotation_file, col.names=TRUE, row.names=FALSE, quote=FALSE, sep="\t")
+
 
