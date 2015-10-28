@@ -42,7 +42,8 @@ plotmanypca = function(matrices, annot, plotdirname,  views=c("tissue_provider",
 
 plotonepca = function(name, thisannot, thisplatform, thisprcomp, plotdirname="", thiscolors=NA)
 {
-  colorpal = c(brewer.pal(9,"Set1"), brewer.pal(8,"Set2"))
+  #colorpal = c(brewer.pal(9,"Set1"), brewer.pal(8,"Set2"))
+	colorpal = c(brewer.pal(9,"Set1")[-5],brewer.pal(8,"Set2"))
   plotsize = 1600
   goodpch = c(19,17,25,23)
   

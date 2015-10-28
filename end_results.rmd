@@ -211,6 +211,39 @@ for(i in 1:nrow(meta2merged))
   consensustables[[thiscomp]] = thistable[order(thistable$consensus, -thistable$adj.P.Val.merged, decreasing=TRUE),]
 }
 
+# PCA of the DCIS vs subtypes using only the microRNA found differentially expressed for that comparison.
+# Experimental, unsure of its usefulness
+pdf(file=paste(supplementaryfile1dir, "/pca_DCIS_vs_subtype_using_DEG.pdf", sep=""))
+for(i in 1:nrow(meta2merged))
+{
+	thiscomp = rownames(meta2merged)[i]	
+	tmpsa=sampleannotation
+	tmpsa$pam50 = tmpsa$pam50_est
+	tmpsa$pam50[tmpsa$tissue_type=="DCIS"]="DCIS"
+	tmpsa$pam50 = factor(tmpsa$pam50, levels=c("DCIS","Basallike","Her2","LumA","LumB","Normallike","unknown"))
+	tmpsa$IHC = tmpsa$IHC
+	tmpsa$IHC[tmpsa$tissue_type=="DCIS"]="DCIS"
+	tmpsa$IHC = factor(tmpsa$IHC, levels=c("DCIS","HER2neg_ERneg_PGRneg","HER2neg_ERpos","HER2pos_ERneg","HER2pos_ERpos"))
+	tmpsa$platform=factor(tmpsa$provider)
+	tmpsa=tmpsa[order(tmpsa$pam50, decreasing=TRUE),]
+	tmpdata = common_matrix[,tmpsa$sample_id]
+	
+ 	if(meta2merged[i, "comparisontype"] %in% c("pam50", "IHC"))
+ 	{
+ 		view = meta2merged[i, "comparisontype"]
+ 		asamples = tmpsa[,view] %in% strsplit(thiscomp, "-")[[1]]
+ 		agenes = consensustables[[thiscomp]]$MIMAT[consensustables[[thiscomp]]$consensus]
+ 		if(length(agenes>0))
+ 		{
+ 			cat("pcaplot for", thiscomp, tmpsa[1,view], "\n")
+  		plotmanypca( list(PCA_using_DEG_subtype=tmpdata[agenes,asamples]),tmpsa[asamples,], "" ,  views=view)
+  	}
+ 	}
+}
+dev.off()
+ 
+
+
 if(sum(summarytab$wrong_direction)>0)
 	warning("Some common microRNAs were found that did not have the same dirrection of change!!")
 					
