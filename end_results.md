@@ -1,6 +1,6 @@
 Consensus, validation, curation.
 ========================================================
-2015-10-28 12:45:21
+2016-01-15 18:41:03
 
 
 <br/>
@@ -69,7 +69,7 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Oct 28 12:45:22 2015 -->
+<!-- Fri Jan 15 18:41:03 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -97,7 +97,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Oct 28 12:45:22 2015 -->
+<!-- Fri Jan 15 18:41:04 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -105,7 +105,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> invasive </td> <td align="right">    5 </td> <td align="right">    0 </td> <td align="right">    8 </td> <td align="right">   16 </td> <td align="right">   14 </td> <td align="right">    8 </td> <td align="right">    4 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Oct 28 12:45:22 2015 -->
+<!-- Fri Jan 15 18:41:04 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -133,7 +133,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Oct 28 12:45:22 2015 -->
+<!-- Fri Jan 15 18:41:04 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -143,7 +143,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> normal </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">   70 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Oct 28 12:45:22 2015 -->
+<!-- Fri Jan 15 18:41:04 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -247,6 +247,75 @@ for(i in 1:nrow(meta2merged))
   consensustables[[thiscomp]] = thistable[order(thistable$consensus, -thistable$adj.P.Val.merged, decreasing=TRUE),]
 }
 
+# PCA of the DCIS vs subtypes using only the microRNA found differentially expressed for that comparison.
+# Experimental, unsure of its usefulness
+pdf(file=paste(supplementaryfile1dir, "/pca_DCIS_vs_subtype_using_DEG.pdf", sep=""))
+for(i in 1:nrow(meta2merged))
+{
+	thiscomp = rownames(meta2merged)[i]	
+	tmpsa=sampleannotation
+	tmpsa$pam50 = tmpsa$pam50_est
+	tmpsa$pam50[tmpsa$tissue_type=="DCIS"]="DCIS"
+	tmpsa$pam50 = factor(tmpsa$pam50, levels=c("DCIS","Basallike","Her2","LumA","LumB","Normallike","unknown"))
+	tmpsa$IHC = tmpsa$IHC
+	tmpsa$IHC[tmpsa$tissue_type=="DCIS"]="DCIS"
+	tmpsa$IHC = factor(tmpsa$IHC, levels=c("DCIS","HER2neg_ERneg_PGRneg","HER2neg_ERpos","HER2pos_ERneg","HER2pos_ERpos"))
+	tmpsa$platform=factor(tmpsa$provider)
+	tmpsa=tmpsa[order(tmpsa$pam50, decreasing=TRUE),]
+	tmpdata = common_matrix[,tmpsa$sample_id]
+	
+ 	if(meta2merged[i, "comparisontype"] %in% c("pam50", "IHC"))
+ 	{
+ 		view = meta2merged[i, "comparisontype"]
+ 		asamples = tmpsa[,view] %in% strsplit(thiscomp, "-")[[1]]
+ 		agenes = consensustables[[thiscomp]]$MIMAT[consensustables[[thiscomp]]$consensus]
+ 		if(length(agenes>0))
+ 		{
+ 			cat("pcaplot for", thiscomp, tmpsa[1,view], "\n")
+  		plotmanypca( list(PCA_using_DEG_subtype=tmpdata[agenes,asamples]),tmpsa[asamples,], "" ,  views=view)
+  	}
+ 	}
+}
+```
+
+```
+## pcaplot for Normallike-DCIS 7
+```
+
+```
+## pcaplot for LumA-DCIS 7
+```
+
+```
+## pcaplot for LumB-DCIS 7
+```
+
+```
+## pcaplot for Her2-DCIS 7
+```
+
+```
+## pcaplot for Basallike-DCIS 7
+```
+
+```
+## pcaplot for HER2neg_ERneg_PGRneg-DCIS NA
+```
+
+```
+## pcaplot for HER2pos_ERneg-DCIS NA
+```
+
+```r
+dev.off()
+```
+
+```
+## quartz_off_screen 
+##                 2
+```
+
+```r
 if(sum(summarytab$wrong_direction)>0)
 	warning("Some common microRNAs were found that did not have the same dirrection of change!!")
 ```
@@ -266,7 +335,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Oct 28 12:45:22 2015 -->
+<!-- Fri Jan 15 18:41:05 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
 <tr> <th>  </th> <th> found_meta </th> <th> found_merged </th> <th> found_both </th>  </tr>
@@ -358,7 +427,7 @@ print(xtable(correlationmatrix1,
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Wed Oct 28 12:45:23 2015 -->
+<!-- Fri Jan 15 18:41:05 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
 <tr> <th>  </th> <th> DCIS-normal </th> <th> invasive-DCIS </th> <th> Normallike-DCIS </th> <th> LumA-DCIS </th> <th> LumB-DCIS </th> <th> Her2-DCIS </th> <th> Basallike-DCIS </th> <th> HER2neg_ERneg_PGRneg-DCIS </th> <th> HER2neg_ERpos-DCIS </th> <th> HER2pos_ERneg-DCIS </th> <th> HER2pos_ERpos-DCIS </th>  </tr>
@@ -597,6 +666,89 @@ print( xtable( volinia_overlap[["invasive-DCIS"]][x,] , caption="microRNA found 
    </table>
 <br/>
 <br/>
+A hierarchical cluster showing the changes in expression for the validated microRNAs (normal vs DCIS), plotted for respectively for the AHUS and UCAM data.
+
+```r
+sa = sampleannotation[sampleannotation$tissue_type %in% c("normal", "DCIS"),]
+sa$tissue_type=factor(sa$tissue_type)
+validatedMIMATS = rownames(volinia_overlap[["DCIS-normal"]])[volinia_overlap[["DCIS-normal"]]$validated ]
+validatedMIMATS = validatedMIMATS[!is.na(validatedMIMATS)]
+
+heatmapwrapper = function(ds, sa, main="", plotlegend=TRUE)
+{
+	require(gplots)
+	colpalette = c("green", "orange")
+	heatmap.2(t(ds), scale="col", RowSideColors=colpalette[sa[,"tissue_type"]], trace="none",
+					labCol=miRNA2MIMAT[rownames(ds), "preferredname"], labRow=NA, col=greenred(25) ,
+					margins=c(8,1), key=TRUE, main=main)
+	if(plotlegend)
+	{
+		legend("bottomleft", inset=c(-0.05,-0.2), xpd=TRUE,     # location of the legend on the heatmap plot
+    legend = unique(sa[,"tissue_type"]), # category labels
+    col = colpalette[unique(sa[,"tissue_type"])],  # color key
+    lty= 1,             # line style
+    lwd = 10            # line width
+	)		
+	}
+
+}
+# 
+# # plot for article.
+ pdf(paste(articledir, "/heatmap_27validated_DCIS_vs_normal.pdf", sep=""))
+# #par(mfrow=c(1,2))
+ cohort="AHUS"
+ heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])],
+ 							 sa[sa$provider==cohort,"tissue_type", drop=FALSE],
+ 							 main=paste("Diff microRNA DCIS vs. Normal, ", cohort, sep=""))
+ cohort="UCAM"
+ heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])],
+ 							 sa[sa$provider==cohort,"tissue_type", drop=FALSE],
+ 							 main=paste("Diff microRNA DCIS vs. Normal, ", cohort, sep=""), plotlegend=TRUE)
+ dev.off()
+```
+
+quartz_off_screen 
+                2 
+
+```r
+ pdf(paste(articledir, "/heatmap_256expressed_DCIS_vs_normal.pdf", sep=""))
+# #par(mfrow=c(1,2))
+ cohort="AHUS"
+ heatmapwrapper(common_matrix[,rownames(sa[sa$provider==cohort,])],
+ 							 sa[sa$provider==cohort,"tissue_type", drop=FALSE],
+ 							 main=paste("Diff microRNA DCIS vs. Normal, ", cohort, sep=""))
+ cohort="UCAM"
+ heatmapwrapper(common_matrix[,rownames(sa[sa$provider==cohort,])],
+ 							 sa[sa$provider==cohort,"tissue_type", drop=FALSE],
+ 							 main=paste("Diff microRNA DCIS vs. Normal, ", cohort, sep=""), plotlegend=TRUE)
+ dev.off()
+```
+
+quartz_off_screen 
+                2 
+
+```r
+#par(mfrow=c(2,2))
+ cohort="AHUS"
+ heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])],
+ 							 sa[sa$provider==cohort,"tissue_type", drop=FALSE],
+ 							 main=paste("Diff microRNA DCIS vs. Normal, ", cohort, sep=""))
+```
+
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
+
+```r
+cohort="UCAM"
+heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])],
+							 sa[sa$provider==cohort,"tissue_type", drop=FALSE],
+							 main=paste("Diff microRNA DCIS vs. Normal, ", cohort, sep=""))
+```
+
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-2.png) 
+<br/>
+<br/>
+And same heatmp for the UCAM samples<br/>
+
 
 
 <br/>
@@ -1091,16 +1243,16 @@ attached base packages:
  [8] datasets  methods   base     
 
 other attached packages:
- [1] MAMA_2.2.1            GeneMeta_1.38.0       gtools_3.4.2         
- [4] multtest_2.22.0       metaMA_2.1            SMVar_1.3.3          
- [7] sva_3.12.0            genefilter_1.48.1     mgcv_1.8-6           
-[10] nlme_3.1-120          xtable_1.7-4          RColorBrewer_1.1-2   
-[13] knitr_1.10.5          AgiMicroRna_2.16.0    affycoretools_1.38.0 
-[16] GO.db_3.0.0           RSQLite_1.0.0         DBI_0.3.1            
-[19] AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5    IRanges_2.0.1        
-[22] S4Vectors_0.4.0       preprocessCore_1.28.0 affy_1.44.0          
-[25] limma_3.22.7          Biobase_2.26.0        BiocGenerics_0.12.1  
-[28] plyr_1.8.2           
+ [1] gplots_2.17.0         MAMA_2.2.1            GeneMeta_1.38.0      
+ [4] gtools_3.4.2          multtest_2.22.0       metaMA_2.1           
+ [7] SMVar_1.3.3           sva_3.12.0            genefilter_1.48.1    
+[10] mgcv_1.8-6            nlme_3.1-120          xtable_1.7-4         
+[13] RColorBrewer_1.1-2    knitr_1.10.5          AgiMicroRna_2.16.0   
+[16] affycoretools_1.38.0  GO.db_3.0.0           RSQLite_1.0.0        
+[19] DBI_0.3.1             AnnotationDbi_1.28.2  GenomeInfoDb_1.2.5   
+[22] IRanges_2.0.1         S4Vectors_0.4.0       preprocessCore_1.28.0
+[25] affy_1.44.0           limma_3.22.7          Biobase_2.26.0       
+[28] BiocGenerics_0.12.1   plyr_1.8.2           
 
 loaded via a namespace (and not attached):
  [1] acepack_1.3-3.3           affyio_1.34.0            
@@ -1125,33 +1277,32 @@ loaded via a namespace (and not attached):
 [39] GenomicFeatures_1.18.7    GenomicRanges_1.18.4     
 [41] GGally_0.5.0              ggbio_1.14.0             
 [43] ggplot2_1.0.1             GOstats_2.32.0           
-[45] gplots_2.17.0             graph_1.44.1             
-[47] gridExtra_0.9.1           GSEABase_1.28.0          
-[49] gtable_0.1.2              Hmisc_3.16-0             
-[51] hwriter_1.3.2             iterators_1.0.7          
-[53] KernSmooth_2.23-14        lattice_0.20-31          
-[55] latticeExtra_0.6-26       locfit_1.5-9.1           
-[57] magrittr_1.5              markdown_0.7.7           
-[59] MASS_7.3-40               Matrix_1.2-0             
-[61] MergeMaid_2.38.0          metaArray_1.44.0         
-[63] mime_0.3                  munsell_0.4.2            
-[65] nnet_7.3-9                oligoClasses_1.28.0      
-[67] OrganismDbi_1.8.1         PFAM.db_3.0.0            
-[69] proto_0.3-10              R.methodsS3_1.7.0        
-[71] R.oo_1.19.0               R.utils_2.0.2            
-[73] RBGL_1.42.0               Rcpp_0.11.6              
-[75] RcppArmadillo_0.5.100.1.0 RCurl_1.95-4.6           
-[77] ReportingTools_2.6.0      reshape_0.8.5            
-[79] reshape2_1.4.1            rpart_4.1-9              
-[81] Rsamtools_1.18.3          rtracklayer_1.26.3       
-[83] scales_0.2.4              sendmailR_1.2-1          
-[85] splines_3.1.1             stringi_0.4-1            
-[87] stringr_1.0.0             survival_2.38-1          
-[89] tools_3.1.1               VariantAnnotation_1.12.9 
-[91] XML_3.98-1.1              XVector_0.6.0            
-[93] zlibbioc_1.12.0          
+[45] graph_1.44.1              gridExtra_0.9.1          
+[47] GSEABase_1.28.0           gtable_0.1.2             
+[49] Hmisc_3.16-0              hwriter_1.3.2            
+[51] iterators_1.0.7           KernSmooth_2.23-14       
+[53] lattice_0.20-31           latticeExtra_0.6-26      
+[55] locfit_1.5-9.1            magrittr_1.5             
+[57] markdown_0.7.7            MASS_7.3-40              
+[59] Matrix_1.2-0              MergeMaid_2.38.0         
+[61] metaArray_1.44.0          mime_0.3                 
+[63] munsell_0.4.2             nnet_7.3-9               
+[65] oligoClasses_1.28.0       OrganismDbi_1.8.1        
+[67] PFAM.db_3.0.0             proto_0.3-10             
+[69] R.methodsS3_1.7.0         R.oo_1.19.0              
+[71] R.utils_2.0.2             RBGL_1.42.0              
+[73] Rcpp_0.11.6               RcppArmadillo_0.5.100.1.0
+[75] RCurl_1.95-4.6            ReportingTools_2.6.0     
+[77] reshape_0.8.5             reshape2_1.4.1           
+[79] rpart_4.1-9               Rsamtools_1.18.3         
+[81] rtracklayer_1.26.3        scales_0.2.4             
+[83] sendmailR_1.2-1           splines_3.1.1            
+[85] stringi_0.4-1             stringr_1.0.0            
+[87] survival_2.38-1           tools_3.1.1              
+[89] VariantAnnotation_1.12.9  XML_3.98-1.1             
+[91] XVector_0.6.0             zlibbioc_1.12.0          
 ```
 
-generation ended 2015-10-28 12:45:27. Time spent 0 minutes .
+generation ended 2016-01-15 18:41:09. Time spent 0 minutes .
 
 

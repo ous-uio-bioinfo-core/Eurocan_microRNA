@@ -124,8 +124,12 @@ Pam50 classification has been done on the mRNA samples. Many of the microRNA sam
 We have too few samples for looking at the DCIS to invasive change for each of the pam50 classes. Therefore we will treat all DCIS as "DCIS".
 
 ```{r}
-sampleannotation$pam50_est[sampleannotation$tissue_type=="DCIS"]="DCIS"
 table(sampleannotation[,c("pam50_est", "tissue_type")], useNA="ifany")
+sampleannotation$pam50_est_org = sampleannotation$pam50_est
+sampleannotation$pam50_est[sampleannotation$tissue_type=="DCIS"]="DCIS"
+#table(sampleannotation[,c("pam50_est", "tissue_type")], useNA="ifany")
+
+table(sampleannotation[sampleannotation$tissue_type=="DCIS",c("pam50_est_org", "provider")], useNA="ifany")
 ```
 
 PCA-plot with the pam50 labels. DCIS and invasive samples only.
