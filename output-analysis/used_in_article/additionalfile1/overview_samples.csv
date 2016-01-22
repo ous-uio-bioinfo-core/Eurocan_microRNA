@@ -1,0 +1,52 @@
+Overview of samples included in the study.
+
+tissue type
+,AHUS,UCAM
+DCIS,8 (6),10 (1)
+invasive,55 (41),1283 (91)
+normal,70 (53),116 (8)
+total,133,1409
+
+DCIS pam50
+,AHUS,UCAM
+Basallike,0 (0),3 (30)
+Her2,1 (12),2 (20)
+LumA,1 (12),1 (10)
+Normallike,0 (0),3 (30)
+unknown,6 (75),1 (10)
+total,8,10
+
+invasive pam50
+,AHUS,UCAM
+Basallike,5 (9),193 (15)
+Her2,8 (15),159 (12)
+LumA,16 (29),460 (36)
+LumB,14 (25),370 (29)
+Normallike,8 (15),90 (7)
+unknown,4 (7),11 (1)
+total,55,1283
+
+invasive IHC
+,AHUS,UCAM
+HER2neg_ERneg_PGRneg,1 (2),198 (15)
+HER2neg_ERpos,28 (51),912 (71)
+HER2pos_ERneg,4 (7),83 (6)
+HER2pos_ERpos,8 (15),85 (7)
+unknown,14 (25),5 (0)
+total,55,1283
+
+invasive iClust
+,AHUS,UCAM
+1,0 (0),91 (7)
+2,0 (0),52 (4)
+3,0 (0),191 (15)
+4,0 (0),242 (19)
+5,0 (0),122 (10)
+6,0 (0),56 (4)
+7,0 (0),114 (9)
+8,0 (0),186 (14)
+9,0 (0),87 (7)
+10,0 (0),134 (10)
+unknown,55 (100),8 (1)
+total,55,1283
+

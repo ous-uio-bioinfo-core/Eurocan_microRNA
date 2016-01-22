@@ -1,6 +1,6 @@
 Consensus, validation, curation.
 ========================================================
-2016-01-15 18:41:03
+2016-01-20 18:32:12
 
 
 <br/>
@@ -69,7 +69,7 @@ print(xtable(table(sampleannotation[, c("provider" ,"tissue_type")]),
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jan 15 18:41:03 2016 -->
+<!-- Wed Jan 20 18:32:12 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
 <tr> <th>  </th> <th> benign </th> <th> DCIS </th> <th> invasive </th> <th> normal </th>  </tr>
@@ -97,7 +97,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jan 15 18:41:04 2016 -->
+<!-- Wed Jan 20 18:32:12 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -105,7 +105,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> invasive </td> <td align="right">    5 </td> <td align="right">    0 </td> <td align="right">    8 </td> <td align="right">   16 </td> <td align="right">   14 </td> <td align="right">    8 </td> <td align="right">    4 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jan 15 18:41:04 2016 -->
+<!-- Wed Jan 20 18:32:12 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> Basallike </th> <th> DCIS </th> <th> Her2 </th> <th> LumA </th> <th> LumB </th> <th> Normallike </th> <th> unknown </th>  </tr>
@@ -133,7 +133,7 @@ for(p in unique(sampleannotation$provider))
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jan 15 18:41:04 2016 -->
+<!-- Wed Jan 20 18:32:12 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -143,7 +143,7 @@ for(p in unique(sampleannotation$provider))
   <tr> <td align="right"> normal </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">    0 </td> <td align="right">   70 </td> </tr>
    </table>
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jan 15 18:41:04 2016 -->
+<!-- Wed Jan 20 18:32:12 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
 <tr> <th>  </th> <th> HER2neg_ERneg_PGRneg </th> <th> HER2neg_ERpos </th> <th> HER2pos_ERneg </th> <th> HER2pos_ERpos </th> <th> unknown </th>  </tr>
@@ -160,17 +160,56 @@ Again, due to the low number of DCIS samples, the IHC diagnoses were disregarded
 <br/>
 
 ```r
-# creating table1 our in article.
-notbenign = !sampleannotation$tissue_type=="benign"
+# creating overview of sample suppl table our in article.
+notbenign = sampleannotation$tissue_type!="benign"
+dcisonly = sampleannotation$tissue_type=="DCIS"
 invasiveonly = sampleannotation$tissue_type=="invasive"
-a=table(sampleannotation[notbenign, c("tissue_type", "provider")])
-b=table(sampleannotation[invasiveonly, c("pam50_est", "provider")])
-c=table(sampleannotation[invasiveonly, c("IHC", "provider")])
-table1 = rbind(a[c("normal", "DCIS", "invasive"),], 
-							 b[c("LumA", "LumB", "Her2", "Basallike", "Normallike"),],
-							 c[c("HER2neg_ERpos", "HER2pos_ERpos", "HER2pos_ERneg", "HER2neg_ERneg_PGRneg"),],
-							 total=colSums(a))
-write.table(table1, file=paste(articledir, "/table1", postfix, sep=""), sep=separator, col.names=NA, quote=FALSE)
+tablist=list()
+tablist[["tissue type"]]=table(sampleannotation[notbenign, c("tissue_type", "provider")])
+tablist[["DCIS pam50"]]=table(sampleannotation[dcisonly, c("pam50_est_org", "provider")])
+tablist[["invasive pam50"]]=table(sampleannotation[invasiveonly, c("pam50_est_org", "provider")])
+tablist[["invasive IHC"]]=table(sampleannotation[invasiveonly, c("IHC", "provider")])
+tablist[["invasive iClust"]]=table(sampleannotation[invasiveonly, c("iClust", "provider")], useNA="ifany")
+rownames(tablist[["invasive iClust"]])[11] = "unknown" # workaround
+
+fn = paste(supplementaryfile1dir, "/overview_samples", postfix, sep="")
+write("Overview of samples included in the study.\n", file=fn)
+for(i in 1:length(tablist))
+{
+	write(names(tablist)[i], file=fn, append=TRUE)
+	x=tablist[[i]]
+	xperc = round(100*t(t(x) / colSums(x)))
+	xcomb = as.data.frame(matrix(paste(x, " (", xperc, ")", sep=""), 
+															 nrow=nrow(x), ncol=ncol(x), dimnames=dimnames(x)), stringsAsFactors=FALSE)
+	xcomb["total", ]=colSums(x)
+	write.table(xcomb, file=fn, sep=separator, col.names=NA, quote=FALSE, append=TRUE)
+	write("", file=fn, append=TRUE)
+}
+```
+
+```
+## Warning in write.table(xcomb, file = fn, sep = separator, col.names = NA, :
+## appending column names to file
+```
+
+```
+## Warning in write.table(xcomb, file = fn, sep = separator, col.names = NA, :
+## appending column names to file
+```
+
+```
+## Warning in write.table(xcomb, file = fn, sep = separator, col.names = NA, :
+## appending column names to file
+```
+
+```
+## Warning in write.table(xcomb, file = fn, sep = separator, col.names = NA, :
+## appending column names to file
+```
+
+```
+## Warning in write.table(xcomb, file = fn, sep = separator, col.names = NA, :
+## appending column names to file
 ```
 
 Read in our results from files.
@@ -335,7 +374,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jan 15 18:41:05 2016 -->
+<!-- Wed Jan 20 18:32:13 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
 <tr> <th>  </th> <th> found_meta </th> <th> found_merged </th> <th> found_both </th>  </tr>
@@ -427,7 +466,7 @@ print(xtable(correlationmatrix1,
 ```
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
-<!-- Fri Jan 15 18:41:05 2016 -->
+<!-- Wed Jan 20 18:32:13 2016 -->
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
 <tr> <th>  </th> <th> DCIS-normal </th> <th> invasive-DCIS </th> <th> Normallike-DCIS </th> <th> LumA-DCIS </th> <th> LumB-DCIS </th> <th> Her2-DCIS </th> <th> Basallike-DCIS </th> <th> HER2neg_ERneg_PGRneg-DCIS </th> <th> HER2neg_ERpos-DCIS </th> <th> HER2pos_ERneg-DCIS </th> <th> HER2pos_ERpos-DCIS </th>  </tr>
@@ -674,32 +713,66 @@ sa$tissue_type=factor(sa$tissue_type)
 validatedMIMATS = rownames(volinia_overlap[["DCIS-normal"]])[volinia_overlap[["DCIS-normal"]]$validated ]
 validatedMIMATS = validatedMIMATS[!is.na(validatedMIMATS)]
 
+#dist.pear <- function(x) as.dist(1-cor(t(x)))
+#hclust.ave <- function(x) hclust(x, method="average")
 heatmapwrapper = function(ds, sa, main="", plotlegend=TRUE)
 {
 	require(gplots)
 	colpalette = c("green", "orange")
-	heatmap.2(t(ds), scale="col", RowSideColors=colpalette[sa[,"tissue_type"]], trace="none",
-					labCol=miRNA2MIMAT[rownames(ds), "preferredname"], labRow=NA, col=greenred(25) ,
-					margins=c(8,1), key=TRUE, main=main)
+	heatmap.2( ds, scale="row", ColSideColors=colpalette[sa[,"tissue_type"]], trace="none",
+					labRow=miRNA2MIMAT[rownames(ds), "preferredname"], labCol=NA, col=greenred(25) ,
+					 margins=c(1,8), key=TRUE, main=main)
+	#col=greenred(25)[-c(10,12,14,16)]
+	#margins=c(8,1),
 	if(plotlegend)
 	{
-		legend("bottomleft", inset=c(-0.05,-0.2), xpd=TRUE,     # location of the legend on the heatmap plot
+		legend("topright", inset=c(-0.05,-0.1), xpd=TRUE,     # location of the legend on the heatmap plot
     legend = unique(sa[,"tissue_type"]), # category labels
     col = colpalette[unique(sa[,"tissue_type"])],  # color key
     lty= 1,             # line style
-    lwd = 10            # line width
-	)		
+    lwd = 8,            # line width
+    bty = "n"
+		)		
 	}
 
 }
+
 # 
 # # plot for article.
  pdf(paste(articledir, "/heatmap_27validated_DCIS_vs_normal.pdf", sep=""))
-# #par(mfrow=c(1,2))
+#par(mfrow=c(2,1))
  cohort="AHUS"
  heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])],
  							 sa[sa$provider==cohort,"tissue_type", drop=FALSE],
  							 main=paste("Diff microRNA DCIS vs. Normal, ", cohort, sep=""))
+```
+
+```
+## Loading required package: gplots
+```
+
+```
+## Warning: package 'gplots' was built under R version 3.1.3
+```
+
+```
+## 
+## Attaching package: 'gplots'
+## 
+## The following object is masked from 'package:multtest':
+## 
+##     wapply
+## 
+## The following object is masked from 'package:IRanges':
+## 
+##     space
+## 
+## The following object is masked from 'package:stats':
+## 
+##     lowess
+```
+
+```r
  cohort="UCAM"
  heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])],
  							 sa[sa$provider==cohort,"tissue_type", drop=FALSE],
@@ -745,10 +818,10 @@ heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])]
 ```
 
 ![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-2.png) 
-<br/>
-<br/>
-And same heatmp for the UCAM samples<br/>
 
+```r
+#dcissa = sampleannotation[sampleannotation$tissue_type %in% c( "DCIS"),c("sample_id", "pam50_est_org")]
+```
 
 
 <br/>
@@ -843,7 +916,7 @@ for(n in names(consensustables))
 }
 
 # add a nice version of the sampleannotation to the suppl.
-write.table(sampleannotation[,c("sample_id", "tissue_type", "pam50_est", "IHC", "iClust", "provider")], 
+write.table(sampleannotation[,c("sample_id", "tissue_type", "pam50_est","pam50_est_org", "IHC", "iClust", "provider")], 
 						file=paste(supplementaryfile1dir, "/sampleannotation_suppl", postfix, sep=""), sep=separator, 
 						row.names=FALSE, col.names=TRUE)
 
@@ -1303,6 +1376,6 @@ loaded via a namespace (and not attached):
 [91] XVector_0.6.0             zlibbioc_1.12.0          
 ```
 
-generation ended 2016-01-15 18:41:09. Time spent 0 minutes .
+generation ended 2016-01-20 18:32:18. Time spent 0 minutes .
 
 
