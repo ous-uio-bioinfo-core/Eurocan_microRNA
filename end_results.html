@@ -203,7 +203,7 @@ hr {
 <body>
 <h1>Consensus, validation, curation.</h1>
 
-<p>2016-01-20 18:32:12</p>
+<p>2016-01-25 14:28:02</p>
 
 <p><br/>
 <br/></p>
@@ -271,7 +271,7 @@ fdrCO = 0.05
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Wed Jan 20 18:32:12 2016 -->
+<!-- Mon Jan 25 14:28:02 2016 -->
 
 <table CELLPADDING=5>
 <caption align="bottom">  </caption>
@@ -300,7 +300,7 @@ Sample count based on PAM50 classification in each tissue and from each provider
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Wed Jan 20 18:32:12 2016 -->
+<!-- Mon Jan 25 14:28:02 2016 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
@@ -311,7 +311,7 @@ Sample count based on PAM50 classification in each tissue and from each provider
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Wed Jan 20 18:32:12 2016 -->
+<!-- Mon Jan 25 14:28:02 2016 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
@@ -339,7 +339,7 @@ Sample count based on IHC diagnosis in each tissue and from each provider</p>
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Wed Jan 20 18:32:12 2016 -->
+<!-- Mon Jan 25 14:28:02 2016 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> AHUS </caption>
@@ -352,7 +352,7 @@ Sample count based on IHC diagnosis in each tissue and from each provider</p>
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Wed Jan 20 18:32:12 2016 -->
+<!-- Mon Jan 25 14:28:02 2016 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> UCAM </caption>
@@ -565,7 +565,7 @@ Next, summarize the number of microRNAs found differentially expressed between s
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Wed Jan 20 18:32:13 2016 -->
+<!-- Mon Jan 25 14:28:03 2016 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> Overlap between meta and merged </caption>
@@ -653,7 +653,7 @@ print(xtable(correlationmatrix1,
 
 <!-- html table generated in R 3.1.1 by xtable 1.7-4 package -->
 
-<!-- Wed Jan 20 18:32:13 2016 -->
+<!-- Mon Jan 25 14:28:03 2016 -->
 
 <table CELLPADDING=5>
 <caption align="bottom"> Count of significant microRNAs found going in the same direction for the subtypes </caption>
@@ -771,7 +771,7 @@ table2 = table2[table2$consensus,]
 table2 = table2[table2$MIMAT %in% rownames( volinia_overlap[[&quot;DCIS-normal&quot;]])[volinia_overlap[[&quot;DCIS-normal&quot;]]$validated], ]
 table2 = table2[order(table2$logFC.merged),2:6]
 table2[,c(2,4)] = round(table2[,c(2,4)], 2)
-write.table(table2, file=paste(articledir, &quot;/table2&quot;, postfix, sep=&quot;&quot;), sep=separator, col.names=NA, quote=FALSE)
+write.table(table2, file=paste(articledir, &quot;/table1&quot;, postfix, sep=&quot;&quot;), sep=separator, col.names=NA, quote=FALSE)
 </code></pre>
 
 <p>And below is the result list from Volinia et al. with our results attached. First the &ldquo;DCIS-normal&rdquo; comparison. Rows are sorted by FDR from our &ldquo;merged&rdquo; approach. </p>
@@ -918,31 +918,7 @@ heatmapwrapper = function(ds, sa, main=&quot;&quot;, plotlegend=TRUE)
  heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])],
                              sa[sa$provider==cohort,&quot;tissue_type&quot;, drop=FALSE],
                              main=paste(&quot;Diff microRNA DCIS vs. Normal, &quot;, cohort, sep=&quot;&quot;))
-</code></pre>
-
-<pre><code>## Loading required package: gplots
-</code></pre>
-
-<pre><code>## Warning: package &#39;gplots&#39; was built under R version 3.1.3
-</code></pre>
-
-<pre><code>## 
-## Attaching package: &#39;gplots&#39;
-## 
-## The following object is masked from &#39;package:multtest&#39;:
-## 
-##     wapply
-## 
-## The following object is masked from &#39;package:IRanges&#39;:
-## 
-##     space
-## 
-## The following object is masked from &#39;package:stats&#39;:
-## 
-##     lowess
-</code></pre>
-
-<pre><code class="r"> cohort=&quot;UCAM&quot;
+ cohort=&quot;UCAM&quot;
  heatmapwrapper(common_matrix[validatedMIMATS,rownames(sa[sa$provider==cohort,])],
                              sa[sa$provider==cohort,&quot;tissue_type&quot;, drop=FALSE],
                              main=paste(&quot;Diff microRNA DCIS vs. Normal, &quot;, cohort, sep=&quot;&quot;), plotlegend=TRUE)
@@ -952,7 +928,7 @@ heatmapwrapper = function(ds, sa, main=&quot;&quot;, plotlegend=TRUE)
 <p>quartz_off_screen 
                 2 </p>
 
-<pre><code class="r"> pdf(paste(articledir, &quot;/heatmap_256expressed_DCIS_vs_normal.pdf&quot;, sep=&quot;&quot;))
+<pre><code class="r"> pdf(paste(supplementaryfile1dir , &quot;/heatmap_256expressed_DCIS_vs_normal.pdf&quot;, sep=&quot;&quot;))
 # #par(mfrow=c(1,2))
  cohort=&quot;AHUS&quot;
  heatmapwrapper(common_matrix[,rownames(sa[sa$provider==cohort,])],
@@ -1092,7 +1068,7 @@ table3 = matrix(&quot;&quot;,ncol=length(tableclasses), nrow=nrows)
 colnames(table3)=tableclasses
 for(n in tableclasses)
     table3[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table3, file=paste(articledir, &quot;/table3&quot;, postfix, sep=&quot;&quot;), sep=separator, row.names=FALSE, quote=FALSE)
+write.table(table3, file=paste(articledir, &quot;/table2&quot;, postfix, sep=&quot;&quot;), sep=separator, row.names=FALSE, quote=FALSE)
 
 tableclasses = c(&quot;HER2pos_ERpos-DCIS&quot;, &quot;HER2neg_ERpos-DCIS&quot;, &quot;HER2pos_ERneg-DCIS&quot;, &quot;HER2neg_ERneg_PGRneg-DCIS&quot;)
 nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
@@ -1101,7 +1077,7 @@ colnames(table4)=tableclasses
 for(n in tableclasses)
     if(length(namelists[[n]])&gt;0)
         table4[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table4, file=paste(articledir, &quot;/table4&quot;, postfix, sep=&quot;&quot;), sep=separator, row.names=FALSE, quote=FALSE)
+write.table(table4, file=paste(articledir, &quot;/table3&quot;, postfix, sep=&quot;&quot;), sep=separator, row.names=FALSE, quote=FALSE)
 </code></pre>
 
 <p>Result files for all the comparisons with p-values for the two approaches, and with the curation status added, are <a href="output-analysis/used_in_article/additionalfile1/consensuslists">here</a>. The tables look like this (top of the DCIS-normal comparison as an example):</p>
@@ -1340,7 +1316,7 @@ nicetable7 = aggregate(subtype ~., table7[, -4], FUN=paste, collapse=&quot; &quo
 nicetable7 = nicetable7[order(nicetable7$name),]
 nicetable7 = nicetable7[order(nicetable7$DCIS_direction, decreasing=TRUE),]
 
-write.table(nicetable7, paste(articledir, &quot;/table7&quot;, postfix, sep=&quot;&quot;), quote=TRUE, sep=separator, row.names=FALSE)
+write.table(nicetable7, paste(articledir, &quot;/table6&quot;, postfix, sep=&quot;&quot;), quote=TRUE, sep=separator, row.names=FALSE)
 
 pdf(file=paste(supplementaryfile1dir, &quot;/boxplots_table7microRNA.pdf&quot;, sep=&quot;&quot;))
 
@@ -1511,7 +1487,7 @@ loaded via a namespace (and not attached):
 [91] XVector_0.6.0             zlibbioc_1.12.0          
 </code></pre>
 
-<p>generation ended 2016-01-20 18:32:18. Time spent 0 minutes .</p>
+<p>generation ended 2016-01-25 14:28:07. Time spent 0 minutes .</p>
 
 </body>
 

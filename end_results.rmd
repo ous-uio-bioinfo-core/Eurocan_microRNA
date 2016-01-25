@@ -449,7 +449,7 @@ table2 = table2[table2$consensus,]
 table2 = table2[table2$MIMAT %in% rownames( volinia_overlap[["DCIS-normal"]])[volinia_overlap[["DCIS-normal"]]$validated], ]
 table2 = table2[order(table2$logFC.merged),2:6]
 table2[,c(2,4)] = round(table2[,c(2,4)], 2)
-write.table(table2, file=paste(articledir, "/table2", postfix, sep=""), sep=separator, col.names=NA, quote=FALSE)
+write.table(table2, file=paste(articledir, "/table1", postfix, sep=""), sep=separator, col.names=NA, quote=FALSE)
 
 
 ```
@@ -524,7 +524,7 @@ heatmapwrapper = function(ds, sa, main="", plotlegend=TRUE)
  							 main=paste("Diff microRNA DCIS vs. Normal, ", cohort, sep=""), plotlegend=TRUE)
  dev.off()
  
- pdf(paste(articledir, "/heatmap_256expressed_DCIS_vs_normal.pdf", sep=""))
+ pdf(paste(supplementaryfile1dir , "/heatmap_256expressed_DCIS_vs_normal.pdf", sep=""))
 # #par(mfrow=c(1,2))
  cohort="AHUS"
  heatmapwrapper(common_matrix[,rownames(sa[sa$provider==cohort,])],
@@ -644,7 +644,7 @@ table3 = matrix("",ncol=length(tableclasses), nrow=nrows)
 colnames(table3)=tableclasses
 for(n in tableclasses)
 	table3[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table3, file=paste(articledir, "/table3", postfix, sep=""), sep=separator, row.names=FALSE, quote=FALSE)
+write.table(table3, file=paste(articledir, "/table2", postfix, sep=""), sep=separator, row.names=FALSE, quote=FALSE)
 
 tableclasses = c("HER2pos_ERpos-DCIS", "HER2neg_ERpos-DCIS", "HER2pos_ERneg-DCIS", "HER2neg_ERneg_PGRneg-DCIS")
 nrows = max( unlist(lapply( namelists[tableclasses], FUN=length) ))
@@ -653,7 +653,7 @@ colnames(table4)=tableclasses
 for(n in tableclasses)
 	if(length(namelists[[n]])>0)
 		table4[1:length(namelists[[n]]), n] = namelists[[n]]
-write.table(table4, file=paste(articledir, "/table4", postfix, sep=""), sep=separator, row.names=FALSE, quote=FALSE)
+write.table(table4, file=paste(articledir, "/table3", postfix, sep=""), sep=separator, row.names=FALSE, quote=FALSE)
 
 ```
 
@@ -845,7 +845,7 @@ nicetable7 = aggregate(subtype ~., table7[, -4], FUN=paste, collapse=" ")
 nicetable7 = nicetable7[order(nicetable7$name),]
 nicetable7 = nicetable7[order(nicetable7$DCIS_direction, decreasing=TRUE),]
 
-write.table(nicetable7, paste(articledir, "/table7", postfix, sep=""), quote=TRUE, sep=separator, row.names=FALSE)
+write.table(nicetable7, paste(articledir, "/table6", postfix, sep=""), quote=TRUE, sep=separator, row.names=FALSE)
 
 pdf(file=paste(supplementaryfile1dir, "/boxplots_table7microRNA.pdf", sep=""))
 
