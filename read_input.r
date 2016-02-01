@@ -26,6 +26,14 @@ miRNA2MIMAT = read.table(file=paste(annotdir, "/miRNA2MIMAT.txt", sep=""), 	head
 rownames(miRNA2MIMAT)=miRNA2MIMAT$MIMAT
 miRNA2MIMAT$preferredname=miRNA2MIMAT$arm
 miRNA2MIMAT$preferredname[is.na(miRNA2MIMAT$preferredname)]=miRNA2MIMAT$AHUS[is.na(miRNA2MIMAT$preferredname)]
+sortkeys = miRNA2MIMAT$preferredname
+sortkeys[!is.na(sortkeys)] = unlist(lapply( sortkeys[!is.na(sortkeys)], FUN=function(x)strsplit(x,"-")[[1]][[3]]))
+sortkeys = gsub("_.*", "", sortkeys)
+sortkeys = gsub("[*]$", "", sortkeys)
+sortkeys = gsub("[a-z]$", "", sortkeys)
+a = !is.na(as.numeric(sortkeys))
+sortkeys[a] = sprintf("%04s", sortkeys[a])
+miRNA2MIMAT$sortkey = sortkeys
 
 # read sampleannotation table
 sampleannotation=read.table(paste(annotdir,  "/", sampleannotation_file, sep=""),

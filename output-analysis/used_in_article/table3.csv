@@ -1,9 +1,74 @@
-HER2pos_ERpos-DCIS,HER2neg_ERpos-DCIS,HER2pos_ERneg-DCIS,HER2neg_ERneg_PGRneg-DCIS
-,,(hsa-miR-663) +,hsa-miR-887-3p -
-,,hsa-miR-139-5p -,hsa-miR-139-5p -
-,,hsa-miR-221-3p -,
-,,hsa-miR-30c-2-3p -,
-,,hsa-miR-30e-3p -,
-,,hsa-miR-30c-5p -,
-,,hsa-miR-30a-5p -,
-,,hsa-miR-30a-3p -,
+iClust1-DCIS,iClust2-DCIS,iClust3-DCIS,iClust4-DCIS,iClust5-DCIS,iClust6-DCIS,iClust7-DCIS,iClust8-DCIS,iClust9-DCIS,iClust10-DCIS
+hsa-miR-29c-5p +,hsa-miR-29c-5p +,,,hsa-miR-139-5p -,hsa-miR-7-5p +,hsa-miR-29c-5p +,hsa-miR-10a-5p +,hsa-miR-149-5p +,hsa-miR-9-3p +
+hsa-miR-193b-3p +,hsa-miR-326 +,,,,hsa-miR-29c-5p +,,hsa-miR-29c-5p +,hsa-miR-151-3p +,hsa-miR-15b-5p +
+hsa-miR-425-5p +,hsa-miR-338-3p +,,,,hsa-miR-125a-5p +,,hsa-miR-29c-3p +,hsa-miR-151-5p +,hsa-miR-17-5p +
+hsa-miR-29a-3p -,hsa-miR-31-5p -,,,,hsa-miR-149-5p +,,hsa-miR-30a-3p +,hsa-miR-34a-5p -,hsa-miR-18a-5p +
+hsa-miR-31-5p -,hsa-miR-125b-2-3p -,,,,hsa-miR-125b-2-3p -,,hsa-miR-342-5p +,hsa-miR-125b-2-3p -,hsa-miR-18b-5p +
+hsa-miR-31-3p -,hsa-miR-139-5p -,,,,hsa-miR-139-5p -,,(hsa-miR-664*) +,hsa-miR-139-5p -,hsa-miR-19a-3p +
+hsa-miR-99a-5p -,hsa-miR-378a-3p -,,,,hsa-miR-140-3p -,,hsa-miR-31-5p -,hsa-miR-140-3p -,hsa-miR-19b-3p +
+hsa-miR-125b-2-3p -,hsa-miR-433-3p -,,,,hsa-miR-378a-3p -,,hsa-miR-125b-2-3p -,hsa-miR-148a-3p -,hsa-miR-92a-3p +
+hsa-miR-139-5p -,hsa-miR-505-3p -,,,,hsa-miR-433-3p -,,hsa-miR-139-5p -,hsa-miR-221-3p -,hsa-miR-93-5p +
+hsa-miR-140-5p -,,,,,hsa-miR-505-3p -,,hsa-miR-140-3p -,hsa-miR-381-3p -,hsa-miR-106b-5p +
+hsa-miR-140-3p -,,,,,,,hsa-miR-142-5p -,hsa-miR-433-3p -,hsa-miR-135a-3p +
+hsa-miR-148a-3p -,,,,,,,hsa-miR-150-5p -,,hsa-miR-188-5p +
+hsa-miR-154-5p -,,,,,,,hsa-miR-362-5p -,,hsa-miR-505-5p +
+hsa-miR-221-3p -,,,,,,,hsa-miR-378a-3p -,,(hsa-miR-630) +
+hsa-miR-223-3p -,,,,,,,hsa-miR-433-3p -,,(hsa-miR-663) +
+hsa-miR-377-3p -,,,,,,,hsa-miR-486-5p -,,hsa-let-7c-5p -
+hsa-miR-432-5p -,,,,,,,hsa-miR-505-3p -,,hsa-miR-10b-5p -
+hsa-miR-433-3p -,,,,,,,,,hsa-miR-26a-5p -
+hsa-miR-486-5p -,,,,,,,,,hsa-miR-29c-3p -
+hsa-miR-654-3p -,,,,,,,,,hsa-miR-29c-5p -
+,,,,,,,,,hsa-miR-34a-5p -
+,,,,,,,,,hsa-miR-34a-3p -
+,,,,,,,,,hsa-miR-34b-5p -
+,,,,,,,,,hsa-miR-34c-5p -
+,,,,,,,,,hsa-miR-101-3p -
+,,,,,,,,,hsa-miR-125b-2-3p -
+,,,,,,,,,hsa-miR-125b-5p -
+,,,,,,,,,hsa-miR-126-3p -
+,,,,,,,,,hsa-miR-127-3p -
+,,,,,,,,,hsa-miR-136-3p -
+,,,,,,,,,hsa-miR-139-5p -
+,,,,,,,,,hsa-miR-143-3p -
+,,,,,,,,,hsa-miR-144-3p -
+,,,,,,,,,hsa-miR-144-5p -
+,,,,,,,,,hsa-miR-145-5p -
+,,,,,,,,,hsa-miR-145-3p -
+,,,,,,,,,hsa-miR-148b-3p -
+,,,,,,,,,hsa-miR-148a-3p -
+,,,,,,,,,hsa-miR-152-3p -
+,,,,,,,,,hsa-miR-154-5p -
+,,,,,,,,,hsa-miR-193a-5p -
+,,,,,,,,,hsa-miR-193a-3p -
+,,,,,,,,,hsa-miR-195-5p -
+,,,,,,,,,hsa-miR-199a-5p -
+,,,,,,,,,hsa-miR-199b-5p -
+,,,,,,,,,hsa-miR-204-5p -
+,,,,,,,,,hsa-miR-214-3p -
+,,,,,,,,,hsa-miR-218-5p -
+,,,,,,,,,hsa-miR-299-3p -
+,,,,,,,,,hsa-miR-299-5p -
+,,,,,,,,,hsa-miR-331-3p -
+,,,,,,,,,hsa-miR-337-5p -
+,,,,,,,,,hsa-miR-375 -
+,,,,,,,,,hsa-miR-376a-3p -
+,,,,,,,,,hsa-miR-376c-3p -
+,,,,,,,,,hsa-miR-377-3p -
+,,,,,,,,,hsa-miR-377-5p -
+,,,,,,,,,hsa-miR-379-5p -
+,,,,,,,,,hsa-miR-381-3p -
+,,,,,,,,,hsa-miR-382-5p -
+,,,,,,,,,hsa-miR-409-3p -
+,,,,,,,,,hsa-miR-409-5p -
+,,,,,,,,,hsa-miR-410-3p -
+,,,,,,,,,hsa-miR-432-5p -
+,,,,,,,,,hsa-miR-433-3p -
+,,,,,,,,,(hsa-miR-451) -
+,,,,,,,,,hsa-miR-485-5p -
+,,,,,,,,,hsa-miR-486-5p -
+,,,,,,,,,hsa-miR-487b-3p -
+,,,,,,,,,hsa-miR-497-5p -
+,,,,,,,,,hsa-miR-539-5p -
+,,,,,,,,,hsa-miR-654-3p -
+,,,,,,,,,hsa-miR-758-3p -
