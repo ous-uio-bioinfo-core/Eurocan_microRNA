@@ -60,7 +60,8 @@ knit2html("end_results.rmd")
 ## References for all scripts
 
 Subtype-specific micro-RNA expression signatures in breast cancer progression.
-Haakensen, V. D., Nygaard, V., Greger, L., Aure, M. R., Fromm, B., Bukholm, I. R.K., Lüders, T., Chin, S.-F., Git, A., Caldas, C., Kristensen, V. N., Brazma, A., Børresen-Dale, A.-L., Hovig, E. and Helland, Å. (2016),  Int. J. Cancer, 139: 1117–1128. doi:10.1002/ijc.30142
+Haakensen, V. D., Nygaard, V., Greger, L., Aure, M. R., Fromm, B., Bukholm, I. R.K., Lüders, T., Chin, S.-F., Git, A., Caldas, C., Kristensen, V. N., Brazma, A., Børresen-Dale, A.-L., Hovig, E. and Helland, Å. (2016),
+Int. J. Cancer, 139: 1117–1128. doi:10.1002/ijc.30142
 
 Breast cancer signatures for invasiveness and prognosis defined by deep sequencing of microRNA.  
 Volinia S, Galasso M, Sana ME, Wise TF, Palatini J, Huebner K, Croce CM.  
